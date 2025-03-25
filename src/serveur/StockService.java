@@ -8,5 +8,5 @@ import java.util.List;
 public interface StockService extends Remote {
     List<Article> getArticles() throws RemoteException;
     Article getArticleByReference(String reference) throws RemoteException;
-    boolean passerCommande(int idCommande, String reference, int quantite, double prixVente) throws RemoteException;
+    boolean passerCommande(int idCommande, String reference, int quantite) throws RemoteException;
 }

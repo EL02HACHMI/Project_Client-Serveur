@@ -16,6 +16,12 @@ public class Article implements Serializable { // Serializable pour être transm
         this.stock = stock;
     }
 
+    @Override
+    public String toString() {
+        return reference + " - " + prixUnitaire + "€ - Stock: " + stock;
+    }
+
+
     // 🔹 Getters et Setters
     public String getReference() { return reference; }
     public int getIdFamille() { return idFamille; }

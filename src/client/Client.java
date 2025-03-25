@@ -73,20 +73,18 @@ public class Client {
             System.out.print("📌 Entrez la quantité souhaitée : ");
             int quantite = scanner.nextInt();
             scanner.nextLine();
-            System.out.print("📌 Entrez le prix de vente appliqué : ");
-            double prixVente = scanner.nextDouble();
-            scanner.nextLine();
 
             // Appel au service RMI pour passer la commande
-            boolean success = stockService.passerCommande(1, reference, quantite, prixVente);
+            boolean success = stockService.passerCommande(1, reference, quantite);
             if (success) {
-                System.out.println("✅ Commande passée avec succès !");
+                System.out.println("✅ Commande passée avec succès ! Le stock a été mis à jour.");
             } else {
-                System.out.println("❌ La commande a échoué (vérifiez le stock).");
+                System.out.println("❌ La commande a échoué (vérifiez le stock ou la référence).");
             }
         } catch (Exception e) {
             System.out.println("❌ Erreur lors du passage de la commande !");
             e.printStackTrace();
         }
     }
+
 }
