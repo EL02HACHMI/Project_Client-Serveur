@@ -7,14 +7,14 @@ import java.rmi.RemoteException;
 public class Serveur {
     public static void main(String[] args) {
         try {
-            // Démarrage du registre RMI sur le port 1099
+            // Démarrage du registre RMI sur le port 5000
             Registry registry = LocateRegistry.createRegistry(5000);
 
             // Création et enregistrement du service RMI
             StockService stockService = new StockServiceImpl();
             registry.rebind("StockService", stockService);
 
-            System.out.println("✅ Serveur RMI démarré avec succès !");
+            System.out.println(" Serveur RMI démarré avec succès !");
         } catch (RemoteException e) {
             e.printStackTrace();
         }

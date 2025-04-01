@@ -1,5 +1,6 @@
 package serveur;
-
+import models.Commande;
+import models.LigneCommande;
 import models.Article;
 import java.rmi.server.UnicastRemoteObject;
 import java.rmi.RemoteException;
@@ -16,19 +17,89 @@ public class StockServiceImpl extends UnicastRemoteObject implements StockServic
     }
 
     @Override
-    public List<Article> getArticles() throws RemoteException {
+    public boolean enregistrerCommande(Commande commande) throws RemoteException {
+        try {
+            for (LigneCommande ligne : commande.getLignes()) {
+                // Vérifier le stock
+                PreparedStatement checkStock = conn.prepareStatement("SELECT stock FROM Article WHERE reference = ?");
+                checkStock.setString(1, ligne.getReference());
+                ResultSet rs = checkStock.executeQuery();
+
+                if (rs.next() && rs.getInt("stock") >= ligne.getQuantite()) {
+                    // Insérer la ligne de commande
+                    PreparedStatement insert = conn.prepareStatement(
+                            "INSERT INTO LigneCommande (id_commande, reference, date_commande, prix_vente) VALUES (?, ?, NOW(), ?)");
+                    insert.setInt(1, commande.getIdCommande());
+                    insert.setString(2, ligne.getReference());
+                    insert.setDouble(3, ligne.getPrixVente());
+                    insert.executeUpdate();
+
+                    // Mettre à jour le stock
+                    PreparedStatement update = conn.prepareStatement(
+                            "UPDATE Article SET stock = stock - ? WHERE reference = ?");
+                    update.setInt(1, ligne.getQuantite());
+                    update.setString(2, ligne.getReference());
+                    update.executeUpdate();
+                } else {
+                    System.out.println("❌ Stock insuffisant ou article non trouvé : " + ligne.getReference());
+                    return false;
+                }
+            }
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    @Override
+    public List<Article> getArticlesByFamille(String nomFamille) throws RemoteException {
         List<Article> articles = new ArrayList<>();
         try {
-            Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT * FROM Article");
+            PreparedStatement stmt = conn.prepareStatement("""
+    SELECT a.*
+    FROM Article a
+    JOIN Famille f ON a.id_famille = f.id_famille
+    WHERE LOWER(f.nom_famille) = LOWER(?) AND a.stock > 0
+""");
+
+            stmt.setString(1, nomFamille); // ← ⚠️ ici comparaison exacte
+            ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
-                articles.add(new Article(rs.getString("reference"), rs.getInt("id_famille"), rs.getDouble("prix_unitaire"), rs.getInt("stock")));
+                articles.add(new Article(
+                        rs.getString("reference"),
+                        rs.getInt("id_famille"),
+                        rs.getDouble("prix_unitaire"),
+                        rs.getInt("stock")
+                ));
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return articles;
     }
+
+
+
+    @Override
+    public List<Article> getArticles() throws RemoteException {
+        List<Article> articles = new ArrayList<>();
+        try {
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT * FROM Article"); // pas de filtre ici
+            while (rs.next()) {
+                articles.add(new Article(
+                        rs.getString("reference"),
+                        rs.getInt("id_famille"),
+                        rs.getDouble("prix_unitaire"),
+                        rs.getInt("stock")
+                ));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return articles;
+    }
+
 
     @Override
     public Article getArticleByReference(String reference) throws RemoteException {
@@ -44,6 +115,21 @@ public class StockServiceImpl extends UnicastRemoteObject implements StockServic
         }
         return null;
     }
+
+    @Override
+    public boolean ajouterStock(String reference, int quantite) throws RemoteException {
+        try {
+            PreparedStatement stmt = conn.prepareStatement("UPDATE Article SET stock = stock + ? WHERE reference = ?");
+            stmt.setInt(1, quantite);
+            stmt.setString(2, reference);
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+
 
     @Override
     public boolean passerCommande(int idCommande, String reference, int quantite) throws RemoteException {

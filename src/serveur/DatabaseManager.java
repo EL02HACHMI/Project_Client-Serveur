@@ -16,10 +16,10 @@ public class DatabaseManager {
             try {
                 Class.forName("com.mysql.cj.jdbc.Driver"); // Vérifier que le driver est chargé
                 connection = DriverManager.getConnection(URL, USER, PASSWORD);
-                System.out.println("✅ Connexion MySQL réussie !");
+                System.out.println(" Connexion MySQL réussie !");
             } catch (ClassNotFoundException | SQLException e) {
                 e.printStackTrace();
-                System.out.println("❌ Erreur de connexion à MySQL !");
+                System.out.println(" Erreur de connexion à MySQL !");
             }
         }
         return connection;
