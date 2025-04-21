@@ -28,9 +28,8 @@ import javax.transaction.xa.XAException;
 class MysqlXAException extends XAException {
 
     private static final long serialVersionUID = -9075817535836563004L;
-
-    private String message;
     protected String xidAsString;
+    private String message;
 
     public MysqlXAException(int errorCode, String message, String xidAsString) {
         super(errorCode);

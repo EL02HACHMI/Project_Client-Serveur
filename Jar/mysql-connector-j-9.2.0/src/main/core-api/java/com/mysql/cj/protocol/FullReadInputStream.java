@@ -55,7 +55,7 @@ public class FullReadInputStream extends FilterInputStream {
             int count = read(b, off + n, len - n);
 
             if (count < 0) {
-                throw new EOFException(Messages.getString("MysqlIO.EOF", new Object[] { Integer.valueOf(len), Integer.valueOf(n) }));
+                throw new EOFException(Messages.getString("MysqlIO.EOF", new Object[]{Integer.valueOf(len), Integer.valueOf(n)}));
             }
 
             n += count;
@@ -75,7 +75,7 @@ public class FullReadInputStream extends FilterInputStream {
             long count = skip(len - n);
 
             if (count < 0) {
-                throw new EOFException(Messages.getString("MysqlIO.EOF", new Object[] { Long.valueOf(len), Long.valueOf(n) }));
+                throw new EOFException(Messages.getString("MysqlIO.EOF", new Object[]{Long.valueOf(len), Long.valueOf(n)}));
             }
 
             n += count;

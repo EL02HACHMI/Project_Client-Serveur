@@ -30,27 +30,24 @@ import com.mysql.cj.log.Log;
 /**
  * Implementors of this interface can be installed via the "connectionLifecycleInterceptors" configuration property and receive events and alter behavior of
  * "lifecycle" methods on our connection implementation.
- *
+ * <p>
  * The driver will create one instance of a given interceptor per-connection.
  */
 public interface ConnectionLifecycleInterceptor {
 
     /**
      * Called once per connection that wants to use the extension
-     *
+     * <p>
      * The properties are the same ones passed in in the URL or arguments to
      * Driver.connect() or DriverManager.getConnection().
      *
-     * @param conn
-     *            the connection for which this extension is being created
-     * @param props
-     *            configuration values as passed to the connection. Note that
-     *            in order to support javax.sql.DataSources, configuration properties specific
-     *            to an interceptor <strong>must</strong> be passed via setURL() on the
-     *            DataSource. Extension properties are not exposed via
-     *            accessor/mutator methods on DataSources.
-     * @param log
-     *            logger instance
+     * @param conn  the connection for which this extension is being created
+     * @param props configuration values as passed to the connection. Note that
+     *              in order to support javax.sql.DataSources, configuration properties specific
+     *              to an interceptor <strong>must</strong> be passed via setURL() on the
+     *              DataSource. Extension properties are not exposed via
+     *              accessor/mutator methods on DataSources.
+     * @param log   logger instance
      * @return interceptor
      */
     ConnectionLifecycleInterceptor init(MysqlConnection conn, Properties props, Log log);
@@ -66,89 +63,75 @@ public interface ConnectionLifecycleInterceptor {
      * Called when an application calls Connection.close(), before the driver
      * processes its own internal logic for close.
      *
-     * @throws SQLException
-     *             if an error occurs
+     * @throws SQLException if an error occurs
      */
     void close() throws SQLException;
 
     /**
      * Called when an application calls Connection.commit(), before the
      * driver processes its own internal logic for commit().
-     *
+     * <p>
      * Interceptors should return "true" if the driver should perform
      * its own internal logic for commit(), or "false" if not.
      *
      * @return "true" if the driver should perform
-     *         its own internal logic for commit(), or "false" if not.
-     *
-     * @throws SQLException
-     *             if an error occurs
+     * its own internal logic for commit(), or "false" if not.
+     * @throws SQLException if an error occurs
      */
     boolean commit() throws SQLException;
 
     /**
      * Called when an application calls Connection.rollback(), before the
      * driver processes its own internal logic for rollback().
-     *
+     * <p>
      * Interceptors should return "true" if the driver should perform
      * its own internal logic for rollback(), or "false" if not.
      *
      * @return "true" if the driver should perform
-     *         its own internal logic for rollback(), or "false" if not.
-     *
-     * @throws SQLException
-     *             if an error occurs
+     * its own internal logic for rollback(), or "false" if not.
+     * @throws SQLException if an error occurs
      */
     boolean rollback() throws SQLException;
 
     /**
      * Called when an application calls Connection.rollback(), before the
      * driver processes its own internal logic for rollback().
-     *
+     * <p>
      * Interceptors should return "true" if the driver should perform
      * its own internal logic for rollback(), or "false" if not.
      *
-     * @param s
-     *            savepoint
+     * @param s savepoint
      * @return "true" if the driver should perform
-     *         its own internal logic for rollback(), or "false" if not.
-     *
-     * @throws SQLException
-     *             if an error occurs
+     * its own internal logic for rollback(), or "false" if not.
+     * @throws SQLException if an error occurs
      */
     boolean rollback(Savepoint s) throws SQLException;
 
     /**
      * Called when an application calls Connection.setAutoCommit(), before the
      * driver processes its own internal logic for setAutoCommit().
-     *
+     * <p>
      * Interceptors should return "true" if the driver should perform
      * its own internal logic for setAutoCommit(), or "false" if not.
      *
-     * @param flag
-     *            autocommit flag
+     * @param flag autocommit flag
      * @return "true" if the driver should perform
-     *         its own internal logic for setAutoCommit(), or "false" if not.
-     *
-     * @throws SQLException
-     *             if an error occurs
+     * its own internal logic for setAutoCommit(), or "false" if not.
+     * @throws SQLException if an error occurs
      */
     boolean setAutoCommit(boolean flag) throws SQLException;
 
     /**
      * Called when an application calls Connection.setCatalog() or Connection.setSchema(),
      * before the driver processes its own internal logic for these methods.
-     *
+     * <p>
      * Interceptors should return "true" if the driver should perform its own internal logic
      * for setCatalog() or setSchema(), or "false" if not.
      *
-     * @param db
-     *            database name
+     * @param db database name
      * @return "true" if the driver should perform
-     *         its own internal logic for setCatalog() or setSchema(), or "false" if not.
-     *
-     * @throws SQLException
-     *             if an error occurs
+     * its own internal logic for setCatalog() or setSchema(), or "false" if not.
+     * @throws SQLException if an error occurs
      */
     boolean setDatabase(String db) throws SQLException;
 

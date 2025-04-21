@@ -28,8 +28,7 @@ public interface FindStatement extends Statement<FindStatement, DocResult> {
     /**
      * Add/replace the field projections defining the result.
      *
-     * @param projections
-     *            projection expression
+     * @param projections projection expression
      * @return {@link FindStatement}
      */
     FindStatement fields(String... projections);
@@ -37,8 +36,7 @@ public interface FindStatement extends Statement<FindStatement, DocResult> {
     /**
      * Add/replace the field projection defining the result.
      *
-     * @param docProjection
-     *            projection expression
+     * @param docProjection projection expression
      * @return {@link FindStatement}
      */
     FindStatement fields(Expression docProjection);
@@ -46,8 +44,7 @@ public interface FindStatement extends Statement<FindStatement, DocResult> {
     /**
      * Add/replace the aggregation fields for this query.
      *
-     * @param groupBy
-     *            groupBy expression
+     * @param groupBy groupBy expression
      * @return {@link FindStatement}
      */
     FindStatement groupBy(String... groupBy);
@@ -55,8 +52,7 @@ public interface FindStatement extends Statement<FindStatement, DocResult> {
     /**
      * Add/replace the aggregate criteria for this query.
      *
-     * @param having
-     *            having expression
+     * @param having having expression
      * @return {@link FindStatement}
      */
     FindStatement having(String having);
@@ -64,8 +60,7 @@ public interface FindStatement extends Statement<FindStatement, DocResult> {
     /**
      * Add/replace the order specification for this query.
      *
-     * @param sortFields
-     *            sort expression
+     * @param sortFields sort expression
      * @return {@link FindStatement}
      */
     FindStatement orderBy(String... sortFields);
@@ -75,8 +70,7 @@ public interface FindStatement extends Statement<FindStatement, DocResult> {
      * <p>
      * Synonym for {@link #orderBy(String...)}
      *
-     * @param sortFields
-     *            sort expression
+     * @param sortFields sort expression
      * @return {@link FindStatement}
      */
     FindStatement sort(String... sortFields);
@@ -84,8 +78,7 @@ public interface FindStatement extends Statement<FindStatement, DocResult> {
     /**
      * Add/replace the document offset for this query.
      *
-     * @param limitOffset
-     *            number of documents to skip
+     * @param limitOffset number of documents to skip
      * @return {@link FindStatement}
      * @deprecated Deprecated in c/J 8.0.12, please use {@link #offset(long)} instead.
      */
@@ -97,8 +90,7 @@ public interface FindStatement extends Statement<FindStatement, DocResult> {
     /**
      * Add/replace the document offset for this query.
      *
-     * @param limitOffset
-     *            number of documents to skip
+     * @param limitOffset number of documents to skip
      * @return {@link FindStatement}
      */
     FindStatement offset(long limitOffset);
@@ -106,8 +98,7 @@ public interface FindStatement extends Statement<FindStatement, DocResult> {
     /**
      * Add/replace the document limit for this query.
      *
-     * @param numberOfRows
-     *            limit
+     * @param numberOfRows limit
      * @return {@link FindStatement}
      */
     FindStatement limit(long numberOfRows);
@@ -122,8 +113,7 @@ public interface FindStatement extends Statement<FindStatement, DocResult> {
     /**
      * Locks matching rows against updates using the provided lock contention option.
      *
-     * @param lockContention
-     *            The {@link com.mysql.cj.xdevapi.Statement.LockContention} value to set.
+     * @param lockContention The {@link com.mysql.cj.xdevapi.Statement.LockContention} value to set.
      * @return {@link FindStatement}
      */
     FindStatement lockShared(LockContention lockContention);
@@ -138,8 +128,7 @@ public interface FindStatement extends Statement<FindStatement, DocResult> {
     /**
      * Locks matching rows exclusively so no other transactions can read or write to them, using the provided lock contention option.
      *
-     * @param lockContention
-     *            The {@link com.mysql.cj.xdevapi.Statement.LockContention} value to set.
+     * @param lockContention The {@link com.mysql.cj.xdevapi.Statement.LockContention} value to set.
      * @return {@link FindStatement}
      */
     FindStatement lockExclusive(LockContention lockContention);

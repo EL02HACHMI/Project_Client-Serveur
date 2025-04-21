@@ -36,17 +36,6 @@ public interface ServerSessionStateController {
     public static int SESSION_TRACK_TRANSACTION_STATE = 0x05;
 
     /**
-     * Set the object containing server session changes collected from the latest query execution. Used internally.
-     *
-     * @param changes
-     *            {@link ServerSessionStateChanges} object.
-     *
-     */
-    default void setSessionStateChanges(ServerSessionStateChanges changes) {
-        throw ExceptionFactory.createException(CJOperationNotSupportedException.class, "Not supported");
-    }
-
-    /**
      * Get the object containing server session changes collected from the latest query execution.
      * <p>
      * Please note that the driver could issue some queries internally. With that there is no guarantee that all session changes are reflected in the
@@ -60,18 +49,19 @@ public interface ServerSessionStateController {
         throw ExceptionFactory.createException(CJOperationNotSupportedException.class, "Not supported");
     }
 
-    @FunctionalInterface
-    public static interface SessionStateChangesListener {
-
-        void handleSessionStateChanges(ServerSessionStateChanges changes);
-
+    /**
+     * Set the object containing server session changes collected from the latest query execution. Used internally.
+     *
+     * @param changes {@link ServerSessionStateChanges} object.
+     */
+    default void setSessionStateChanges(ServerSessionStateChanges changes) {
+        throw ExceptionFactory.createException(CJOperationNotSupportedException.class, "Not supported");
     }
 
     /**
      * Add the {@link SessionStateChangesListener} that will process {@link ServerSessionStateChanges} on it's arrival.
      *
-     * @param l
-     *            {@link SessionStateChangesListener} object.
+     * @param l {@link SessionStateChangesListener} object.
      */
     default void addSessionStateChangesListener(SessionStateChangesListener l) {
         throw ExceptionFactory.createException(CJOperationNotSupportedException.class, "Not supported");
@@ -80,11 +70,17 @@ public interface ServerSessionStateController {
     /**
      * Remove {@link SessionStateChangesListener}.
      *
-     * @param l
-     *            {@link SessionStateChangesListener} object.
+     * @param l {@link SessionStateChangesListener} object.
      */
     default void removeSessionStateChangesListener(SessionStateChangesListener l) {
         throw ExceptionFactory.createException(CJOperationNotSupportedException.class, "Not supported");
+    }
+
+    @FunctionalInterface
+    public static interface SessionStateChangesListener {
+
+        void handleSessionStateChanges(ServerSessionStateChanges changes);
+
     }
 
     /**
@@ -92,7 +88,6 @@ public interface ServerSessionStateController {
      * <p>
      * Driver is getting these changes when connection property trackSessionState=true and server supports session tracking.
      * </p>
-     *
      */
     public static interface ServerSessionStateChanges {
 

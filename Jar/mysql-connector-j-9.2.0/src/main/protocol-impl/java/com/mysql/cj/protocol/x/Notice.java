@@ -39,6 +39,30 @@ import com.mysql.cj.x.protobuf.MysqlxNotice.SessionVariableChanged;
  */
 public class Notice implements ProtocolEntity {
 
+    public static final int NoticeScope_Global = 1;
+    public static final int NoticeScope_Local = 2;
+    public static final int NoticeType_WARNING = 1;
+    public static final int NoticeType_SESSION_VARIABLE_CHANGED = 2;
+    public static final int NoticeType_SESSION_STATE_CHANGED = 3;
+    public static final int NoticeType_GROUP_REPLICATION_STATE_CHANGED = 4;
+    public static final int SessionStateChanged_CURRENT_SCHEMA = 1;
+    public static final int SessionStateChanged_ACCOUNT_EXPIRED = 2;
+    public static final int SessionStateChanged_GENERATED_INSERT_ID = 3;
+    public static final int SessionStateChanged_ROWS_AFFECTED = 4;
+    public static final int SessionStateChanged_ROWS_FOUND = 5;
+    public static final int SessionStateChanged_ROWS_MATCHED = 6;
+    public static final int SessionStateChanged_TRX_COMMITTED = 7;
+    public static final int SessionStateChanged_TRX_ROLLEDBACK = 9;
+    public static final int SessionStateChanged_PRODUCED_MESSAGE = 10;
+    public static final int SessionStateChanged_CLIENT_ID_ASSIGNED = 11;
+    public static final int SessionStateChanged_GENERATED_DOCUMENT_IDS = 12;
+    protected int scope = 0;
+    protected int type = 0;
+    public Notice(Frame frm) {
+        this.scope = frm.getScope().getNumber();
+        this.type = frm.getType();
+    }
+
     public static Notice getInstance(XMessage message) {
         Frame notice = (Frame) message.getMessage();
         switch (notice.getType()) {
@@ -60,42 +84,6 @@ public class Notice implements ProtocolEntity {
         return new Notice(notice);
     }
 
-    public static final int NoticeScope_Global = 1;
-    public static final int NoticeScope_Local = 2;
-
-    public static final int NoticeType_WARNING = 1;
-    public static final int NoticeType_SESSION_VARIABLE_CHANGED = 2;
-    public static final int NoticeType_SESSION_STATE_CHANGED = 3;
-    public static final int NoticeType_GROUP_REPLICATION_STATE_CHANGED = 4;
-
-    public static final int SessionStateChanged_CURRENT_SCHEMA = 1;
-    public static final int SessionStateChanged_ACCOUNT_EXPIRED = 2;
-    public static final int SessionStateChanged_GENERATED_INSERT_ID = 3;
-    public static final int SessionStateChanged_ROWS_AFFECTED = 4;
-    public static final int SessionStateChanged_ROWS_FOUND = 5;
-    public static final int SessionStateChanged_ROWS_MATCHED = 6;
-    public static final int SessionStateChanged_TRX_COMMITTED = 7;
-    public static final int SessionStateChanged_TRX_ROLLEDBACK = 9;
-    public static final int SessionStateChanged_PRODUCED_MESSAGE = 10;
-    public static final int SessionStateChanged_CLIENT_ID_ASSIGNED = 11;
-    public static final int SessionStateChanged_GENERATED_DOCUMENT_IDS = 12;
-
-    protected int scope = 0;
-    protected int type = 0;
-
-    public Notice(Frame frm) {
-        this.scope = frm.getScope().getNumber();
-        this.type = frm.getType();
-    }
-
-    public int getType() {
-        return this.type;
-    }
-
-    public int getScope() {
-        return this.scope;
-    }
-
     @SuppressWarnings("unchecked")
     static <T extends Message> T parseNotice(ByteString payload, Class<T> noticeClass) {
         try {
@@ -104,6 +92,14 @@ public class Notice implements ProtocolEntity {
         } catch (InvalidProtocolBufferException ex) {
             throw new CJCommunicationsException(ex);
         }
+    }
+
+    public int getType() {
+        return this.type;
+    }
+
+    public int getScope() {
+        return this.scope;
     }
 
     public static class XWarning extends Notice implements Warning {

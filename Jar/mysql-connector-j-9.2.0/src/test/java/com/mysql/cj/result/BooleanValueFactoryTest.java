@@ -145,10 +145,10 @@ public class BooleanValueFactoryTest extends CommonAsserts {
 
     @Test
     public void testCreateFromBit() {
-        assertFalse(this.vf.createFromBit(new byte[] { 0 }, 0, 1));
-        assertTrue(this.vf.createFromBit(new byte[] { 1 }, 0, 1));
-        assertTrue(this.vf.createFromBit(new byte[] { 2 }, 0, 1));
-        assertTrue(this.vf.createFromBit(new byte[] { (byte) 0xff }, 0, 1));
+        assertFalse(this.vf.createFromBit(new byte[]{0}, 0, 1));
+        assertTrue(this.vf.createFromBit(new byte[]{1}, 0, 1));
+        assertTrue(this.vf.createFromBit(new byte[]{2}, 0, 1));
+        assertTrue(this.vf.createFromBit(new byte[]{(byte) 0xff}, 0, 1));
     }
 
     @Test

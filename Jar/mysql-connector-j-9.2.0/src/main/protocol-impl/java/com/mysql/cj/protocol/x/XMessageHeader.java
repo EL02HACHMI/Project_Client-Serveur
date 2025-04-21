@@ -32,9 +32,13 @@ public class XMessageHeader implements MessageHeader {
     public static final int HEADER_LENGTH = MESSAGE_SIZE_LENGTH + MESSAGE_TYPE_LENGTH;
 
     private ByteBuffer headerBuf;
-    /** Type tag of the message to read (indicates parser to use). */
+    /**
+     * Type tag of the message to read (indicates parser to use).
+     */
     private int messageType = -1;
-    /** Size of the message that will be read. */
+    /**
+     * Size of the message that will be read.
+     */
     private int messageSize = -1;
 
     public XMessageHeader() {

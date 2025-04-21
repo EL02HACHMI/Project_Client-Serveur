@@ -69,8 +69,8 @@ public class ZonedDateTimeValueEncoder extends AbstractValueEncoder {
                 sb = new StringBuilder();
 
                 sb.append(TimeUtil.getSimpleDateFormat(null, "''yyyy-MM-dd HH:mm:ss",
-                        binding.getMysqlType() == MysqlType.TIMESTAMP && this.preserveInstants.getValue() ? this.serverSession.getSessionTimeZone()
-                                : this.serverSession.getDefaultTimeZone())
+                                binding.getMysqlType() == MysqlType.TIMESTAMP && this.preserveInstants.getValue() ? this.serverSession.getSessionTimeZone()
+                                        : this.serverSession.getDefaultTimeZone())
                         .format(x));
 
                 if (this.serverSession.getCapabilities().serverSupportsFracSecs() && x.getNanos() > 0) {
@@ -98,7 +98,7 @@ public class ZonedDateTimeValueEncoder extends AbstractValueEncoder {
                 return sb.toString();
             default:
                 throw ExceptionFactory.createException(WrongArgumentException.class,
-                        Messages.getString("PreparedStatement.67", new Object[] { binding.getValue().getClass().getName(), binding.getMysqlType().toString() }),
+                        Messages.getString("PreparedStatement.67", new Object[]{binding.getValue().getClass().getName(), binding.getMysqlType().toString()}),
                         this.exceptionInterceptor);
         }
     }
@@ -141,14 +141,14 @@ public class ZonedDateTimeValueEncoder extends AbstractValueEncoder {
             case LONGTEXT:
                 intoPacket.writeBytes(StringSelfDataType.STRING_LENENC,
                         StringUtils.getBytes(((ZonedDateTime) binding.getValue())
-                                .format(this.sendFractionalSeconds.getValue() && ((ZonedDateTime) binding.getValue()).getNano() > 0
-                                        ? TimeUtil.DATETIME_FORMATTER_WITH_NANOS_WITH_OFFSET
-                                        : TimeUtil.DATETIME_FORMATTER_NO_FRACT_WITH_OFFSET),
+                                        .format(this.sendFractionalSeconds.getValue() && ((ZonedDateTime) binding.getValue()).getNano() > 0
+                                                ? TimeUtil.DATETIME_FORMATTER_WITH_NANOS_WITH_OFFSET
+                                                : TimeUtil.DATETIME_FORMATTER_NO_FRACT_WITH_OFFSET),
                                 this.charEncoding.getValue()));
                 return;
             default:
                 throw ExceptionFactory.createException(WrongArgumentException.class,
-                        Messages.getString("PreparedStatement.67", new Object[] { binding.getValue().getClass().getName(), binding.getMysqlType().toString() }),
+                        Messages.getString("PreparedStatement.67", new Object[]{binding.getValue().getClass().getName(), binding.getMysqlType().toString()}),
                         this.exceptionInterceptor);
         }
     }

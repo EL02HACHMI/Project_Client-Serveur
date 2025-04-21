@@ -84,28 +84,31 @@ import com.mysql.cj.util.Util;
 public class NativeSession extends CoreSession implements Serializable {
 
     private static final long serialVersionUID = 5323638898749073419L;
-
+    // TODO what's the purpose of this variable?
+    private final static String SERVER_VERSION_STRING_VAR_NAME = "server_version_string";
     private CacheAdapter<String, Map<String, String>> serverConfigCache;
-
-    /** When did the last query finish? */
+    /**
+     * When did the last query finish?
+     */
     private long lastQueryFinishedTime = 0;
-
-    /** The comment (if any) to prepend to all queries sent to the server (to show up in "SHOW PROCESSLIST") */
+    /**
+     * The comment (if any) to prepend to all queries sent to the server (to show up in "SHOW PROCESSLIST")
+     */
     private String queryComment = null;
-
-    /** Does this connection need to be tested? */
+    /**
+     * Does this connection need to be tested?
+     */
     private boolean needsPing = false;
-
     private NativeMessageBuilder commandBuilder = null;
-
-    /** Has this session been closed? */
+    /**
+     * Has this session been closed?
+     */
     private boolean isClosed = true;
-
-    /** Why was this session implicitly closed, if known? (for diagnostics) */
+    /**
+     * Why was this session implicitly closed, if known? (for diagnostics)
+     */
     private Throwable forceClosedReason = null;
-
     private CopyOnWriteArrayList<WeakReference<SessionEventListener>> listeners = new CopyOnWriteArrayList<>();
-
     private transient Timer cancelTimer;
 
     public NativeSession(HostInfo hostInfo, PropertySet propSet) {
@@ -287,7 +290,6 @@ public class NativeSession extends CoreSession implements Serializable {
 
     /**
      * Used by MiniAdmin to shutdown a MySQL server
-     *
      */
     public void shutdownServer() {
         TelemetrySpan span = getTelemetryHandler().startSpan(TelemetrySpanName.SHUTDOWN);
@@ -313,14 +315,14 @@ public class NativeSession extends CoreSession implements Serializable {
         }
     }
 
-    public void setSocketTimeout(int milliseconds) {
-        getPropertySet().getProperty(PropertyKey.socketTimeout).setValue(milliseconds); // for re-connects
-        ((NativeProtocol) this.protocol).setSocketTimeout(milliseconds);
-    }
-
     public int getSocketTimeout() {
         RuntimeProperty<Integer> sto = getPropertySet().getProperty(PropertyKey.socketTimeout);
         return sto.getValue();
+    }
+
+    public void setSocketTimeout(int milliseconds) {
+        getPropertySet().getProperty(PropertyKey.socketTimeout).setValue(milliseconds); // for re-connects
+        ((NativeProtocol) this.protocol).setSocketTimeout(milliseconds);
     }
 
     /**
@@ -441,16 +443,11 @@ public class NativeSession extends CoreSession implements Serializable {
         }
     }
 
-    // TODO what's the purpose of this variable?
-    private final static String SERVER_VERSION_STRING_VAR_NAME = "server_version_string";
-
     /**
      * Loads pertinent server variables so that the driver can configure itself.
      *
-     * @param lock
-     *            synchronization lock
-     * @param version
-     *            driver version string
+     * @param lock    synchronization lock
+     * @param version driver version string
      */
     public void loadServerVariables(Lock lock, String version) {
         if (this.cacheServerConfiguration.getValue()) {
@@ -626,7 +623,7 @@ public class NativeSession extends CoreSession implements Serializable {
     public String getQueryComment() {
         String comment = this.queryComment;
         if (getPropertySet().getBooleanProperty(PropertyKey.includeThreadNamesAsStatementComment).getValue()) {
-            comment = Stream.of(comment, Messages.getString("NativeSession.ThreadNameComment", new String[] { Thread.currentThread().getName() }))
+            comment = Stream.of(comment, Messages.getString("NativeSession.ThreadNameComment", new String[]{Thread.currentThread().getName()}))
                     .filter(s -> !StringUtils.isNullOrEmpty(s)).collect(Collectors.joining(", "));
         }
         return comment;
@@ -699,7 +696,7 @@ public class NativeSession extends CoreSession implements Serializable {
             NativePacketPayload resultPacket = ps != null && ("1".contentEquals(ps) || "ON".contentEquals(ps))
                     ? (NativePacketPayload) this.protocol.sendCommand(this.commandBuilder.buildComQuery(null, this,
                             "SELECT PROCESSLIST_ID, PROCESSLIST_USER, PROCESSLIST_HOST FROM performance_schema.threads WHERE PROCESSLIST_ID=" + threadId),
-                            false, 0)
+                    false, 0)
                     : (NativePacketPayload) this.protocol.sendCommand(this.commandBuilder.buildComQuery(null, this, "SHOW PROCESSLIST"), false, 0);
 
             Resultset rs = ((NativeProtocol) this.protocol).readAllResults(-1, false, resultPacket, false, null, new ResultsetFactory(Type.FORWARD_ONLY, null));
@@ -725,8 +722,7 @@ public class NativeSession extends CoreSession implements Serializable {
     /**
      * Get the variable value from server.
      *
-     * @param varName
-     *            server variable name
+     * @param varName server variable name
      * @return server variable value
      */
     public String queryServerVariable(String varName) {
@@ -772,29 +768,19 @@ public class NativeSession extends CoreSession implements Serializable {
      * Send a query to the server. Returns one of the ResultSet objects.
      * To ensure that Statement's queries are serialized, calls to this method should be enclosed in a connection locked block.
      *
-     * @param <T>
-     *            extends {@link Resultset}
-     * @param callingQuery
-     *            {@link Query} object
-     * @param query
-     *            the SQL statement to be executed
-     * @param maxRows
-     *            rows limit
-     * @param packet
-     *            {@link NativePacketPayload}
-     * @param streamResults
-     *            whether a stream result should be created
-     * @param resultSetFactory
-     *            {@link ProtocolEntityFactory}
-     * @param cachedMetadata
-     *            use this metadata instead of the one provided on wire
-     * @param isBatch
-     *            is it a batch query
-     *
+     * @param <T>              extends {@link Resultset}
+     * @param callingQuery     {@link Query} object
+     * @param query            the SQL statement to be executed
+     * @param maxRows          rows limit
+     * @param packet           {@link NativePacketPayload}
+     * @param streamResults    whether a stream result should be created
+     * @param resultSetFactory {@link ProtocolEntityFactory}
+     * @param cachedMetadata   use this metadata instead of the one provided on wire
+     * @param isBatch          is it a batch query
      * @return a ResultSet holding the results
      */
     public <T extends Resultset> T execSQL(Query callingQuery, String query, int maxRows, NativePacketPayload packet, boolean streamResults,
-            ProtocolEntityFactory<T, NativePacketPayload> resultSetFactory, ColumnDefinition cachedMetadata, boolean isBatch) {
+                                           ProtocolEntityFactory<T, NativePacketPayload> resultSetFactory, ColumnDefinition cachedMetadata, boolean isBatch) {
         long queryStartTime = this.gatherPerfMetrics.getValue() ? System.currentTimeMillis() : 0;
         int endOfQueryPacketPosition = packet != null ? packet.getPosition() : 0;
 

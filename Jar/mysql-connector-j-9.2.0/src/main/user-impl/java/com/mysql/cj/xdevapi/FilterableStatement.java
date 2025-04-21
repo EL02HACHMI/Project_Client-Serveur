@@ -23,10 +23,8 @@ package com.mysql.cj.xdevapi;
 /**
  * Abstract class, common to several X DevAPI statement classes.
  *
- * @param <STMT_T>
- *            statement interface
- * @param <RES_T>
- *            result interface
+ * @param <STMT_T> statement interface
+ * @param <RES_T>  result interface
  */
 public abstract class FilterableStatement<STMT_T, RES_T> extends PreparableStatement<RES_T> implements Statement<STMT_T, RES_T> {
 
@@ -35,8 +33,7 @@ public abstract class FilterableStatement<STMT_T, RES_T> extends PreparableState
     /**
      * Constructor.
      *
-     * @param filterParams
-     *            {@link FilterParams} object.
+     * @param filterParams {@link FilterParams} object.
      */
     public FilterableStatement(FilterParams filterParams) {
         this.filterParams = filterParams;
@@ -49,8 +46,7 @@ public abstract class FilterableStatement<STMT_T, RES_T> extends PreparableState
      * table.delete().where("age == 13").execute();
      * </pre>
      *
-     * @param searchCondition
-     *            expression
+     * @param searchCondition expression
      * @return this statement
      */
     @SuppressWarnings("unchecked")
@@ -68,8 +64,7 @@ public abstract class FilterableStatement<STMT_T, RES_T> extends PreparableState
      * docs = this.collection.find().sort("$.x", "$.y").execute();
      * </pre>
      *
-     * @param sortFields
-     *            sort expressions
+     * @param sortFields sort expressions
      * @return this statement
      */
     public STMT_T sort(String... sortFields) {
@@ -84,11 +79,10 @@ public abstract class FilterableStatement<STMT_T, RES_T> extends PreparableState
      * docs = this.collection.find().sort("$.x", "$.y").execute();
      * </pre>
      *
-     * @param sortFields
-     *            sort expressions
+     * @param sortFields sort expressions
      * @return this statement
      */
-    @SuppressWarnings({ "unchecked" })
+    @SuppressWarnings({"unchecked"})
     public STMT_T orderBy(String... sortFields) {
         resetPrepareState();
         this.filterParams.setOrder(sortFields);
@@ -106,8 +100,7 @@ public abstract class FilterableStatement<STMT_T, RES_T> extends PreparableState
      * docs = this.collection.find().orderBy("$._id").limit(3).execute();
      * </pre>
      *
-     * @param numberOfRows
-     *            maximum rows to process
+     * @param numberOfRows maximum rows to process
      * @return this statement
      */
     @SuppressWarnings("unchecked")
@@ -130,8 +123,7 @@ public abstract class FilterableStatement<STMT_T, RES_T> extends PreparableState
      * docs = this.collection.find().orderBy("$._id").offset(2).execute();
      * </pre>
      *
-     * @param limitOffset
-     *            number of rows to skip
+     * @param limitOffset number of rows to skip
      * @return this statement
      */
     @SuppressWarnings("unchecked")

@@ -108,106 +108,14 @@ public class ConnectionImpl implements JdbcConnection, SessionEventListener, Ser
     private static final long serialVersionUID = 4009476458425101761L;
     private static final SQLPermission SET_NETWORK_TIMEOUT_PERM = new SQLPermission("setNetworkTimeout");
     private static final SQLPermission ABORT_PERM = new SQLPermission("abort");
-
-    @Override
-    public String getHost() {
-        return this.session.getHostInfo().getHost();
-    }
-
-    private JdbcConnection parentProxy = null;
-    private JdbcConnection topProxy = null;
-    private MultiHostConnectionProxy realProxy = null;
-    private final Lock lock = new ReentrantLock();
-
-    @Override
-    public Lock getLock() {
-        return this.lock;
-    }
-
-    @Override
-    public boolean isProxySet() {
-        return this.topProxy != null;
-    }
-
-    @Override
-    public void setProxy(JdbcConnection proxy) {
-        if (this.parentProxy == null) { // Only set this once.
-            this.parentProxy = proxy;
-        }
-        this.topProxy = proxy;
-        this.realProxy = this.topProxy instanceof MultiHostMySQLConnection ? ((MultiHostMySQLConnection) proxy).getThisAsProxy() : null;
-    }
-
-    // this connection has to be proxied when using multi-host settings so that statements get routed to the right physical connection
-    // (works as "logical" connection)
-    private JdbcConnection getProxy() {
-        return this.topProxy != null ? this.topProxy : this;
-    }
-
-    @Override
-    public JdbcConnection getMultiHostSafeProxy() {
-        return getProxy();
-    }
-
-    @Override
-    public JdbcConnection getMultiHostParentProxy() {
-        return this.parentProxy;
-    }
-
-    @Override
-    public JdbcConnection getActiveMySQLConnection() {
-        return this;
-    }
-
-    @Override
-    public Lock getConnectionLock() {
-        return this.realProxy != null ? this.realProxy.getLock() : getProxy().getLock();
-    }
-
-    /**
-     * Used as a key for caching callable/prepared statements which (may) depend on current database.
-     */
-    static class CompoundCacheKey {
-
-        final String componentOne;
-        final String componentTwo;
-        final int hashCode;
-
-        CompoundCacheKey(String partOne, String partTwo) {
-            this.componentOne = partOne;
-            this.componentTwo = partTwo;
-
-            int hc = 17;
-            hc = 31 * hc + (this.componentOne != null ? this.componentOne.hashCode() : 0);
-            hc = 31 * hc + (this.componentTwo != null ? this.componentTwo.hashCode() : 0);
-            this.hashCode = hc;
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if (this == obj) {
-                return true;
-            }
-            if (obj != null && CompoundCacheKey.class.isAssignableFrom(obj.getClass())) {
-                CompoundCacheKey another = (CompoundCacheKey) obj;
-                if (this.componentOne == null ? another.componentOne == null : this.componentOne.equals(another.componentOne)) {
-                    return this.componentTwo == null ? another.componentTwo == null : this.componentTwo.equals(another.componentTwo);
-                }
-            }
-            return false;
-        }
-
-        @Override
-        public int hashCode() {
-            return this.hashCode;
-        }
-
-    }
-
+    private static final int DEFAULT_RESULT_SET_TYPE = ResultSet.TYPE_FORWARD_ONLY;
+    private static final int DEFAULT_RESULT_SET_CONCURRENCY = ResultSet.CONCUR_READ_ONLY;
+    protected static Map<?, ?> roundRobinStatsMap;
     /**
      * Map mysql transaction isolation level name to java.sql.Connection.TRANSACTION_XXX.
      */
     private static Map<String, Integer> mapTransIsolationNameToValue = null;
+
     static {
         mapTransIsolationNameToValue = new HashMap<>(8);
         mapTransIsolationNameToValue.put("READ-UNCOMMITED", TRANSACTION_READ_UNCOMMITTED);
@@ -217,97 +125,83 @@ public class ConnectionImpl implements JdbcConnection, SessionEventListener, Ser
         mapTransIsolationNameToValue.put("SERIALIZABLE", TRANSACTION_SERIALIZABLE);
     }
 
-    protected static Map<?, ?> roundRobinStatsMap;
-
-    private List<ConnectionLifecycleInterceptor> connectionLifecycleInterceptors;
-
-    private static final int DEFAULT_RESULT_SET_TYPE = ResultSet.TYPE_FORWARD_ONLY;
-
-    private static final int DEFAULT_RESULT_SET_CONCURRENCY = ResultSet.CONCUR_READ_ONLY;
-
-    /**
-     * Creates a connection instance.
-     *
-     * @param hostInfo
-     *            {@link HostInfo} instance
-     * @return new {@link ConnectionImpl} instance
-     * @throws SQLException
-     *             if a database access error occurs
-     */
-    public static JdbcConnection getInstance(HostInfo hostInfo) throws SQLException {
-        return new ConnectionImpl(hostInfo);
-    }
-
-    /** A cache of SQL to parsed prepared statement parameters. */
-    private CacheAdapter<String, QueryInfo> queryInfoCache;
-
-    /** The database we're currently using. */
-    private String database = null;
-
-    /** Internal DBMD to use for various database-version specific features */
-    private DatabaseMetaData dbmd = null;
-
-    private NativeSession session = null;
-
-    /** Is this connection associated with a global tx? */
-    private boolean isInGlobalTx = false;
-
-    /** isolation level */
-    private int isolationLevel = java.sql.Connection.TRANSACTION_READ_COMMITTED;
-
+    protected final Lock resultSetMetadataCacheLock = new ReentrantLock();
+    private final Lock lock = new ReentrantLock();
     /**
      * An array of currently open statements.
      * Copy-on-write used here to avoid ConcurrentModificationException when statements unregister themselves while we iterate over the list.
      */
     private final CopyOnWriteArrayList<JdbcStatement> openStatements = new CopyOnWriteArrayList<>();
-
-    private LRUCache<CompoundCacheKey, CallableStatement.CallableStatementParamInfo> parsedCallableStatementCache;
     private final Lock parsedCallableStatementCacheLock = new ReentrantLock();
-
-    /** The password we used */
-    private String password = null;
-
-    /** Properties for this connection specified by user */
+    private final Lock serverSideStatementCheckCacheLock = new ReentrantLock();
+    /**
+     * Properties for this connection specified by user
+     */
     protected Properties props = null;
-
-    /** Are we in read-only mode? */
-    private boolean readOnly = false;
-
-    /** Cache of ResultSet metadata */
+    /**
+     * Cache of ResultSet metadata
+     */
     protected LRUCache<String, CachedResultSetMetaData> resultSetMetadataCache;
-    protected final Lock resultSetMetadataCacheLock = new ReentrantLock();
-
+    protected JdbcPropertySet propertySet;
+    protected ResultSetFactory nullStatementResultSetFactory;
+    TelemetrySpan connectionSpan = null;
+    private JdbcConnection parentProxy = null;
+    private JdbcConnection topProxy = null;
+    private MultiHostConnectionProxy realProxy = null;
+    private List<ConnectionLifecycleInterceptor> connectionLifecycleInterceptors;
+    /**
+     * A cache of SQL to parsed prepared statement parameters.
+     */
+    private CacheAdapter<String, QueryInfo> queryInfoCache;
+    /**
+     * The database we're currently using.
+     */
+    private String database = null;
+    /**
+     * Internal DBMD to use for various database-version specific features
+     */
+    private DatabaseMetaData dbmd = null;
+    private NativeSession session = null;
+    /**
+     * Is this connection associated with a global tx?
+     */
+    private boolean isInGlobalTx = false;
+    /**
+     * isolation level
+     */
+    private int isolationLevel = java.sql.Connection.TRANSACTION_READ_COMMITTED;
+    private LRUCache<CompoundCacheKey, CallableStatement.CallableStatementParamInfo> parsedCallableStatementCache;
+    /**
+     * The password we used
+     */
+    private String password = null;
+    /**
+     * Are we in read-only mode?
+     */
+    private boolean readOnly = false;
     /**
      * The type map for UDTs (not implemented, but used by some third-party
      * vendors, most notably IBM WebSphere)
      */
     private Map<String, Class<?>> typeMap;
-
-    /** The user we're connected as */
+    /**
+     * The user we're connected as
+     */
     private String user = null;
-
     private LRUCache<String, Boolean> serverSideStatementCheckCache;
-    private final Lock serverSideStatementCheckCacheLock = new ReentrantLock();
     private LRUCache<CompoundCacheKey, ServerPreparedStatement> serverSideStatementCache;
-
     private HostInfo origHostInfo;
-
     private String origHostToConnectTo;
-
-    // we don't want to be able to publicly clone this...
-
     private int origPortToConnectTo;
-
     private List<QueryInterceptor> queryInterceptors;
-
-    protected JdbcPropertySet propertySet;
-
     private RuntimeProperty<Boolean> autoReconnectForPools;
     private RuntimeProperty<Boolean> cachePrepStmts;
     private RuntimeProperty<Boolean> autoReconnect;
     private RuntimeProperty<Boolean> useUsageAdvisor;
     private RuntimeProperty<Boolean> reconnectAtTxEnd;
     private RuntimeProperty<Boolean> emulateUnsupportedPstmts;
+
+    // we don't want to be able to publicly clone this...
     private RuntimeProperty<Boolean> ignoreNonTxTables;
     private RuntimeProperty<Boolean> pedantic;
     private RuntimeProperty<Integer> prepStmtCacheSqlLimit;
@@ -317,25 +211,20 @@ public class ConnectionImpl implements JdbcConnection, SessionEventListener, Ser
     private RuntimeProperty<Boolean> useLocalTransactionState;
     private RuntimeProperty<Boolean> disconnectOnExpiredPasswords;
     private RuntimeProperty<Boolean> readOnlyPropagatesToServer;
-
-    protected ResultSetFactory nullStatementResultSetFactory;
-
-    TelemetrySpan connectionSpan = null;
-
+    private int autoIncrementIncrement = 0;
+    private ExceptionInterceptor exceptionInterceptor;
+    private ClientInfoProvider infoProvider;
     /**
      * '
      * For the delegate only
      */
     protected ConnectionImpl() {
     }
-
     /**
      * Creates a connection to a MySQL Server.
      *
-     * @param hostInfo
-     *            the {@link HostInfo} instance that contains the host, user and connections attributes for this connection
-     * @exception SQLException
-     *                if a database access error occurs
+     * @param hostInfo the {@link HostInfo} instance that contains the host, user and connections attributes for this connection
+     * @throws SQLException if a database access error occurs
      */
     public ConnectionImpl(HostInfo hostInfo) throws SQLException {
         try {
@@ -447,7 +336,7 @@ public class ConnectionImpl implements JdbcConnection, SessionEventListener, Ser
                 throw SQLError.createSQLException(
                         this.propertySet.getBooleanProperty(PropertyKey.paranoid).getValue() ? Messages.getString("Connection.0")
                                 : Messages.getString("Connection.1",
-                                        new Object[] { this.session.getHostInfo().getHost(), this.session.getHostInfo().getPort() }),
+                                new Object[]{this.session.getHostInfo().getHost(), this.session.getHostInfo().getPort()}),
                         MysqlErrorNumbers.SQLSTATE_MYSQL_COMMUNICATION_LINK_FAILURE, ex, getExceptionInterceptor());
             }
         } catch (Throwable t) {
@@ -456,6 +345,67 @@ public class ConnectionImpl implements JdbcConnection, SessionEventListener, Ser
         } finally {
             this.connectionSpan.end();
         }
+    }
+
+    /**
+     * Creates a connection instance.
+     *
+     * @param hostInfo {@link HostInfo} instance
+     * @return new {@link ConnectionImpl} instance
+     * @throws SQLException if a database access error occurs
+     */
+    public static JdbcConnection getInstance(HostInfo hostInfo) throws SQLException {
+        return new ConnectionImpl(hostInfo);
+    }
+
+    @Override
+    public String getHost() {
+        return this.session.getHostInfo().getHost();
+    }
+
+    @Override
+    public Lock getLock() {
+        return this.lock;
+    }
+
+    @Override
+    public boolean isProxySet() {
+        return this.topProxy != null;
+    }
+
+    // this connection has to be proxied when using multi-host settings so that statements get routed to the right physical connection
+    // (works as "logical" connection)
+    private JdbcConnection getProxy() {
+        return this.topProxy != null ? this.topProxy : this;
+    }
+
+    @Override
+    public void setProxy(JdbcConnection proxy) {
+        if (this.parentProxy == null) { // Only set this once.
+            this.parentProxy = proxy;
+        }
+        this.topProxy = proxy;
+        this.realProxy = this.topProxy instanceof MultiHostMySQLConnection ? ((MultiHostMySQLConnection) proxy).getThisAsProxy() : null;
+    }
+
+    @Override
+    public JdbcConnection getMultiHostSafeProxy() {
+        return getProxy();
+    }
+
+    @Override
+    public JdbcConnection getMultiHostParentProxy() {
+        return this.parentProxy;
+    }
+
+    @Override
+    public JdbcConnection getActiveMySQLConnection() {
+        return this;
+    }
+
+    @Override
+    public Lock getConnectionLock() {
+        return this.realProxy != null ? this.realProxy.getLock() : getProxy().getLock();
     }
 
     @Override
@@ -710,8 +660,7 @@ public class ConnectionImpl implements JdbcConnection, SessionEventListener, Ser
     /**
      * Closes all currently open statements.
      *
-     * @throws SQLException
-     *             if a database access error occurs
+     * @throws SQLException if a database access error occurs
      */
     private void closeAllOpenStatements() throws SQLException {
         SQLException postponedException = null;
@@ -910,7 +859,7 @@ public class ConnectionImpl implements JdbcConnection, SessionEventListener, Ser
             // We've really failed!
             SQLException chainedEx = SQLError.createSQLException(
                     Messages.getString("Connection.UnableToConnectWithRetries",
-                            new Object[] { this.propertySet.getIntegerProperty(PropertyKey.maxReconnects).getValue() }),
+                            new Object[]{this.propertySet.getIntegerProperty(PropertyKey.maxReconnects).getValue()}),
                     MysqlErrorNumbers.SQLSTATE_CONNECTION_EXCEPTION_SQL_CLIENT_UNABLE_TO_ESTABLISH_SQL_CONNECTION, connectionException,
                     getExceptionInterceptor());
             throw chainedEx;
@@ -1118,6 +1067,90 @@ public class ConnectionImpl implements JdbcConnection, SessionEventListener, Ser
     }
 
     @Override
+    public void setAutoCommit(final boolean autoCommitFlag) throws SQLException {
+        Lock connectionLock = getConnectionLock();
+        connectionLock.lock();
+        try {
+            checkClosed();
+
+            if (this.connectionLifecycleInterceptors != null) {
+                IterateBlock<ConnectionLifecycleInterceptor> iter = new IterateBlock<ConnectionLifecycleInterceptor>(
+                        this.connectionLifecycleInterceptors.iterator()) {
+
+                    @Override
+                    void forEach(ConnectionLifecycleInterceptor each) throws SQLException {
+                        if (!each.setAutoCommit(autoCommitFlag)) {
+                            this.stopIterating = true;
+                        }
+                    }
+
+                };
+
+                iter.doForAll();
+
+                if (!iter.fullIteration()) {
+                    return;
+                }
+            }
+
+            if (this.autoReconnectForPools.getValue()) {
+                this.autoReconnect.setValue(true);
+            }
+
+            boolean isAutoCommit = this.session.getServerSession().isAutoCommit();
+            try {
+                boolean needsSetOnServer = true;
+                if (this.useLocalSessionState.getValue() && isAutoCommit == autoCommitFlag) {
+                    needsSetOnServer = false;
+                } else if (!this.autoReconnect.getValue()) {
+                    needsSetOnServer = getSession().isSetNeededForAutoCommitMode(autoCommitFlag);
+                }
+
+                // this internal value must be set first as failover depends on it being set to true to fail over (which is done by most app servers and
+                // connection pools at the end of a transaction), and the driver issues an implicit set based on this value when it (re)-connects to a
+                // server so the value holds across connections
+                this.session.getServerSession().setAutoCommit(autoCommitFlag);
+
+                if (needsSetOnServer) {
+                    TelemetrySpan span = this.session.getTelemetryHandler().startSpan(TelemetrySpanName.SET_VARIABLE, "autocommit");
+                    try (TelemetryScope scope = span.makeCurrent()) {
+                        span.setAttribute(TelemetryAttribute.DB_NAME, this::getDatabase);
+                        span.setAttribute(TelemetryAttribute.DB_OPERATION, TelemetryAttribute.OPERATION_SET);
+                        span.setAttribute(TelemetryAttribute.DB_STATEMENT, TelemetryAttribute.OPERATION_SET + TelemetryAttribute.STATEMENT_SUFFIX);
+                        span.setAttribute(TelemetryAttribute.DB_SYSTEM, TelemetryAttribute.DB_SYSTEM_DEFAULT);
+                        span.setAttribute(TelemetryAttribute.DB_USER, this::getUser);
+                        span.setAttribute(TelemetryAttribute.THREAD_ID, () -> Thread.currentThread().getId());
+                        span.setAttribute(TelemetryAttribute.THREAD_NAME, () -> Thread.currentThread().getName());
+
+                        this.session.execSQL(null, autoCommitFlag ? "SET autocommit=1" : "SET autocommit=0", -1, null, false,
+                                this.nullStatementResultSetFactory, null, false);
+                    } catch (Throwable t) {
+                        span.setError(t);
+                        throw t;
+                    } finally {
+                        span.end();
+                    }
+                }
+            } catch (CJCommunicationsException e) {
+                throw e;
+            } catch (CJException e) {
+                // Reset to current autocommit value in case of an exception different than a communication exception occurs.
+                this.session.getServerSession().setAutoCommit(isAutoCommit);
+                // Update the stacktrace.
+                throw SQLError.createSQLException(e.getMessage(), e.getSQLState(), e.getVendorCode(), e.isTransient(), e, getExceptionInterceptor());
+            } finally {
+                if (this.autoReconnectForPools.getValue()) {
+                    this.autoReconnect.setValue(false);
+                }
+            }
+
+            return;
+        } finally {
+            connectionLock.unlock();
+        }
+    }
+
+    @Override
     public String getCatalog() throws SQLException {
         Lock connectionLock = getConnectionLock();
         connectionLock.lock();
@@ -1125,6 +1158,13 @@ public class ConnectionImpl implements JdbcConnection, SessionEventListener, Ser
             return this.propertySet.<DatabaseTerm>getEnumProperty(PropertyKey.databaseTerm).getValue() == DatabaseTerm.SCHEMA ? null : this.database;
         } finally {
             connectionLock.unlock();
+        }
+    }
+
+    @Override
+    public void setCatalog(final String catalog) throws SQLException {
+        if (this.propertySet.<DatabaseTerm>getEnumProperty(PropertyKey.databaseTerm).getValue() == DatabaseTerm.CATALOG) {
+            setDatabase(catalog);
         }
     }
 
@@ -1145,6 +1185,11 @@ public class ConnectionImpl implements JdbcConnection, SessionEventListener, Ser
     }
 
     @Override
+    public void setHoldability(int arg0) throws SQLException {
+        // do nothing
+    }
+
+    @Override
     public long getId() {
         return this.session.getThreadId();
     }
@@ -1155,7 +1200,7 @@ public class ConnectionImpl implements JdbcConnection, SessionEventListener, Ser
      * updated once a query has completed.
      *
      * @return number of ms that this connection has been idle, 0 if the driver
-     *         is busy retrieving results.
+     * is busy retrieving results.
      */
     @Override
     public long getIdleFor() {
@@ -1229,7 +1274,7 @@ public class ConnectionImpl implements JdbcConnection, SessionEventListener, Ser
                         this.isolationLevel = intTI.intValue();
                         return this.isolationLevel;
                     }
-                    throw SQLError.createSQLException(Messages.getString("Connection.12", new Object[] { s }), MysqlErrorNumbers.SQLSTATE_CONNJ_GENERAL_ERROR,
+                    throw SQLError.createSQLException(Messages.getString("Connection.12", new Object[]{s}), MysqlErrorNumbers.SQLSTATE_CONNJ_GENERAL_ERROR,
                             getExceptionInterceptor());
                 }
                 throw SQLError.createSQLException(Messages.getString("Connection.13"), MysqlErrorNumbers.SQLSTATE_CONNJ_GENERAL_ERROR,
@@ -1237,6 +1282,83 @@ public class ConnectionImpl implements JdbcConnection, SessionEventListener, Ser
             }
 
             return this.isolationLevel;
+        } finally {
+            connectionLock.unlock();
+        }
+    }
+
+    @Override
+    public void setTransactionIsolation(int level) throws SQLException {
+        Lock connectionLock = getConnectionLock();
+        connectionLock.lock();
+        try {
+            checkClosed();
+
+            String sql = null;
+
+            boolean shouldSendSet = false;
+
+            if (this.propertySet.getBooleanProperty(PropertyKey.alwaysSendSetIsolation).getValue()) {
+                shouldSendSet = true;
+            } else if (level != this.isolationLevel) {
+                shouldSendSet = true;
+            }
+
+            if (this.useLocalSessionState.getValue()) {
+                shouldSendSet = this.isolationLevel != level;
+            }
+
+            if (shouldSendSet) {
+                TelemetrySpan span = this.session.getTelemetryHandler().startSpan(TelemetrySpanName.SET_TRANSACTION_ISOLATION);
+                try (TelemetryScope scope = span.makeCurrent()) {
+                    span.setAttribute(TelemetryAttribute.DB_NAME, this::getDatabase);
+                    span.setAttribute(TelemetryAttribute.DB_OPERATION, TelemetryAttribute.OPERATION_SET);
+                    span.setAttribute(TelemetryAttribute.DB_STATEMENT, TelemetryAttribute.OPERATION_SET + TelemetryAttribute.STATEMENT_SUFFIX);
+                    span.setAttribute(TelemetryAttribute.DB_SYSTEM, TelemetryAttribute.DB_SYSTEM_DEFAULT);
+                    span.setAttribute(TelemetryAttribute.DB_USER, this::getUser);
+                    span.setAttribute(TelemetryAttribute.THREAD_ID, () -> Thread.currentThread().getId());
+                    span.setAttribute(TelemetryAttribute.THREAD_NAME, () -> Thread.currentThread().getName());
+
+                    switch (level) {
+                        case java.sql.Connection.TRANSACTION_NONE:
+                            throw SQLError.createSQLException(Messages.getString("Connection.24"), getExceptionInterceptor());
+
+                        case java.sql.Connection.TRANSACTION_READ_COMMITTED:
+                            sql = "SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED";
+
+                            break;
+
+                        case java.sql.Connection.TRANSACTION_READ_UNCOMMITTED:
+                            sql = "SET SESSION TRANSACTION ISOLATION LEVEL READ UNCOMMITTED";
+
+                            break;
+
+                        case java.sql.Connection.TRANSACTION_REPEATABLE_READ:
+                            sql = "SET SESSION TRANSACTION ISOLATION LEVEL REPEATABLE READ";
+
+                            break;
+
+                        case java.sql.Connection.TRANSACTION_SERIALIZABLE:
+                            sql = "SET SESSION TRANSACTION ISOLATION LEVEL SERIALIZABLE";
+
+                            break;
+
+                        default:
+                            throw SQLError.createSQLException(Messages.getString("Connection.25", new Object[]{level}),
+                                    MysqlErrorNumbers.SQLSTATE_CONNJ_DRIVER_NOT_CAPABLE, getExceptionInterceptor());
+                    }
+
+                    this.session.execSQL(null, sql, -1, null, false, this.nullStatementResultSetFactory, null, false);
+
+                    this.isolationLevel = level;
+                } catch (Throwable t) {
+                    span.setError(t);
+                    throw t;
+                } finally {
+                    span.end();
+                }
+
+            }
         } finally {
             connectionLock.unlock();
         }
@@ -1252,6 +1374,17 @@ public class ConnectionImpl implements JdbcConnection, SessionEventListener, Ser
             }
 
             return this.typeMap;
+        } finally {
+            connectionLock.unlock();
+        }
+    }
+
+    @Override
+    public void setTypeMap(java.util.Map<String, Class<?>> map) throws SQLException {
+        Lock connectionLock = getConnectionLock();
+        connectionLock.lock();
+        try {
+            this.typeMap = map;
         } finally {
             connectionLock.unlock();
         }
@@ -1285,8 +1418,7 @@ public class ConnectionImpl implements JdbcConnection, SessionEventListener, Ser
     /**
      * Sets varying properties that depend on server information. Called once we have connected to the server.
      *
-     * @throws SQLException
-     *             if a database access error occurs
+     * @throws SQLException if a database access error occurs
      */
     private void initializePropsFromServer() throws SQLException {
         String connectionInterceptorClasses = this.propertySet.getStringProperty(PropertyKey.connectionLifecycleInterceptors).getStringValue();
@@ -1337,8 +1469,7 @@ public class ConnectionImpl implements JdbcConnection, SessionEventListener, Ser
      * Resets a default auto-commit value of 0 to 1, as required by JDBC specification.
      * Takes into account that the default auto-commit value of 0 may have been changed on the server via init_connect.
      *
-     * @throws SQLException
-     *             if a database access error occurs
+     * @throws SQLException if a database access error occurs
      */
     private void handleAutoCommitDefaults() throws SQLException {
         boolean resetAutoCommitDefault = false;
@@ -1390,6 +1521,11 @@ public class ConnectionImpl implements JdbcConnection, SessionEventListener, Ser
     }
 
     @Override
+    public void setInGlobalTx(boolean flag) {
+        this.isInGlobalTx = flag;
+    }
+
+    @Override
     public boolean isSourceConnection() {
         return false; // handled higher up
     }
@@ -1397,6 +1533,11 @@ public class ConnectionImpl implements JdbcConnection, SessionEventListener, Ser
     @Override
     public boolean isReadOnly() throws SQLException {
         return isReadOnly(true);
+    }
+
+    @Override
+    public void setReadOnly(boolean readOnlyFlag) throws SQLException {
+        setReadOnlyInternal(readOnlyFlag);
     }
 
     @Override
@@ -1464,8 +1605,6 @@ public class ConnectionImpl implements JdbcConnection, SessionEventListener, Ser
             connectionLock.unlock();
         }
     }
-
-    private int autoIncrementIncrement = 0;
 
     @Override
     public int getAutoIncrementIncrement() {
@@ -2015,7 +2154,7 @@ public class ConnectionImpl implements JdbcConnection, SessionEventListener, Ser
                         if (msg != null) {
                             int indexOfError153 = msg.indexOf("153");
                             if (indexOfError153 != -1) {
-                                throw SQLError.createSQLException(Messages.getString("Connection.22", new Object[] { savepoint.getSavepointName() }),
+                                throw SQLError.createSQLException(Messages.getString("Connection.22", new Object[]{savepoint.getSavepointName()}),
                                         MysqlErrorNumbers.SQLSTATE_CONNJ_ILLEGAL_ARGUMENT, errno, getExceptionInterceptor());
                             }
                         }
@@ -2134,93 +2273,13 @@ public class ConnectionImpl implements JdbcConnection, SessionEventListener, Ser
     }
 
     @Override
-    public void setAutoCommit(final boolean autoCommitFlag) throws SQLException {
+    public String getDatabase() {
         Lock connectionLock = getConnectionLock();
         connectionLock.lock();
         try {
-            checkClosed();
-
-            if (this.connectionLifecycleInterceptors != null) {
-                IterateBlock<ConnectionLifecycleInterceptor> iter = new IterateBlock<ConnectionLifecycleInterceptor>(
-                        this.connectionLifecycleInterceptors.iterator()) {
-
-                    @Override
-                    void forEach(ConnectionLifecycleInterceptor each) throws SQLException {
-                        if (!each.setAutoCommit(autoCommitFlag)) {
-                            this.stopIterating = true;
-                        }
-                    }
-
-                };
-
-                iter.doForAll();
-
-                if (!iter.fullIteration()) {
-                    return;
-                }
-            }
-
-            if (this.autoReconnectForPools.getValue()) {
-                this.autoReconnect.setValue(true);
-            }
-
-            boolean isAutoCommit = this.session.getServerSession().isAutoCommit();
-            try {
-                boolean needsSetOnServer = true;
-                if (this.useLocalSessionState.getValue() && isAutoCommit == autoCommitFlag) {
-                    needsSetOnServer = false;
-                } else if (!this.autoReconnect.getValue()) {
-                    needsSetOnServer = getSession().isSetNeededForAutoCommitMode(autoCommitFlag);
-                }
-
-                // this internal value must be set first as failover depends on it being set to true to fail over (which is done by most app servers and
-                // connection pools at the end of a transaction), and the driver issues an implicit set based on this value when it (re)-connects to a
-                // server so the value holds across connections
-                this.session.getServerSession().setAutoCommit(autoCommitFlag);
-
-                if (needsSetOnServer) {
-                    TelemetrySpan span = this.session.getTelemetryHandler().startSpan(TelemetrySpanName.SET_VARIABLE, "autocommit");
-                    try (TelemetryScope scope = span.makeCurrent()) {
-                        span.setAttribute(TelemetryAttribute.DB_NAME, this::getDatabase);
-                        span.setAttribute(TelemetryAttribute.DB_OPERATION, TelemetryAttribute.OPERATION_SET);
-                        span.setAttribute(TelemetryAttribute.DB_STATEMENT, TelemetryAttribute.OPERATION_SET + TelemetryAttribute.STATEMENT_SUFFIX);
-                        span.setAttribute(TelemetryAttribute.DB_SYSTEM, TelemetryAttribute.DB_SYSTEM_DEFAULT);
-                        span.setAttribute(TelemetryAttribute.DB_USER, this::getUser);
-                        span.setAttribute(TelemetryAttribute.THREAD_ID, () -> Thread.currentThread().getId());
-                        span.setAttribute(TelemetryAttribute.THREAD_NAME, () -> Thread.currentThread().getName());
-
-                        this.session.execSQL(null, autoCommitFlag ? "SET autocommit=1" : "SET autocommit=0", -1, null, false,
-                                this.nullStatementResultSetFactory, null, false);
-                    } catch (Throwable t) {
-                        span.setError(t);
-                        throw t;
-                    } finally {
-                        span.end();
-                    }
-                }
-            } catch (CJCommunicationsException e) {
-                throw e;
-            } catch (CJException e) {
-                // Reset to current autocommit value in case of an exception different than a communication exception occurs.
-                this.session.getServerSession().setAutoCommit(isAutoCommit);
-                // Update the stacktrace.
-                throw SQLError.createSQLException(e.getMessage(), e.getSQLState(), e.getVendorCode(), e.isTransient(), e, getExceptionInterceptor());
-            } finally {
-                if (this.autoReconnectForPools.getValue()) {
-                    this.autoReconnect.setValue(false);
-                }
-            }
-
-            return;
+            return this.database;
         } finally {
             connectionLock.unlock();
-        }
-    }
-
-    @Override
-    public void setCatalog(final String catalog) throws SQLException {
-        if (this.propertySet.<DatabaseTerm>getEnumProperty(PropertyKey.databaseTerm).getValue() == DatabaseTerm.CATALOG) {
-            setDatabase(catalog);
         }
     }
 
@@ -2295,34 +2354,8 @@ public class ConnectionImpl implements JdbcConnection, SessionEventListener, Ser
     }
 
     @Override
-    public String getDatabase() {
-        Lock connectionLock = getConnectionLock();
-        connectionLock.lock();
-        try {
-            return this.database;
-        } finally {
-            connectionLock.unlock();
-        }
-    }
-
-    @Override
     public void setFailedOver(boolean flag) {
         // handled higher up
-    }
-
-    @Override
-    public void setHoldability(int arg0) throws SQLException {
-        // do nothing
-    }
-
-    @Override
-    public void setInGlobalTx(boolean flag) {
-        this.isInGlobalTx = flag;
-    }
-
-    @Override
-    public void setReadOnly(boolean readOnlyFlag) throws SQLException {
-        setReadOnlyInternal(readOnlyFlag);
     }
 
     @Override
@@ -2397,94 +2430,6 @@ public class ConnectionImpl implements JdbcConnection, SessionEventListener, Ser
             MysqlSavepoint savepoint = new MysqlSavepoint(name, getExceptionInterceptor());
             setSavepoint(savepoint);
             return savepoint;
-        } finally {
-            connectionLock.unlock();
-        }
-    }
-
-    @Override
-    public void setTransactionIsolation(int level) throws SQLException {
-        Lock connectionLock = getConnectionLock();
-        connectionLock.lock();
-        try {
-            checkClosed();
-
-            String sql = null;
-
-            boolean shouldSendSet = false;
-
-            if (this.propertySet.getBooleanProperty(PropertyKey.alwaysSendSetIsolation).getValue()) {
-                shouldSendSet = true;
-            } else if (level != this.isolationLevel) {
-                shouldSendSet = true;
-            }
-
-            if (this.useLocalSessionState.getValue()) {
-                shouldSendSet = this.isolationLevel != level;
-            }
-
-            if (shouldSendSet) {
-                TelemetrySpan span = this.session.getTelemetryHandler().startSpan(TelemetrySpanName.SET_TRANSACTION_ISOLATION);
-                try (TelemetryScope scope = span.makeCurrent()) {
-                    span.setAttribute(TelemetryAttribute.DB_NAME, this::getDatabase);
-                    span.setAttribute(TelemetryAttribute.DB_OPERATION, TelemetryAttribute.OPERATION_SET);
-                    span.setAttribute(TelemetryAttribute.DB_STATEMENT, TelemetryAttribute.OPERATION_SET + TelemetryAttribute.STATEMENT_SUFFIX);
-                    span.setAttribute(TelemetryAttribute.DB_SYSTEM, TelemetryAttribute.DB_SYSTEM_DEFAULT);
-                    span.setAttribute(TelemetryAttribute.DB_USER, this::getUser);
-                    span.setAttribute(TelemetryAttribute.THREAD_ID, () -> Thread.currentThread().getId());
-                    span.setAttribute(TelemetryAttribute.THREAD_NAME, () -> Thread.currentThread().getName());
-
-                    switch (level) {
-                        case java.sql.Connection.TRANSACTION_NONE:
-                            throw SQLError.createSQLException(Messages.getString("Connection.24"), getExceptionInterceptor());
-
-                        case java.sql.Connection.TRANSACTION_READ_COMMITTED:
-                            sql = "SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED";
-
-                            break;
-
-                        case java.sql.Connection.TRANSACTION_READ_UNCOMMITTED:
-                            sql = "SET SESSION TRANSACTION ISOLATION LEVEL READ UNCOMMITTED";
-
-                            break;
-
-                        case java.sql.Connection.TRANSACTION_REPEATABLE_READ:
-                            sql = "SET SESSION TRANSACTION ISOLATION LEVEL REPEATABLE READ";
-
-                            break;
-
-                        case java.sql.Connection.TRANSACTION_SERIALIZABLE:
-                            sql = "SET SESSION TRANSACTION ISOLATION LEVEL SERIALIZABLE";
-
-                            break;
-
-                        default:
-                            throw SQLError.createSQLException(Messages.getString("Connection.25", new Object[] { level }),
-                                    MysqlErrorNumbers.SQLSTATE_CONNJ_DRIVER_NOT_CAPABLE, getExceptionInterceptor());
-                    }
-
-                    this.session.execSQL(null, sql, -1, null, false, this.nullStatementResultSetFactory, null, false);
-
-                    this.isolationLevel = level;
-                } catch (Throwable t) {
-                    span.setError(t);
-                    throw t;
-                } finally {
-                    span.end();
-                }
-
-            }
-        } finally {
-            connectionLock.unlock();
-        }
-    }
-
-    @Override
-    public void setTypeMap(java.util.Map<String, Class<?>> map) throws SQLException {
-        Lock connectionLock = getConnectionLock();
-        connectionLock.lock();
-        try {
-            this.typeMap = map;
         } finally {
             connectionLock.unlock();
         }
@@ -2645,8 +2590,6 @@ public class ConnectionImpl implements JdbcConnection, SessionEventListener, Ser
         return this.session.getServerSession().storesLowerCaseTableNames();
     }
 
-    private ExceptionInterceptor exceptionInterceptor;
-
     @Override
     public ExceptionInterceptor getExceptionInterceptor() {
         return this.exceptionInterceptor;
@@ -2713,14 +2656,6 @@ public class ConnectionImpl implements JdbcConnection, SessionEventListener, Ser
     }
 
     @Override
-    public void setSchema(String schema) throws SQLException {
-        checkClosed();
-        if (this.propertySet.<DatabaseTerm>getEnumProperty(PropertyKey.databaseTerm).getValue() == DatabaseTerm.SCHEMA) {
-            setDatabase(schema);
-        }
-    }
-
-    @Override
     public String getSchema() throws SQLException {
         Lock connectionLock = getConnectionLock();
         connectionLock.lock();
@@ -2729,6 +2664,14 @@ public class ConnectionImpl implements JdbcConnection, SessionEventListener, Ser
             return this.propertySet.<DatabaseTerm>getEnumProperty(PropertyKey.databaseTerm).getValue() == DatabaseTerm.SCHEMA ? this.database : null;
         } finally {
             connectionLock.unlock();
+        }
+    }
+
+    @Override
+    public void setSchema(String schema) throws SQLException {
+        checkClosed();
+        if (this.propertySet.<DatabaseTerm>getEnumProperty(PropertyKey.databaseTerm).getValue() == DatabaseTerm.SCHEMA) {
+            setDatabase(schema);
         }
     }
 
@@ -2776,32 +2719,6 @@ public class ConnectionImpl implements JdbcConnection, SessionEventListener, Ser
         } finally {
             connectionLock.unlock();
         }
-    }
-
-    private static class NetworkTimeoutSetter implements Runnable {
-
-        private final WeakReference<JdbcConnection> connRef;
-        private final int milliseconds;
-
-        public NetworkTimeoutSetter(JdbcConnection conn, int milliseconds) {
-            this.connRef = new WeakReference<>(conn);
-            this.milliseconds = milliseconds;
-        }
-
-        @Override
-        public void run() {
-            JdbcConnection conn = this.connRef.get();
-            if (conn != null) {
-                Lock connectionLock = conn.getConnectionLock();
-                connectionLock.lock();
-                try {
-                    ((NativeSession) conn.getSession()).setSocketTimeout(this.milliseconds);
-                } finally {
-                    connectionLock.unlock();
-                }
-            }
-        }
-
     }
 
     @Override
@@ -2868,8 +2785,6 @@ public class ConnectionImpl implements JdbcConnection, SessionEventListener, Ser
         }
     }
 
-    private ClientInfoProvider infoProvider;
-
     @Override
     public ClientInfoProvider getClientInfoProviderImpl() throws SQLException {
         Lock connectionLock = getConnectionLock();
@@ -2915,6 +2830,16 @@ public class ConnectionImpl implements JdbcConnection, SessionEventListener, Ser
     }
 
     @Override
+    public String getClientInfo(String name) throws SQLException {
+        return getClientInfoProviderImpl().getClientInfo(this, name);
+    }
+
+    @Override
+    public Properties getClientInfo() throws SQLException {
+        return getClientInfoProviderImpl().getClientInfo(this);
+    }
+
+    @Override
     public void setClientInfo(Properties properties) throws SQLClientInfoException {
         try {
             getClientInfoProviderImpl().setClientInfo(this, properties);
@@ -2926,16 +2851,6 @@ public class ConnectionImpl implements JdbcConnection, SessionEventListener, Ser
 
             throw clientInfoEx;
         }
-    }
-
-    @Override
-    public String getClientInfo(String name) throws SQLException {
-        return getClientInfoProviderImpl().getClientInfo(this, name);
-    }
-
-    @Override
-    public Properties getClientInfo() throws SQLException {
-        return getClientInfoProviderImpl().getClientInfo(this);
     }
 
     @Override
@@ -2999,6 +2914,72 @@ public class ConnectionImpl implements JdbcConnection, SessionEventListener, Ser
     @Override
     public ServerSessionStateController getServerSessionStateController() {
         return this.session.getServerSession().getServerSessionStateController();
+    }
+
+    /**
+     * Used as a key for caching callable/prepared statements which (may) depend on current database.
+     */
+    static class CompoundCacheKey {
+
+        final String componentOne;
+        final String componentTwo;
+        final int hashCode;
+
+        CompoundCacheKey(String partOne, String partTwo) {
+            this.componentOne = partOne;
+            this.componentTwo = partTwo;
+
+            int hc = 17;
+            hc = 31 * hc + (this.componentOne != null ? this.componentOne.hashCode() : 0);
+            hc = 31 * hc + (this.componentTwo != null ? this.componentTwo.hashCode() : 0);
+            this.hashCode = hc;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj) {
+                return true;
+            }
+            if (obj != null && CompoundCacheKey.class.isAssignableFrom(obj.getClass())) {
+                CompoundCacheKey another = (CompoundCacheKey) obj;
+                if (this.componentOne == null ? another.componentOne == null : this.componentOne.equals(another.componentOne)) {
+                    return this.componentTwo == null ? another.componentTwo == null : this.componentTwo.equals(another.componentTwo);
+                }
+            }
+            return false;
+        }
+
+        @Override
+        public int hashCode() {
+            return this.hashCode;
+        }
+
+    }
+
+    private static class NetworkTimeoutSetter implements Runnable {
+
+        private final WeakReference<JdbcConnection> connRef;
+        private final int milliseconds;
+
+        public NetworkTimeoutSetter(JdbcConnection conn, int milliseconds) {
+            this.connRef = new WeakReference<>(conn);
+            this.milliseconds = milliseconds;
+        }
+
+        @Override
+        public void run() {
+            JdbcConnection conn = this.connRef.get();
+            if (conn != null) {
+                Lock connectionLock = conn.getConnectionLock();
+                connectionLock.lock();
+                try {
+                    ((NativeSession) conn.getSession()).setSocketTimeout(this.milliseconds);
+                } finally {
+                    connectionLock.unlock();
+                }
+            }
+        }
+
     }
 
 }

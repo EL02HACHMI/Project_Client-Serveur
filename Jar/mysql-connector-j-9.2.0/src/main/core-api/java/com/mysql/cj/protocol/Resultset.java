@@ -23,13 +23,89 @@ package com.mysql.cj.protocol;
 /**
  * Represents protocol specific result set,
  * eg., for native protocol, a ProtocolText::Resultset or ProtocolBinary::Resultset entity.
- *
+ * <p>
  * See:
  * http://dev.mysql.com/doc/internals/en/com-query-response.html#packet-ProtocolText::Resultset
  * http://dev.mysql.com/doc/internals/en/binary-protocol-resultset.html
- *
  */
 public interface Resultset extends ProtocolEntity {
+
+    ColumnDefinition getColumnDefinition();
+
+    /**
+     * Sometimes the driver doesn't have metadata before consuming the result set rows (because it's cached),
+     * or need to coerce the metadata returned by queries into that required by the particular specification
+     * (eg metadata returned by metadata queries into that required by the JDBC specification).
+     * So it can call this to set it after the fact.
+     *
+     * @param metadata field-level metadata for the result set
+     */
+    void setColumnDefinition(ColumnDefinition metadata);
+
+    /**
+     * Does the result set contain rows, or is it the result of a DDL or DML statement?
+     *
+     * @return true if result set contains rows
+     */
+    boolean hasRows();
+
+    ResultsetRows getRows();
+
+    /**
+     * Set metadata of this Resultset to ResultsetRows it contains.
+     */
+    void initRowsWithMetadata();
+
+    /**
+     * The id (used when profiling) to identify us
+     *
+     * @return result id
+     */
+    int getResultId();
+
+    /**
+     * Returns the next ResultSet in a multi-resultset "chain", if any,
+     * null if none exists.
+     *
+     * @return the next Resultset
+     */
+    Resultset getNextResultset();
+
+    /**
+     * @param nextResultset Sets the next result set in the result set chain for multiple result sets.
+     */
+    void setNextResultset(Resultset nextResultset);
+
+    /**
+     * Clears the reference to the next result set in a multi-result set "chain".
+     */
+    void clearNextResultset();
+
+    /**
+     * Returns the update count for this result set (if one exists), otherwise
+     * -1.
+     *
+     * @return return the update count for this result set (if one exists), otherwise
+     * -1.
+     */
+    long getUpdateCount();
+
+    /**
+     * Returns the AUTO_INCREMENT value for the DDL/DML statement which created
+     * this result set.
+     *
+     * @return the AUTO_INCREMENT value for the DDL/DML statement which created
+     * this result set.
+     */
+    long getUpdateID();
+
+    /**
+     * Returns the server informational message returned from a DDL or DML
+     * statement (if any), or null if none.
+     *
+     * @return the server informational message
+     */
+    String getServerInfo();
 
     public enum Concurrency {
 
@@ -51,10 +127,6 @@ public interface Resultset extends ProtocolEntity {
             this.value = jdbcRsConcur;
         }
 
-        public int getIntValue() {
-            return this.value;
-        }
-
         public static Concurrency fromValue(int concurMode, Concurrency backupValue) {
             for (Concurrency c : values()) {
                 if (c.getIntValue() == concurMode) {
@@ -62,6 +134,10 @@ public interface Resultset extends ProtocolEntity {
                 }
             }
             return backupValue;
+        }
+
+        public int getIntValue() {
+            return this.value;
         }
 
     }
@@ -94,10 +170,6 @@ public interface Resultset extends ProtocolEntity {
             this.value = jdbcRsType;
         }
 
-        public int getIntValue() {
-            return this.value;
-        }
-
         public static Type fromValue(int rsType, Type backupValue) {
             for (Type t : values()) {
                 if (t.getIntValue() == rsType) {
@@ -107,85 +179,10 @@ public interface Resultset extends ProtocolEntity {
             return backupValue;
         }
 
+        public int getIntValue() {
+            return this.value;
+        }
+
     }
-
-    /**
-     * Sometimes the driver doesn't have metadata before consuming the result set rows (because it's cached),
-     * or need to coerce the metadata returned by queries into that required by the particular specification
-     * (eg metadata returned by metadata queries into that required by the JDBC specification).
-     * So it can call this to set it after the fact.
-     *
-     * @param metadata
-     *            field-level metadata for the result set
-     */
-    void setColumnDefinition(ColumnDefinition metadata);
-
-    ColumnDefinition getColumnDefinition();
-
-    /**
-     * Does the result set contain rows, or is it the result of a DDL or DML statement?
-     *
-     * @return true if result set contains rows
-     */
-    boolean hasRows();
-
-    ResultsetRows getRows();
-
-    /**
-     * Set metadata of this Resultset to ResultsetRows it contains.
-     */
-    void initRowsWithMetadata();
-
-    /**
-     * The id (used when profiling) to identify us
-     *
-     * @return result id
-     */
-    int getResultId();
-
-    /**
-     * @param nextResultset
-     *            Sets the next result set in the result set chain for multiple result sets.
-     */
-    void setNextResultset(Resultset nextResultset);
-
-    /**
-     * Returns the next ResultSet in a multi-resultset "chain", if any,
-     * null if none exists.
-     *
-     * @return the next Resultset
-     */
-    Resultset getNextResultset();
-
-    /**
-     * Clears the reference to the next result set in a multi-result set "chain".
-     */
-    void clearNextResultset();
-
-    /**
-     * Returns the update count for this result set (if one exists), otherwise
-     * -1.
-     *
-     * @return return the update count for this result set (if one exists), otherwise
-     *         -1.
-     */
-    long getUpdateCount();
-
-    /**
-     * Returns the AUTO_INCREMENT value for the DDL/DML statement which created
-     * this result set.
-     *
-     * @return the AUTO_INCREMENT value for the DDL/DML statement which created
-     *         this result set.
-     */
-    long getUpdateID();
-
-    /**
-     * Returns the server informational message returned from a DDL or DML
-     * statement (if any), or null if none.
-     *
-     * @return the server informational message
-     */
-    String getServerInfo();
 
 }

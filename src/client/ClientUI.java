@@ -1,24 +1,25 @@
 package client;
 
-import com.formdev.flatlaf.FlatDarkLaf;
+import com.formdev.flatlaf.FlatLightLaf;
 import com.lowagie.text.*;
 import com.lowagie.text.pdf.PdfWriter;
 import models.Article;
 import models.Commande;
 import models.LigneCommande;
 import serveur.StockService;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.Font;
+import java.awt.Image;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 
 public class ClientUI extends JFrame {
     private StockService stockService;
@@ -34,14 +35,14 @@ public class ClientUI extends JFrame {
     private JRadioButton cbButton, especeButton;
 
     public ClientUI() {
-        setTitle("🛒 Boutique RMI - Client");
+        setTitle("IDEL - Votre boutique de confiance");
         setSize(1000, 700);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
 
         try {
-            UIManager.setLookAndFeel(new FlatDarkLaf());
+            UIManager.setLookAndFeel(new FlatLightLaf());
         } catch (Exception ignored) {}
 
         try {
@@ -52,9 +53,22 @@ public class ClientUI extends JFrame {
             System.exit(1);
         }
 
+        JPanel header = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        header.setBackground(Color.WHITE);
+        ImageIcon rawIcon = new ImageIcon("Assets/logo.png");
+        int originalWidth = rawIcon.getIconWidth();
+        int originalHeight = rawIcon.getIconHeight();
+        int targetWidth = 150;
+        int targetHeight = (originalHeight * targetWidth) / originalWidth;
+        Image scaledImage = rawIcon.getImage().getScaledInstance(targetWidth, targetHeight, Image.SCALE_SMOOTH);
+        ImageIcon logoIcon = new ImageIcon(scaledImage);
+        JLabel logoLabel = new JLabel(logoIcon);
+        header.add(logoLabel);
+        add(header, BorderLayout.NORTH);
+
         JPanel sidebar = new JPanel(new GridLayout(0, 1, 10, 10));
         sidebar.setBorder(new EmptyBorder(20, 20, 20, 20));
-        sidebar.setBackground(new Color(40, 40, 40));
+        sidebar.setBackground(Color.WHITE);
 
         JTextField familleField = new JTextField();
         JButton btnRechercher = new JButton("🔍 Rechercher");
@@ -62,6 +76,12 @@ public class ClientUI extends JFrame {
         JButton btnReset = new JButton("🔄 Réinitialiser");
         JButton btnAjouterStock = new JButton("➕ Ajouter Stock");
         JButton btnChiffreAffaire = new JButton("💰 Chiffre d'affaires");
+        JButton[] buttons = {btnChiffreAffaire, btnRechercher, btnAfficherTous, btnReset, btnAjouterStock};
+        for (JButton b : buttons) {
+            b.setBackground(Color.decode("#f5a623"));
+            b.setForeground(Color.BLACK);
+        }
+
         sidebar.add(btnChiffreAffaire);
         sidebar.add(new JLabel("Famille :"));
         sidebar.add(familleField);
@@ -81,17 +101,22 @@ public class ClientUI extends JFrame {
         JPanel centre = new JPanel();
         centre.setLayout(new BoxLayout(centre, BoxLayout.Y_AXIS));
         centre.setBorder(new EmptyBorder(20, 20, 20, 20));
+        centre.setBackground(Color.WHITE);
 
         articleDropdown = new JComboBox<>();
         quantiteField = new JTextField(5);
         JButton btnAjouterPanier = new JButton("➕ Ajouter au panier");
         JButton btnValiderPanier = new JButton("✅ Valider le panier");
+        btnAjouterPanier.setBackground(Color.decode("#f5a623"));
+        btnValiderPanier.setBackground(Color.decode("#f5a623"));
 
         JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        topPanel.setBackground(Color.WHITE);
         topPanel.add(new JLabel("Sélectionnez un article :"));
         topPanel.add(articleDropdown);
 
         JPanel quantitePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        quantitePanel.setBackground(Color.WHITE);
         quantitePanel.add(new JLabel("Quantité :"));
         quantitePanel.add(quantiteField);
         quantitePanel.add(btnAjouterPanier);
@@ -106,8 +131,8 @@ public class ClientUI extends JFrame {
         paymentGroup = new ButtonGroup();
         paymentGroup.add(cbButton);
         paymentGroup.add(especeButton);
-
         JPanel paiementPanel = new JPanel();
+        paiementPanel.setBackground(Color.WHITE);
         paiementPanel.add(new JLabel("Mode de paiement :"));
         paiementPanel.add(cbButton);
         paiementPanel.add(especeButton);
@@ -171,6 +196,17 @@ public class ClientUI extends JFrame {
         } catch (Exception ignored) {}
     }
 
+    private void chargerArticles() {
+        try {
+            articleDropdown.removeAllItems();
+            List<Article> articles = stockService.getArticles();
+            for (Article article : articles) {
+                articleDropdown.addItem(article.getReference() + " - " + article.getNomArticle() + " - " + article.getPrixUnitaire() + "€ - Stock: " + article.getStock());
+            }
+            resultatArea.append("📦 Articles chargés avec succès.\n");
+        } catch (Exception ignored) {}
+    }
+
     private void ajouterAuPanier() {
         try {
             String selection = (String) articleDropdown.getSelectedItem();
@@ -189,27 +225,20 @@ public class ClientUI extends JFrame {
     private void validerPanier() {
         try {
             if (panier.isEmpty()) return;
-
             if (!cbButton.isSelected() && !especeButton.isSelected()) {
                 JOptionPane.showMessageDialog(this, "Sélectionnez un mode de paiement");
                 return;
             }
-
-            // 👉 Déterminer le mode de paiement
             String modePaiement = cbButton.isSelected() ? "Carte Bancaire" : "Espèce";
-
             Commande commande = new Commande(1);
             for (LigneCommande ligne : panier) commande.ajouterLigne(ligne);
-
             boolean success = stockService.enregistrerCommande(commande);
             if (success) {
                 resultatArea.append("✔ Panier validé avec succès.\n");
-
                 Map<String, String> nomsArticles = new HashMap<>();
                 for (Article article : stockService.getArticles()) {
                     nomsArticles.put(article.getReference(), article.getNomArticle());
                 }
-
                 genererFacturePDF(commande, modePaiement, nomsArticles);
                 panier.clear();
                 panierModel.setRowCount(0);
@@ -217,10 +246,8 @@ public class ClientUI extends JFrame {
             } else {
                 resultatArea.append("Échec de la commande (stock insuffisant ou erreur).\n");
             }
-
         } catch (Exception ignored) {}
     }
-
 
     private void rechercherParFamille(String input) {
         try {
@@ -265,17 +292,6 @@ public class ClientUI extends JFrame {
         } catch (Exception ignored) {}
     }
 
-    private void chargerArticles() {
-        try {
-            articleDropdown.removeAllItems();
-            List<Article> articles = stockService.getArticles();
-            for (Article article : articles) {
-                articleDropdown.addItem(formatArticle(article));
-            }
-            resultatArea.append("📦 Articles chargés avec succès.\n");
-        } catch (Exception ignored) {}
-    }
-
     private String formatArticle(Article a) {
         return a.getReference() + " - " + a.getNomArticle() + " - " + a.getPrixUnitaire() + "€ - Stock: " + a.getStock();
     }
@@ -287,52 +303,42 @@ public class ClientUI extends JFrame {
             PdfWriter.getInstance(document, new FileOutputStream(nomFichier));
             document.open();
 
+            String logoPath = "Assets/logo.png";
+
+            if (new File(logoPath).exists()) {
+                com.lowagie.text.Image logo = com.lowagie.text.Image.getInstance("Assets/logo.png");
+                logo.scaleToFit(100, 100);
+                document.add(logo);
+
+            }
+
             com.lowagie.text.Font titleFont = new com.lowagie.text.Font(com.lowagie.text.Font.HELVETICA, 16, com.lowagie.text.Font.BOLD);
-            com.lowagie.text.Font subTitleFont = new com.lowagie.text.Font(com.lowagie.text.Font.HELVETICA, 12, com.lowagie.text.Font.BOLD);
             com.lowagie.text.Font textFont = new com.lowagie.text.Font(com.lowagie.text.Font.HELVETICA, 12);
 
-            Paragraph title = new Paragraph("🧾 FACTURE - Boutique RMI", titleFont);
+            Paragraph title = new Paragraph("FACTURE IDEL", titleFont);
             title.setAlignment(Element.ALIGN_CENTER);
             document.add(title);
             document.add(new Paragraph(" "));
-
             document.add(new Paragraph("Date : " + java.time.LocalDateTime.now(), textFont));
-            document.add(new Paragraph("Commande N° : " + commande.getIdCommande(), textFont));
             document.add(new Paragraph("Mode de paiement : " + modePaiement, textFont));
             document.add(new Paragraph(" "));
 
-            document.add(new Paragraph("DÉTAILS DE LA COMMANDE :", subTitleFont));
-            document.add(new Paragraph(" "));
-
-            double totalGeneral = 0;
-
+            double total = 0;
             for (LigneCommande ligne : commande.getLignes()) {
-                double totalLigne = ligne.getPrixVente() * ligne.getQuantite();
-                totalGeneral += totalLigne;
-
-                String nomArticle = nomArticles.getOrDefault(ligne.getReference(), "Article inconnu");
-
-                document.add(new Paragraph("▶ Article : " + nomArticle, textFont));
-                document.add(new Paragraph("    Référence : " + ligne.getReference(), textFont));
-                document.add(new Paragraph("    Quantité : " + ligne.getQuantite(), textFont));
-                document.add(new Paragraph("    Prix unitaire : " + ligne.getPrixVente() + " €", textFont));
-                document.add(new Paragraph("    Sous-total : " + totalLigne + " €", textFont));
-                document.add(new Paragraph(" "));
+                double totalLigne = ligne.getQuantite() * ligne.getPrixVente();
+                total += totalLigne;
+                document.add(new Paragraph(nomArticles.get(ligne.getReference()) + " - Qté: " + ligne.getQuantite() + " - PU: " + ligne.getPrixVente() + " € - Total: " + totalLigne + " €", textFont));
             }
 
-            document.add(new Paragraph("TOTAL À PAYER : " + totalGeneral + " €", titleFont));
             document.add(new Paragraph(" "));
-            document.add(new Paragraph("Merci pour votre achat et à bientôt !", textFont));
+            document.add(new Paragraph("TOTAL À PAYER : " + total + " €", titleFont));
             document.close();
 
             resultatArea.append("🧾 Facture PDF générée : " + nomFichier + "\n");
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-
     }
-
 
     public static void main(String[] args) {
         new ClientUI();

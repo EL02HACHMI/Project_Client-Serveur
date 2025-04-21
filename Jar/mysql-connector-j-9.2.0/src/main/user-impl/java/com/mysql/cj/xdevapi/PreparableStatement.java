@@ -31,31 +31,18 @@ import com.mysql.cj.protocol.x.XProtocolError;
 /**
  * Abstract class, common to all X DevAPI statement classes that can be prepared.
  *
- * @param <RES_T>
- *            result interface
+ * @param <RES_T> result interface
  */
 public abstract class PreparableStatement<RES_T> {
 
-    protected enum PreparedState {
-        UNSUPPORTED, // Preparing statements is completely unsupported in the server currently being used.
-        UNPREPARED, // Statement is not prepared yet, next execution will run unprepared.
-        SUSPENDED, // Preparing statements is currently suspended but it is expected to resume sometime later.
-        PREPARED, // The statement is prepared and ready for execution.
-        PREPARE, // The statement shall be prepared on next execution.
-        DEALLOCATE, // The statement shall be deallocated on next execution.
-        REPREPARE; // The statement shall be deallocated and immediately re-prepared on next execution.
-    }
-
     protected int preparedStatementId = 0;
     protected PreparedState preparedState = PreparedState.UNPREPARED;
-
     protected MysqlxSession mysqlxSession;
 
     /**
      * Helper method to return an {@link XMessageBuilder} instance from {@link MysqlxSession} in use.
      *
-     * @return
-     *         the {@link XMessageBuilder} instance from current {@link MysqlxSession}
+     * @return the {@link XMessageBuilder} instance from current {@link MysqlxSession}
      */
     protected XMessageBuilder getMessageBuilder() {
         return (XMessageBuilder) this.mysqlxSession.<XMessage>getMessageBuilder();
@@ -86,11 +73,10 @@ public abstract class PreparableStatement<RES_T> {
      * 1. Prepared statements are supported by the server.
      * 2. The statement is executed repeatedly without changing its structure.
      *
-     * @return
-     *         the object returned from the low level statement execution
+     * @return the object returned from the low level statement execution
      */
     public RES_T execute() {
-        for (;;) {
+        for (; ; ) {
             switch (this.preparedState) {
                 case UNSUPPORTED:
                     // Fall-back to non-prepared statement execution.
@@ -136,24 +122,21 @@ public abstract class PreparableStatement<RES_T> {
     /**
      * Executes the statement directly (non-prepared). Implementation is dependent on the statement type.
      *
-     * @return
-     *         the object returned from the lower level statement execution
+     * @return the object returned from the lower level statement execution
      */
     protected abstract RES_T executeStatement();
 
     /**
      * Returns the {@link XMessage} needed to prepare this statement. Implementation is dependent on the statement type.
      *
-     * @return
-     *         the {@link XMessage} that prepares this statement
+     * @return the {@link XMessage} that prepares this statement
      */
     protected abstract XMessage getPrepareStatementXMessage();
 
     /**
      * Prepares a statement on the server to be later executed.
      *
-     * @return
-     *         <code>true</code> if the statement was successfully prepared, <code>false</code> otherwise
+     * @return <code>true</code> if the statement was successfully prepared, <code>false</code> otherwise
      */
     private boolean prepareStatement() {
         if (!this.mysqlxSession.supportsPreparedStatements()) {
@@ -179,8 +162,7 @@ public abstract class PreparableStatement<RES_T> {
     /**
      * Executes a previously server-prepared statement. Implementation is dependent on the statement type.
      *
-     * @return
-     *         the object returned from the lower level statement execution
+     * @return the object returned from the lower level statement execution
      */
     protected abstract RES_T executePreparedStatement();
 
@@ -196,6 +178,16 @@ public abstract class PreparableStatement<RES_T> {
                 this.preparedStatementId = 0;
             }
         }
+    }
+
+    protected enum PreparedState {
+        UNSUPPORTED, // Preparing statements is completely unsupported in the server currently being used.
+        UNPREPARED, // Statement is not prepared yet, next execution will run unprepared.
+        SUSPENDED, // Preparing statements is currently suspended but it is expected to resume sometime later.
+        PREPARED, // The statement is prepared and ready for execution.
+        PREPARE, // The statement shall be prepared on next execution.
+        DEALLOCATE, // The statement shall be deallocated on next execution.
+        REPREPARE; // The statement shall be deallocated and immediately re-prepared on next execution.
     }
 
     /**

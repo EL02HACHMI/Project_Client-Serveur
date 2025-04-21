@@ -876,11 +876,11 @@ public class ResultSetTest extends BaseTestCase {
         });
 
         assertThrows(NotUpdatable.class, null, () -> {
-            rsTmp.updateBytes(1, new byte[] {});
+            rsTmp.updateBytes(1, new byte[]{});
             return null;
         });
         assertThrows(NotUpdatable.class, null, () -> {
-            rsTmp.updateBytes("f1", new byte[] {});
+            rsTmp.updateBytes("f1", new byte[]{});
             return null;
         });
 
@@ -1143,7 +1143,7 @@ public class ResultSetTest extends BaseTestCase {
 
     /**
      * WL#16174: Support for VECTOR data type
-     *
+     * <p>
      * This test checks that the value of the VECTOR column is retrieved as a byte array by ResultSet.getObject() and that it can also be retrieved as BLOB by
      * ResultSet.getBlob(). VECTOR support was added in MySQL 9.0.0.
      *

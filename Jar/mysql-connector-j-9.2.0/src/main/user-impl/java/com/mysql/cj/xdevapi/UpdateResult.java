@@ -34,8 +34,7 @@ public class UpdateResult implements Result {
     /**
      * Create a new result.
      *
-     * @param ok
-     *            the response from the server
+     * @param ok the response from the server
      */
     public UpdateResult(StatementExecuteOk ok) {
         this.ok = ok;

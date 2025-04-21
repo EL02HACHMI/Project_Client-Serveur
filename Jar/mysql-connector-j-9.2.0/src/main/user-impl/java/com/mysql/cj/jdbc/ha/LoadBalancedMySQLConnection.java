@@ -83,7 +83,7 @@ public class LoadBalancedMySQLConnection extends MultiHostMySQLConnection implem
             // This works for classes that aren't actually wrapping anything
             return iface.cast(this);
         } catch (ClassCastException cce) {
-            throw SQLError.createSQLException(Messages.getString("Common.UnableToUnwrap", new Object[] { iface.toString() }),
+            throw SQLError.createSQLException(Messages.getString("Common.UnableToUnwrap", new Object[]{iface.toString()}),
                     MysqlErrorNumbers.SQLSTATE_CONNJ_ILLEGAL_ARGUMENT, getExceptionInterceptor());
         }
     }

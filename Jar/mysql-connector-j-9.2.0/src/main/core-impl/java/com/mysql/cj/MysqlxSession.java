@@ -93,8 +93,7 @@ public class MysqlxSession extends CoreSession {
     /**
      * Check if current session is using a MySQL server that supports prepared statements.
      *
-     * @return
-     *         {@code true} if the MySQL server in use supports prepared statements
+     * @return {@code true} if the MySQL server in use supports prepared statements
      */
     public boolean supportsPreparedStatements() {
         return ((XProtocol) this.protocol).supportsPreparedStatements();
@@ -103,8 +102,7 @@ public class MysqlxSession extends CoreSession {
     /**
      * Check if enough statements were executed in the underlying MySQL server so that another prepare statement attempt should be done.
      *
-     * @return
-     *         {@code true} if enough executions have been done since last time a prepared statement failed to be prepared
+     * @return {@code true} if enough executions have been done since last time a prepared statement failed to be prepared
      */
     public boolean readyForPreparingStatements() {
         return ((XProtocol) this.protocol).readyForPreparingStatements();
@@ -113,8 +111,7 @@ public class MysqlxSession extends CoreSession {
     /**
      * Return an id to be used as a client-managed prepared statement id.
      *
-     * @param preparableStatement
-     *            {@link PreparableStatement}
+     * @param preparableStatement {@link PreparableStatement}
      * @return a new identifier to be used as prepared statement id
      */
     public int getNewPreparedStatementId(PreparableStatement<?> preparableStatement) {
@@ -124,8 +121,7 @@ public class MysqlxSession extends CoreSession {
     /**
      * Free a prepared statement id so that it can be reused.
      *
-     * @param preparedStatementId
-     *            the prepared statement id to release
+     * @param preparedStatementId the prepared statement id to release
      */
     public void freePreparedStatementId(int preparedStatementId) {
         ((XProtocol) this.protocol).freePreparedStatementId(preparedStatementId);
@@ -134,12 +130,9 @@ public class MysqlxSession extends CoreSession {
     /**
      * Propagate to the underlying protocol instance that preparing a statement on the connected server failed.
      *
-     * @param preparedStatementId
-     *            the id of the prepared statement that failed to be prepared
-     * @param e
-     *            {@link XProtocolError}
-     * @return
-     *         {@code true} if the exception was properly handled
+     * @param preparedStatementId the id of the prepared statement that failed to be prepared
+     * @param e                   {@link XProtocolError}
+     * @return {@code true} if the exception was properly handled
      */
     public boolean failedPreparingStatement(int preparedStatementId, XProtocolError e) {
         return ((XProtocol) this.protocol).failedPreparingStatement(preparedStatementId, e);

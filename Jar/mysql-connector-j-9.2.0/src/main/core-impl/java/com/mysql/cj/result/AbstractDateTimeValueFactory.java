@@ -127,7 +127,7 @@ public abstract class AbstractDateTimeValueFactory<T> extends DefaultValueFactor
         } else if (MysqlTextValueDecoder.isTimestamp(s)) {
             return createFromTimestamp(MysqlTextValueDecoder.getTimestamp(newBytes, 0, newBytes.length, f.getDecimals()));
         }
-        throw new DataConversionException(Messages.getString("ResultSet.UnableToConvertString", new Object[] { s, getTargetTypeName() }));
+        throw new DataConversionException(Messages.getString("ResultSet.UnableToConvertString", new Object[]{s, getTargetTypeName()}));
     }
 
 }

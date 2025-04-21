@@ -121,7 +121,7 @@ public class MysqlxSessionTest extends InternalXBaseTestCase {
 
         this.session.query(builder.buildCreateCollection(getTestDatabase(), collName), new UpdateResultBuilder<>());
 
-        Set<String> strTypes = Arrays.stream(new DbObjectType[] { DbObjectType.COLLECTION }).map(DatabaseObject.DbObjectType::toString)
+        Set<String> strTypes = Arrays.stream(new DbObjectType[]{DbObjectType.COLLECTION}).map(DatabaseObject.DbObjectType::toString)
                 .collect(Collectors.toSet());
         Predicate<com.mysql.cj.result.Row> rowFiler = r -> strTypes.contains(r.getValue(1, svf));
         Function<com.mysql.cj.result.Row, String> rowToName = r -> r.getValue(0, svf);

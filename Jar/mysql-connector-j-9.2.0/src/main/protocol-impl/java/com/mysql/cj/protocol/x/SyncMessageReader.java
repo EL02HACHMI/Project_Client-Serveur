@@ -52,22 +52,25 @@ import com.mysql.cj.x.protobuf.MysqlxNotice.Frame;
  */
 public class SyncMessageReader implements MessageReader<XMessageHeader, XMessage> {
 
-    /** Stream as a source of messages. */
-    private FullReadInputStream inputStream;
-
+    /**
+     * Lock to protect the pending message.
+     */
+    final Lock dispatchingThreadLock = new ReentrantLock();
+    /**
+     * Lock to protect async reads from sync ones.
+     */
+    final Lock syncOperationLock = new ReentrantLock();
     LinkedList<XMessageHeader> headersQueue = new LinkedList<>();
     LinkedList<Message> messagesQueue = new LinkedList<>();
-
-    /** Queue of <code>MessageListener</code>s waiting to process messages. */
+    /**
+     * Queue of <code>MessageListener</code>s waiting to process messages.
+     */
     BlockingQueue<MessageListener<XMessage>> messageListenerQueue = new LinkedBlockingQueue<>();
-
-    /** Lock to protect the pending message. */
-    final Lock dispatchingThreadLock = new ReentrantLock();
-    /** Lock to protect async reads from sync ones. */
-    final Lock syncOperationLock = new ReentrantLock();
-
     Thread dispatchingThread = null;
-
+    /**
+     * Stream as a source of messages.
+     */
+    private FullReadInputStream inputStream;
     private ProtocolEventHandler protocolEventHandler = null;
 
     public SyncMessageReader(FullReadInputStream inputStream, ProtocolEventHandler protocolEventHandler) {

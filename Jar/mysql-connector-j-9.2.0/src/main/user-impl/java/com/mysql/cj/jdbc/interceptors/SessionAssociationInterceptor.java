@@ -36,13 +36,9 @@ import com.mysql.cj.protocol.ServerSession;
 
 public class SessionAssociationInterceptor implements QueryInterceptor {
 
-    protected String currentSessionKey;
     protected final static ThreadLocal<String> sessionLocal = new ThreadLocal<>();
+    protected String currentSessionKey;
     private JdbcConnection connection;
-
-    public static final void setSessionKey(String key) {
-        sessionLocal.set(key);
-    }
 
     public static final void resetSessionKey() {
         sessionLocal.set(null);
@@ -50,6 +46,10 @@ public class SessionAssociationInterceptor implements QueryInterceptor {
 
     public static final String getSessionKey() {
         return sessionLocal.get();
+    }
+
+    public static final void setSessionKey(String key) {
+        sessionLocal.set(key);
     }
 
     @Override

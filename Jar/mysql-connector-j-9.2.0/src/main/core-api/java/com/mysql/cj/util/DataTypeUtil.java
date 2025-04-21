@@ -28,12 +28,9 @@ public class DataTypeUtil {
     /**
      * Interpret a BIT value as a long.
      *
-     * @param bytes
-     *            byte buffer
-     * @param offset
-     *            offset in buffer
-     * @param length
-     *            number of bytes to use
+     * @param bytes  byte buffer
+     * @param offset offset in buffer
+     * @param length number of bytes to use
      * @return long value
      */
     public static long bitToLong(byte[] bytes, int offset, int length) {

@@ -150,7 +150,7 @@ public class SqlTimeValueFactoryTest extends CommonAsserts {
         assertEquals(Time.valueOf(LocalTime.of(0, 0)).toString(), this.vf.createFromBytes("2018-01-02".getBytes(), 0, 10, f).toString());
 
         assertThrows(DataConversionException.class, "Cannot convert string '1' to java.sql.Time value", () -> {
-            SqlTimeValueFactoryTest.this.vf.createFromBytes(new byte[] { '1' }, 0, 1, f);
+            SqlTimeValueFactoryTest.this.vf.createFromBytes(new byte[]{'1'}, 0, 1, f);
             return null;
         });
 
@@ -168,7 +168,7 @@ public class SqlTimeValueFactoryTest extends CommonAsserts {
     @Test
     public void testCreateFromBit() {
         assertThrows(DataConversionException.class, "Unsupported conversion from BIT to java.sql.Time", () -> {
-            SqlTimeValueFactoryTest.this.vf.createFromBit(new byte[] { 1 }, 0, 2);
+            SqlTimeValueFactoryTest.this.vf.createFromBit(new byte[]{1}, 0, 2);
             return null;
         });
     }

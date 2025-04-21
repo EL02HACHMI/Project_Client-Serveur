@@ -43,15 +43,13 @@ import com.mysql.cj.exceptions.InvalidConnectionAttributeException;
  * {@link Session} session2 = xFactory.getSession("<b>mysqlx:</b>//host2[:port2]/db?user=user2&amp;password=pwd2");
  * {@link Session} session3 = xFactory.getSession("<b>mysqlx+srv:</b>//[user1[:pwd1]@]service_name/db");
  * </pre>
- *
  */
 public class SessionFactory {
 
     /**
      * Parses the connection string URL.
      *
-     * @param url
-     *            the connection string URL.
+     * @param url the connection string URL.
      * @return a {@link ConnectionUrl} instance containing the URL components.
      */
     protected ConnectionUrl parseUrl(String url) {
@@ -65,8 +63,7 @@ public class SessionFactory {
     /**
      * Creates {@link Session} by given URL.
      *
-     * @param connUrl
-     *            the session {@link ConnectionUrl}.
+     * @param connUrl the session {@link ConnectionUrl}.
      * @return a {@link Session} instance.
      */
     protected Session getSession(ConnectionUrl connUrl) {
@@ -91,8 +88,7 @@ public class SessionFactory {
     /**
      * Creates {@link Session} by given URL.
      *
-     * @param url
-     *            the session URL.
+     * @param url the session URL.
      * @return a {@link Session} instance.
      */
     public Session getSession(String url) {
@@ -102,8 +98,7 @@ public class SessionFactory {
     /**
      * Creates a {@link Session} using the information contained in the given properties.
      *
-     * @param properties
-     *            the {@link Properties} instance that contains the session components.
+     * @param properties the {@link Properties} instance that contains the session components.
      * @return a {@link Session} instance.
      */
     public Session getSession(Properties properties) {

@@ -26,15 +26,16 @@ import com.mysql.cj.conf.PropertyKey;
 
 /**
  * The callback object used by the authentication plugin AuthenticationOpenidConnectClient to let the client application supply Identity Tokens to the driver.
- *
+ * <p>
  * In OpenID, user authentication is outsourced to an IdP. This Callback is required to trigger some sort of user interaction by performing a login into an
  * external system at the time the connection is established but not prior to it, because the success of the authentication depends on the MySQL user being
  * authenticated and how the user was created on the MySQL Server.
  */
 public class OpenidConnectAuthenticationCallback implements MysqlCallback {
 
-    private String user;
     Function<PropertyKey, String> connPropSupplier;
+    private String user;
+    private byte[] identityToken;
 
     public OpenidConnectAuthenticationCallback(Function<PropertyKey, String> connPropSupplier) {
         this.connPropSupplier = connPropSupplier;
@@ -43,10 +44,8 @@ public class OpenidConnectAuthenticationCallback implements MysqlCallback {
     /**
      * Provides access to the connection properties where this authentication is being performed.
      *
-     * @param propKey
-     *            a {@link PropertyKey} element.
-     * @return
-     *         the value of the specified {@link PropertyKey} as a String.
+     * @param propKey a {@link PropertyKey} element.
+     * @return the value of the specified {@link PropertyKey} as a String.
      */
     public String getConnProperty(PropertyKey propKey) {
         return this.connPropSupplier.apply(propKey);
@@ -55,8 +54,7 @@ public class OpenidConnectAuthenticationCallback implements MysqlCallback {
     /**
      * Returns the user name.
      *
-     * @return
-     *         the user name.
+     * @return the user name.
      */
     public String getUser() {
         return this.user;
@@ -65,20 +63,16 @@ public class OpenidConnectAuthenticationCallback implements MysqlCallback {
     /**
      * Sets the user name.
      *
-     * @param user
-     *            the user name.
+     * @param user the user name.
      */
     public void setUser(String user) {
         this.user = user;
     }
 
-    private byte[] identityToken;
-
     /**
      * Returns the OpenID Identity Token.
      *
-     * @return
-     *         the OpenID Identity Token.
+     * @return the OpenID Identity Token.
      */
     public byte[] getIdentityToken() {
         return this.identityToken;
@@ -87,8 +81,7 @@ public class OpenidConnectAuthenticationCallback implements MysqlCallback {
     /**
      * Sets the OpenID Identity Token.
      *
-     * @param identityToken
-     *            the OpenID Identity Token.
+     * @param identityToken the OpenID Identity Token.
      */
     public void setIdentityToken(byte[] identityToken) {
         this.identityToken = identityToken;

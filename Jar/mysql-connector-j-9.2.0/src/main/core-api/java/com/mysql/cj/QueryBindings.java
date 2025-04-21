@@ -46,7 +46,6 @@ public interface QueryBindings {
     void setBindValues(BindValue[] bindValues);
 
     /**
-     *
      * @return true if bind values had long data
      */
     boolean clearBindValues();

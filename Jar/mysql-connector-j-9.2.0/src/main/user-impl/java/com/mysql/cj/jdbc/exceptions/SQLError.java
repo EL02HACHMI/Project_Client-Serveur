@@ -90,7 +90,7 @@ public class SQLError {
     }
 
     public static SQLException createSQLException(String message, String sqlState, int vendorErrorCode, boolean isTransient, Throwable cause,
-            ExceptionInterceptor interceptor) {
+                                                  ExceptionInterceptor interceptor) {
         try {
             SQLException sqlEx = null;
 
@@ -145,7 +145,7 @@ public class SQLError {
     }
 
     public static SQLException createCommunicationsException(JdbcConnection conn, PacketSentTimeHolder packetSentTimeHolder,
-            PacketReceivedTimeHolder packetReceivedTimeHolder, Exception underlyingException, ExceptionInterceptor interceptor) {
+                                                             PacketReceivedTimeHolder packetReceivedTimeHolder, Exception underlyingException, ExceptionInterceptor interceptor) {
         SQLException exToReturn = new CommunicationsException(conn, packetSentTimeHolder, packetReceivedTimeHolder, underlyingException);
 
         if (underlyingException != null) {
@@ -178,10 +178,8 @@ public class SQLError {
     /**
      * Run exception through an ExceptionInterceptor chain.
      *
-     * @param exInterceptor
-     *            exception interceptor
-     * @param sqlEx
-     *            cause
+     * @param exInterceptor exception interceptor
+     * @param sqlEx         cause
      * @return SQLException
      */
     private static SQLException runThroughExceptionInterceptor(ExceptionInterceptor exInterceptor, SQLException sqlEx) {
@@ -198,15 +196,11 @@ public class SQLError {
     /**
      * Create a BatchUpdateException.
      *
-     * @param underlyingEx
-     *            underlying exception
-     * @param updateCounts
-     *            update counts of completed queries in this batch
-     * @param interceptor
-     *            exception interceptor
+     * @param underlyingEx underlying exception
+     * @param updateCounts update counts of completed queries in this batch
+     * @param interceptor  exception interceptor
      * @return SQLException
-     * @throws SQLException
-     *             if an error occurs
+     * @throws SQLException if an error occurs
      */
     public static SQLException createBatchUpdateException(SQLException underlyingEx, long[] updateCounts, ExceptionInterceptor interceptor)
             throws SQLException {
@@ -228,15 +222,11 @@ public class SQLError {
     /**
      * Create a SQLFeatureNotSupportedException or a NotImplemented exception according to the JDBC version in use.
      *
-     * @param message
-     *            error message
-     * @param sqlState
-     *            sqlState
-     * @param interceptor
-     *            exception interceptor
+     * @param message     error message
+     * @param sqlState    sqlState
+     * @param interceptor exception interceptor
      * @return SQLException
-     * @throws SQLException
-     *             if an error occurs
+     * @throws SQLException if an error occurs
      */
     public static SQLException createSQLFeatureNotSupportedException(String message, String sqlState, ExceptionInterceptor interceptor) throws SQLException {
         SQLException newEx = new SQLFeatureNotSupportedException(message, sqlState);

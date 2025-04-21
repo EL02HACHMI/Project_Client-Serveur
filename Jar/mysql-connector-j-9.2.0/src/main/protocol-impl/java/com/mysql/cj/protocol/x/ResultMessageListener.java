@@ -43,7 +43,7 @@ public class ResultMessageListener<R> implements MessageListener<XMessage> {
     private Map<Class<? extends Message>, ProtocolEntityFactory<? extends ProtocolEntity, XMessage>> messageToProtocolEntityFactory = new HashMap<>();
 
     public ResultMessageListener(Map<Class<? extends Message>, ProtocolEntityFactory<? extends ProtocolEntity, XMessage>> messageToProtocolEntityFactory,
-            ResultBuilder<R> resultBuilder, CompletableFuture<R> future) {
+                                 ResultBuilder<R> resultBuilder, CompletableFuture<R> future) {
         this.messageToProtocolEntityFactory = messageToProtocolEntityFactory;
         this.resultBuilder = resultBuilder;
         this.future = future;

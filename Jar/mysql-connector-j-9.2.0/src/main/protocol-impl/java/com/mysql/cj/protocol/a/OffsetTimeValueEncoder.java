@@ -62,7 +62,7 @@ public class OffsetTimeValueEncoder extends AbstractValueEncoder {
                 return sb.toString();
             default:
                 throw ExceptionFactory.createException(WrongArgumentException.class,
-                        Messages.getString("PreparedStatement.67", new Object[] { binding.getValue().getClass().getName(), binding.getMysqlType().toString() }),
+                        Messages.getString("PreparedStatement.67", new Object[]{binding.getValue().getClass().getName(), binding.getMysqlType().toString()}),
                         this.exceptionInterceptor);
         }
     }
@@ -75,7 +75,7 @@ public class OffsetTimeValueEncoder extends AbstractValueEncoder {
             case TIME:
                 writeTime(msg,
                         InternalTime.from(adjustLocalTime(((OffsetTime) binding.getValue())
-                                .withOffsetSameInstant(ZoneOffset.ofTotalSeconds(this.serverSession.getDefaultTimeZone().getRawOffset() / 1000)).toLocalTime(),
+                                        .withOffsetSameInstant(ZoneOffset.ofTotalSeconds(this.serverSession.getDefaultTimeZone().getRawOffset() / 1000)).toLocalTime(),
                                 binding.getField())));
                 return;
             case CHAR:
@@ -86,14 +86,14 @@ public class OffsetTimeValueEncoder extends AbstractValueEncoder {
             case LONGTEXT:
                 intoPacket.writeBytes(StringSelfDataType.STRING_LENENC,
                         StringUtils.getBytes(((OffsetTime) binding.getValue())
-                                .format(this.sendFractionalSeconds.getValue() && ((OffsetTime) binding.getValue()).getNano() > 0
-                                        ? TimeUtil.TIME_FORMATTER_WITH_NANOS_WITH_OFFSET
-                                        : TimeUtil.TIME_FORMATTER_NO_FRACT_WITH_OFFSET),
+                                        .format(this.sendFractionalSeconds.getValue() && ((OffsetTime) binding.getValue()).getNano() > 0
+                                                ? TimeUtil.TIME_FORMATTER_WITH_NANOS_WITH_OFFSET
+                                                : TimeUtil.TIME_FORMATTER_NO_FRACT_WITH_OFFSET),
                                 this.charEncoding.getValue()));
                 return;
             default:
                 throw ExceptionFactory.createException(WrongArgumentException.class,
-                        Messages.getString("PreparedStatement.67", new Object[] { binding.getValue().getClass().getName(), binding.getMysqlType().toString() }),
+                        Messages.getString("PreparedStatement.67", new Object[]{binding.getValue().getClass().getName(), binding.getMysqlType().toString()}),
                         this.exceptionInterceptor);
         }
     }

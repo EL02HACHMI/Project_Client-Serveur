@@ -147,17 +147,17 @@ public class XServerSession implements ServerSession {
     }
 
     @Override
+    public void setServerVariables(Map<String, String> serverVariables) {
+        throw ExceptionFactory.createException(CJOperationNotSupportedException.class, "Not supported");
+    }
+
+    @Override
     public String getServerVariable(String name) {
         throw ExceptionFactory.createException(CJOperationNotSupportedException.class, "Not supported");
     }
 
     @Override
     public int getServerVariable(String variableName, int fallbackValue) {
-        throw ExceptionFactory.createException(CJOperationNotSupportedException.class, "Not supported");
-    }
-
-    @Override
-    public void setServerVariables(Map<String, String> serverVariables) {
         throw ExceptionFactory.createException(CJOperationNotSupportedException.class, "Not supported");
     }
 

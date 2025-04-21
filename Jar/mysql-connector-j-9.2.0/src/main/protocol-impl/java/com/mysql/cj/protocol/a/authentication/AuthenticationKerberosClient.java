@@ -58,11 +58,9 @@ import com.mysql.cj.util.StringUtils;
  */
 public class AuthenticationKerberosClient implements AuthenticationPlugin<NativePacketPayload> {
 
-    public static String PLUGIN_NAME = "authentication_kerberos_client";
-
     private static final String LOGIN_CONFIG_ENTRY = "MySQLConnectorJ";
     private static final String AUTHENTICATION_MECHANISM = "GSSAPI";
-
+    public static String PLUGIN_NAME = "authentication_kerberos_client";
     private String sourceOfAuthData = PLUGIN_NAME;
 
     private MysqlCallbackHandler usernameCallbackHandler = null;
@@ -206,7 +204,7 @@ public class AuthenticationKerberosClient implements AuthenticationPlugin<Native
                     final String localPrimary = primary;
                     final String localInstance = instance;
                     this.saslClient = Subject.doAs(this.subject, (PrivilegedExceptionAction<SaslClient>) () -> Sasl
-                            .createSaslClient(new String[] { AUTHENTICATION_MECHANISM }, null, localPrimary, localInstance, null, null));
+                            .createSaslClient(new String[]{AUTHENTICATION_MECHANISM}, null, localPrimary, localInstance, null, null));
                 } catch (PrivilegedActionException e) {
                     // SaslException is the only checked exception that can be thrown.
                     throw (SaslException) e.getException();
@@ -214,12 +212,12 @@ public class AuthenticationKerberosClient implements AuthenticationPlugin<Native
 
             } catch (SaslException e) {
                 throw ExceptionFactory.createException(
-                        Messages.getString("AuthenticationKerberosClientPlugin.FailCreateSaslClient", new Object[] { AUTHENTICATION_MECHANISM }), e);
+                        Messages.getString("AuthenticationKerberosClientPlugin.FailCreateSaslClient", new Object[]{AUTHENTICATION_MECHANISM}), e);
             }
 
             if (this.saslClient == null) {
                 throw ExceptionFactory.createException(
-                        Messages.getString("AuthenticationKerberosClientPlugin.FailCreateSaslClient", new Object[] { AUTHENTICATION_MECHANISM }));
+                        Messages.getString("AuthenticationKerberosClientPlugin.FailCreateSaslClient", new Object[]{AUTHENTICATION_MECHANISM}));
             }
         }
 
@@ -237,7 +235,7 @@ public class AuthenticationKerberosClient implements AuthenticationPlugin<Native
                 });
             } catch (PrivilegedActionException e) {
                 throw ExceptionFactory.createException(
-                        Messages.getString("AuthenticationKerberosClientPlugin.ErrProcessingAuthIter", new Object[] { AUTHENTICATION_MECHANISM }),
+                        Messages.getString("AuthenticationKerberosClientPlugin.ErrProcessingAuthIter", new Object[]{AUTHENTICATION_MECHANISM}),
                         e.getException());
             }
         }
@@ -267,8 +265,8 @@ public class AuthenticationKerberosClient implements AuthenticationPlugin<Native
                         options.put("principal", localUser);
                     }
                     options.put("debug", Boolean.toString(debug)); // Hook debugging on system property 'sun.security.jgss.debug'.
-                    return new AppConfigurationEntry[] { new AppConfigurationEntry("com.sun.security.auth.module.Krb5LoginModule",
-                            AppConfigurationEntry.LoginModuleControlFlag.REQUIRED, options) };
+                    return new AppConfigurationEntry[]{new AppConfigurationEntry("com.sun.security.auth.module.Krb5LoginModule",
+                            AppConfigurationEntry.LoginModuleControlFlag.REQUIRED, options)};
                 }
 
             };

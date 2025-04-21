@@ -36,6 +36,24 @@ public class InternalTimestamp extends InternalDate {
     private int scale = 0;
     private int offset = 0;
 
+    /**
+     * Constructs a zero datetime
+     */
+    public InternalTimestamp() {
+        super();
+    }
+
+    public InternalTimestamp(int year, int month, int day, int hours, int minutes, int seconds, int nanos, int scale) {
+        this.year = year;
+        this.month = month;
+        this.day = day;
+        this.hours = hours;
+        this.minutes = minutes;
+        this.seconds = seconds;
+        this.nanos = nanos;
+        this.scale = scale;
+    }
+
     public static InternalTimestamp from(LocalDate x) {
         return new InternalTimestamp(x.getYear(), x.getMonthValue(), x.getDayOfMonth(), 0, 0, 0, 0, -1);
     }
@@ -61,24 +79,6 @@ public class InternalTimestamp extends InternalDate {
     public static InternalTimestamp from(Calendar x, int nanos) {
         return new InternalTimestamp(x.get(Calendar.YEAR), x.get(Calendar.MONTH) + 1, x.get(Calendar.DAY_OF_MONTH), x.get(Calendar.HOUR_OF_DAY),
                 x.get(Calendar.MINUTE), x.get(Calendar.SECOND), nanos, -1);
-    }
-
-    /**
-     * Constructs a zero datetime
-     */
-    public InternalTimestamp() {
-        super();
-    }
-
-    public InternalTimestamp(int year, int month, int day, int hours, int minutes, int seconds, int nanos, int scale) {
-        this.year = year;
-        this.month = month;
-        this.day = day;
-        this.hours = hours;
-        this.minutes = minutes;
-        this.seconds = seconds;
-        this.nanos = nanos;
-        this.scale = scale;
     }
 
     public int getHours() {

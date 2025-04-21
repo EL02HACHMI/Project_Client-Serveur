@@ -83,51 +83,54 @@ public abstract class BaseTestCase {
     public static String dbUrl = "jdbc:mysql:///test";
     public static String timeZoneFreeDbUrl = "jdbc:mysql:///test";
     protected static ConnectionUrl mainConnectionUrl = null;
-    protected boolean isOpenSSL = false;
-
-    /** Instance counter */
+    /**
+     * Instance counter
+     */
     private static int instanceCount = 1;
-
-    /** Connection to server, initialized in setUp() Cleaned up in tearDown(). */
+    protected boolean isOpenSSL = false;
+    /**
+     * Connection to server, initialized in setUp() Cleaned up in tearDown().
+     */
     protected Connection conn = null;
 
-    /** Server version `this.conn' is connected to. */
+    /**
+     * Server version `this.conn' is connected to.
+     */
     protected ServerVersion serverVersion;
-
-    /** list of schema objects to be dropped in tearDown */
-    private List<String[]> createdObjects;
-
-    /** The driver to use */
+    /**
+     * The driver to use
+     */
     protected String dbClass = "com.mysql.cj.jdbc.Driver";
-
-    /** My instance number */
-    private int myInstanceNumber = 0;
-
-    /** Is MySQL running locally? */
-    private Boolean mysqlRunningLocally = null;
-
     /**
      * Default catalog.
      */
     protected String dbName;
-
     /**
      * PreparedStatement to be used in tests, not initialized. Cleaned up in
      * tearDown().
      */
     protected PreparedStatement pstmt = null;
-
     /**
      * ResultSet to be used in tests, not initialized. Cleaned up in tearDown().
      */
     protected ResultSet rs = null;
-
     /**
      * Statement to be used in tests, initialized in setUp(). Cleaned up in
      * tearDown().
      */
     protected Statement stmt = null;
-
+    /**
+     * list of schema objects to be dropped in tearDown
+     */
+    private List<String[]> createdObjects;
+    /**
+     * My instance number
+     */
+    private int myInstanceNumber = 0;
+    /**
+     * Is MySQL running locally?
+     */
+    private Boolean mysqlRunningLocally = null;
     private boolean isOnCSFS = true;
 
     /**
@@ -146,6 +149,102 @@ public abstract class BaseTestCase {
 
         timeZoneFreeDbUrl = dbUrl.replaceAll(PropertyKey.connectionTimeZone.getKeyName() + "=", PropertyKey.connectionTimeZone.getKeyName() + "VOID=")
                 .replaceAll("serverTimezone=", "serverTimezoneVOID=");
+    }
+
+    protected static <EX extends Throwable> EX assertThrows(Class<EX> throwable, Callable<?> testRoutine) {
+        return assertThrows("", throwable, null, testRoutine);
+    }
+
+    protected static <EX extends Throwable> EX assertThrows(String message, Class<EX> throwable, Callable<?> testRoutine) {
+        return assertThrows(message, throwable, null, testRoutine);
+    }
+
+    protected static <EX extends Throwable> EX assertThrows(Class<EX> throwable, String msgMatchesRegex, Callable<?> testRoutine) {
+        return assertThrows("", throwable, msgMatchesRegex, testRoutine);
+    }
+
+    protected static <EX extends Throwable> EX assertThrows(String message, Class<EX> throwable, String msgMatchesRegex, Callable<?> testRoutine) {
+        if (message.length() > 0) {
+            message += " ";
+        }
+        try {
+            testRoutine.call();
+        } catch (Throwable t) {
+            assertTrue(throwable.isAssignableFrom(t.getClass()), message + "expected exception of type '" + throwable.getName()
+                    + "' but instead an exception of type '" + t.getClass().getName() + "' was thrown.");
+            assertFalse(msgMatchesRegex != null && !t.getMessage().matches(msgMatchesRegex),
+                    message + "the error message «" + t.getMessage() + "» was expected to match «" + msgMatchesRegex + "».");
+            return throwable.cast(t);
+        }
+        fail(message + "expected exception of type '" + throwable.getName() + "'.");
+
+        // never reaches here
+        return null;
+    }
+
+    /**
+     * Asserts the most recent history of connection attempts from the global data in UnreliableSocketFactory.
+     *
+     * @param expectedConnectionsHistory The list of expected events. Use UnreliableSocketFactory.getHostConnectedStatus(String), UnreliableSocketFactory.getHostFailedStatus(String)
+     *                                   and UnreliableSocketFactory.getHostUnknownStatus(String) to build proper syntax for host+status identification.
+     */
+    protected static void assertConnectionsHistory(String... expectedConnectionsHistory) {
+        List<String> actualConnectionsHistory = UnreliableSocketFactory.getHostsFromLastConnections(expectedConnectionsHistory.length);
+
+        int i = 1;
+        String delimiter = "";
+        StringBuilder expectedHist = new StringBuilder("");
+        for (String hostInfo : expectedConnectionsHistory) {
+            expectedHist.append(delimiter).append(i++).append(hostInfo);
+            delimiter = " ~ ";
+        }
+
+        i = 1;
+        delimiter = "";
+        StringBuilder actualHist = new StringBuilder("");
+        for (String hostInfo : actualConnectionsHistory) {
+            actualHist.append(delimiter).append(i++).append(hostInfo);
+            delimiter = " ~ ";
+        }
+
+        assertEquals(expectedHist.toString(), actualHist.toString(), "Connections history");
+    }
+
+    protected static void assertSecureConnection(Connection conn) throws Exception {
+        try (Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery("SHOW STATUS LIKE 'Ssl_version'")) {
+            assertTrue(rs.next());
+            assertNotEquals("", rs.getString(2));
+        }
+    }
+
+    protected static void assertSecureConnection(Connection conn, String user) throws Exception {
+        assertSecureConnection(conn);
+        try (Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery("SELECT CURRENT_USER()")) {
+            assertTrue(rs.next());
+            assertEquals(user, rs.getString(1).split("@")[0]);
+        }
+    }
+
+    protected static void assertNonSecureConnection(Connection conn) throws Exception {
+        try (Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery("SHOW STATUS LIKE 'Ssl_version'")) {
+            assertTrue(rs.next());
+            assertEquals("", rs.getString(2));
+        }
+    }
+
+    /**
+     * Retrieve the current system time in milliseconds, using the nanosecond
+     * time if possible.
+     *
+     * @return current time in milliseconds
+     */
+    protected static final long currentTimeMillis() {
+        try {
+            Method mNanoTime = System.class.getDeclaredMethod("nanoTime", (Class[]) null);
+            return ((Long) mNanoTime.invoke(null, (Object[]) null)).longValue() / 1000000;
+        } catch (Exception ex) {
+            return System.currentTimeMillis();
+        }
     }
 
     private String sanitizeDbName(String url) {
@@ -173,7 +272,7 @@ public abstract class BaseTestCase {
 
     protected void createSchemaObject(Statement st, String objectType, String objectName, String columnsAndOtherStuff) throws SQLException {
         if (st != null) {
-            this.createdObjects.add(new String[] { objectType, objectName });
+            this.createdObjects.add(new String[]{objectType, objectName});
             try {
                 dropSchemaObject(st, objectType, objectName);
             } catch (SQLException ex) {
@@ -356,12 +455,9 @@ public abstract class BaseTestCase {
     /**
      * Returns a new connection with the given properties
      *
-     * @param props
-     *            the properties to use (the URL will come from the standard for
-     *            this testcase).
-     *
+     * @param props the properties to use (the URL will come from the standard for
+     *              this testcase).
      * @return a new connection using the given properties.
-     *
      * @throws SQLException
      */
     public Connection getConnectionWithProps(Properties props) throws SQLException {
@@ -402,13 +498,9 @@ public abstract class BaseTestCase {
     /**
      * Returns the named MySQL variable from the currently connected server.
      *
-     * @param variableName
-     *            the name of the variable to return
-     *
+     * @param variableName the name of the variable to return
      * @return the value of the given variable, or NULL if it doesn't exist
-     *
-     * @throws SQLException
-     *             if an error occurs
+     * @throws SQLException if an error occurs
      */
     protected String getMysqlVariable(String variableName) throws SQLException {
         return getMysqlVariable(this.conn, variableName);
@@ -419,9 +511,7 @@ public abstract class BaseTestCase {
      * connections for all testcases.
      *
      * @return properties parsed from com.mysql.jdbc.testsuite.url
-     *
-     * @throws SQLException
-     *             if parsing fails
+     * @throws SQLException if parsing fails
      */
     protected Properties getPropertiesFromTestsuiteUrl() throws SQLException {
         return getPropertiesFromUrl(mainConnectionUrl);
@@ -453,10 +543,8 @@ public abstract class BaseTestCase {
      * Some tests build connections strings for internal usage but, in order for them to work, they may require some connection properties set in the main test
      * suite URL. For example 'connectionTimeZone' is one of those properties.
      *
-     * @param props
-     *            the Properties object where to add the missing connection properties
-     * @return
-     *         the modified Properties objects or a new one if <code>props</code> is <code>null</code>
+     * @param props the Properties object where to add the missing connection properties
+     * @return the modified Properties objects or a new one if <code>props</code> is <code>null</code>
      */
     protected Properties appendRequiredProperties(Properties props) {
         if (props == null) {
@@ -604,9 +692,7 @@ public abstract class BaseTestCase {
      * Checks whether a certain system property is defined, in order to
      * run/not-run certain tests
      *
-     * @param propName
-     *            the property name to check for
-     *
+     * @param propName the property name to check for
      * @return true if the property is defined.
      */
     protected boolean isSysPropDefined(String propName) {
@@ -618,9 +704,7 @@ public abstract class BaseTestCase {
      * Creates resources used by all tests.
      *
      * @param testInfo
-     *
-     * @throws Exception
-     *             if an error occurs.
+     * @throws Exception if an error occurs.
      */
     @BeforeEach
     public void setUpBase(TestInfo testInfo) throws Exception {
@@ -734,15 +818,10 @@ public abstract class BaseTestCase {
      * Checks whether the database we're connected to meets the given version
      * minimum
      *
-     * @param major
-     *            the major version to meet
-     * @param minor
-     *            the minor version to meet
-     *
+     * @param major the major version to meet
+     * @param minor the minor version to meet
      * @return boolean if the major/minor is met
-     *
-     * @throws SQLException
-     *             if an error occurs.
+     * @throws SQLException if an error occurs.
      */
     protected boolean versionMeetsMinimum(int major, int minor) throws SQLException {
         return versionMeetsMinimum(major, minor, 0);
@@ -752,17 +831,11 @@ public abstract class BaseTestCase {
      * Checks whether the database we're connected to meets the given version
      * minimum
      *
-     * @param major
-     *            the major version to meet
-     * @param minor
-     *            the minor version to meet
-     * @param subminor
-     *            the subminor version to meet
-     *
+     * @param major    the major version to meet
+     * @param minor    the minor version to meet
+     * @param subminor the subminor version to meet
      * @return boolean if the major/minor is met
-     *
-     * @throws SQLException
-     *             if an error occurs.
+     * @throws SQLException if an error occurs.
      */
     public boolean versionMeetsMinimum(int major, int minor, int subminor) throws SQLException {
         return ((JdbcConnection) this.conn).getSession().versionMeetsMinimum(major, minor, subminor);
@@ -910,92 +983,10 @@ public abstract class BaseTestCase {
         assertTrue(howMuchMore == 0, "Found " + howMuchMore + " extra rows in result set to be compared: ");
     }
 
-    protected static <EX extends Throwable> EX assertThrows(Class<EX> throwable, Callable<?> testRoutine) {
-        return assertThrows("", throwable, null, testRoutine);
-    }
-
-    protected static <EX extends Throwable> EX assertThrows(String message, Class<EX> throwable, Callable<?> testRoutine) {
-        return assertThrows(message, throwable, null, testRoutine);
-    }
-
-    protected static <EX extends Throwable> EX assertThrows(Class<EX> throwable, String msgMatchesRegex, Callable<?> testRoutine) {
-        return assertThrows("", throwable, msgMatchesRegex, testRoutine);
-    }
-
-    protected static <EX extends Throwable> EX assertThrows(String message, Class<EX> throwable, String msgMatchesRegex, Callable<?> testRoutine) {
-        if (message.length() > 0) {
-            message += " ";
-        }
-        try {
-            testRoutine.call();
-        } catch (Throwable t) {
-            assertTrue(throwable.isAssignableFrom(t.getClass()), message + "expected exception of type '" + throwable.getName()
-                    + "' but instead an exception of type '" + t.getClass().getName() + "' was thrown.");
-            assertFalse(msgMatchesRegex != null && !t.getMessage().matches(msgMatchesRegex),
-                    message + "the error message «" + t.getMessage() + "» was expected to match «" + msgMatchesRegex + "».");
-            return throwable.cast(t);
-        }
-        fail(message + "expected exception of type '" + throwable.getName() + "'.");
-
-        // never reaches here
-        return null;
-    }
-
     protected void assertByteArrayEquals(String message, byte[] expected, byte[] actual) {
         assertEquals(expected.length, actual.length, message + " - array lenght");
         for (int i = 0, s = expected.length; i < s; i++) {
             assertEquals(expected[i], actual[i], message + " - element at " + i);
-        }
-    }
-
-    /**
-     * Asserts the most recent history of connection attempts from the global data in UnreliableSocketFactory.
-     *
-     * @param expectedConnectionsHistory
-     *            The list of expected events. Use UnreliableSocketFactory.getHostConnectedStatus(String), UnreliableSocketFactory.getHostFailedStatus(String)
-     *            and UnreliableSocketFactory.getHostUnknownStatus(String) to build proper syntax for host+status identification.
-     */
-    protected static void assertConnectionsHistory(String... expectedConnectionsHistory) {
-        List<String> actualConnectionsHistory = UnreliableSocketFactory.getHostsFromLastConnections(expectedConnectionsHistory.length);
-
-        int i = 1;
-        String delimiter = "";
-        StringBuilder expectedHist = new StringBuilder("");
-        for (String hostInfo : expectedConnectionsHistory) {
-            expectedHist.append(delimiter).append(i++).append(hostInfo);
-            delimiter = " ~ ";
-        }
-
-        i = 1;
-        delimiter = "";
-        StringBuilder actualHist = new StringBuilder("");
-        for (String hostInfo : actualConnectionsHistory) {
-            actualHist.append(delimiter).append(i++).append(hostInfo);
-            delimiter = " ~ ";
-        }
-
-        assertEquals(expectedHist.toString(), actualHist.toString(), "Connections history");
-    }
-
-    protected static void assertSecureConnection(Connection conn) throws Exception {
-        try (Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery("SHOW STATUS LIKE 'Ssl_version'")) {
-            assertTrue(rs.next());
-            assertNotEquals("", rs.getString(2));
-        }
-    }
-
-    protected static void assertSecureConnection(Connection conn, String user) throws Exception {
-        assertSecureConnection(conn);
-        try (Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery("SELECT CURRENT_USER()")) {
-            assertTrue(rs.next());
-            assertEquals(user, rs.getString(1).split("@")[0]);
-        }
-    }
-
-    protected static void assertNonSecureConnection(Connection conn) throws Exception {
-        try (Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery("SHOW STATUS LIKE 'Ssl_version'")) {
-            assertTrue(rs.next());
-            assertEquals("", rs.getString(2));
         }
     }
 
@@ -1023,21 +1014,6 @@ public abstract class BaseTestCase {
             } else if (type.equals("float")) {
                 vals[i] = new Float(0.0);
             }
-        }
-    }
-
-    /**
-     * Retrieve the current system time in milliseconds, using the nanosecond
-     * time if possible.
-     *
-     * @return current time in milliseconds
-     */
-    protected static final long currentTimeMillis() {
-        try {
-            Method mNanoTime = System.class.getDeclaredMethod("nanoTime", (Class[]) null);
-            return ((Long) mNanoTime.invoke(null, (Object[]) null)).longValue() / 1000000;
-        } catch (Exception ex) {
-            return System.currentTimeMillis();
         }
     }
 
@@ -1183,35 +1159,6 @@ public abstract class BaseTestCase {
         return (ReplicationConnection) getUnreliableMultiHostConnection("replication", hostNames, props, downedHosts);
     }
 
-    public static class MockConnectionConfiguration {
-
-        String hostName;
-        String port;
-        String serverType;
-        boolean isDowned = false;
-
-        public MockConnectionConfiguration(String hostName, String serverType, String port, boolean isDowned) {
-            this.hostName = hostName;
-            this.serverType = serverType;
-            this.isDowned = isDowned;
-            this.port = port;
-        }
-
-        public String getAddress(boolean withTrailingPort) {
-            return "address=(protocol=tcp)(host=" + this.hostName + ")(port=" + this.port + ")(type=" + this.serverType + ")"
-                    + (withTrailingPort ? ":" + this.port : "");
-        }
-
-        public String getAddress() {
-            return getAddress(false);
-        }
-
-        public String getHostPortPair() {
-            return this.hostName + ":" + this.port;
-        }
-
-    }
-
     protected ReplicationConnection getUnreliableReplicationConnection(Set<MockConnectionConfiguration> configs, Properties props) throws Exception {
         props = getHostFreePropertiesFromTestsuiteUrl(props);
         props.setProperty(PropertyKey.socketFactory.getKeyName(), "testsuite.UnreliableSocketFactory");
@@ -1310,7 +1257,7 @@ public abstract class BaseTestCase {
 
         List<String> serverSupportedProtocols = Arrays.asList(value.trim().split("\\s*,\\s*"));
         String highestCommonTlsVersion = "";
-        for (String p : new String[] { "TLSv1.3", "TLSv1.2", "TLSv1.1", "TLSv1" }) {
+        for (String p : new String[]{"TLSv1.3", "TLSv1.2", "TLSv1.1", "TLSv1"}) {
             if (jvmSupportedProtocols.contains(p) && serverSupportedProtocols.contains(p)) {
                 highestCommonTlsVersion = p;
                 break;
@@ -1326,6 +1273,35 @@ public abstract class BaseTestCase {
         ResultSet rs1 = st.executeQuery("SHOW SESSION STATUS LIKE '" + statusVariable + "'");
         assertTrue(rs1.next());
         assertEquals(expected, rs1.getString(2));
+    }
+
+    public static class MockConnectionConfiguration {
+
+        String hostName;
+        String port;
+        String serverType;
+        boolean isDowned = false;
+
+        public MockConnectionConfiguration(String hostName, String serverType, String port, boolean isDowned) {
+            this.hostName = hostName;
+            this.serverType = serverType;
+            this.isDowned = isDowned;
+            this.port = port;
+        }
+
+        public String getAddress(boolean withTrailingPort) {
+            return "address=(protocol=tcp)(host=" + this.hostName + ")(port=" + this.port + ")(type=" + this.serverType + ")"
+                    + (withTrailingPort ? ":" + this.port : "");
+        }
+
+        public String getAddress() {
+            return getAddress(false);
+        }
+
+        public String getHostPortPair() {
+            return this.hostName + ":" + this.port;
+        }
+
     }
 
 }

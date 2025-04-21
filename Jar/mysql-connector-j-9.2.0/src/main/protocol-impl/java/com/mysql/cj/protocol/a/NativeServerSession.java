@@ -79,15 +79,21 @@ public class NativeServerSession implements ServerSession {
     private long clientParam = 0;
     private NativeServerSessionStateController serverSessionStateController;
 
-    /** The map of server variables that we retrieve at connection init. */
+    /**
+     * The map of server variables that we retrieve at connection init.
+     */
     private Map<String, String> serverVariables = new HashMap<>();
 
     private CharsetSettings charsetSettings;
 
-    /** Are we in autoCommit mode? */
+    /**
+     * Are we in autoCommit mode?
+     */
     private boolean autoCommit = true;
 
-    /** The timezone of the server */
+    /**
+     * The timezone of the server
+     */
     private TimeZone sessionTimeZone = null;
 
     private TimeZone defaultTimeZone = TimeZone.getDefault();
@@ -225,6 +231,11 @@ public class NativeServerSession implements ServerSession {
     }
 
     @Override
+    public void setServerVariables(Map<String, String> serverVariables) {
+        this.serverVariables = serverVariables;
+    }
+
+    @Override
     public String getServerVariable(String name) {
         return this.serverVariables.get(name);
     }
@@ -241,11 +252,6 @@ public class NativeServerSession implements ServerSession {
     }
 
     @Override
-    public void setServerVariables(Map<String, String> serverVariables) {
-        this.serverVariables = serverVariables;
-    }
-
-    @Override
     public final ServerVersion getServerVersion() {
         return this.capabilities.getServerVersion();
     }
@@ -258,10 +264,8 @@ public class NativeServerSession implements ServerSession {
     /**
      * Should SET AUTOCOMMIT be sent to server if we are going to set autoCommitFlag in driver
      *
-     * @param autoCommitFlag
-     *            autocommit status we are going to set in driver
-     * @param elideSetAutoCommitsFlag
-     *            'elideSetAutoCommits' property value
+     * @param autoCommitFlag          autocommit status we are going to set in driver
+     * @param elideSetAutoCommitsFlag 'elideSetAutoCommits' property value
      * @return true if SET AUTOCOMMIT to be sent
      */
     public boolean isSetNeededForAutoCommitMode(boolean autoCommitFlag, boolean elideSetAutoCommitsFlag) {

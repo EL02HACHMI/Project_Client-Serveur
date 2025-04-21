@@ -42,7 +42,7 @@ public class ModifyStatementImpl extends FilterableStatement<ModifyStatement, Re
         super(new DocFilterParams(schema, collection, false));
         this.mysqlxSession = mysqlxSession;
         if (criteria == null || criteria.trim().isEmpty()) {
-            throw new XDevAPIError(Messages.getString("ModifyStatement.0", new String[] { "criteria" }));
+            throw new XDevAPIError(Messages.getString("ModifyStatement.0", new String[]{"criteria"}));
         }
         this.filterParams.setCriteria(criteria);
         if (!this.mysqlxSession.supportsPreparedStatements()) {
@@ -90,7 +90,7 @@ public class ModifyStatementImpl extends FilterableStatement<ModifyStatement, Re
     public ModifyStatement unset(String... docPath) {
         resetPrepareState();
         if (docPath == null) {
-            throw new XDevAPIError(Messages.getString("ModifyStatement.0", new String[] { "docPath" }));
+            throw new XDevAPIError(Messages.getString("ModifyStatement.0", new String[]{"docPath"}));
         }
         this.updates.addAll(Arrays.stream(docPath).map(dp -> new UpdateSpec(UpdateType.ITEM_REMOVE, dp)).collect(Collectors.toList()));
         return this;

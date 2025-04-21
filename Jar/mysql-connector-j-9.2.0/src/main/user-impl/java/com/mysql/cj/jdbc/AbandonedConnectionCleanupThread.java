@@ -76,50 +76,6 @@ public class AbandonedConnectionCleanupThread implements Runnable {
     private AbandonedConnectionCleanupThread() {
     }
 
-    @Override
-    public void run() {
-        for (;;) {
-            try {
-                checkThreadContextClassLoader();
-                Reference<? extends MysqlConnection> reference = referenceQueue.remove(5000);
-                if (reference != null) {
-                    finalizeResource((ConnectionFinalizerPhantomReference) reference);
-                }
-            } catch (InterruptedException e) {
-                threadRefLock.lock();
-                try {
-                    threadRef = null;
-
-                    // Finalize remaining references.
-                    Reference<? extends MysqlConnection> reference;
-                    while ((reference = referenceQueue.poll()) != null) {
-                        finalizeResource((ConnectionFinalizerPhantomReference) reference);
-                    }
-                    connectionFinalizerPhantomRefs.clear();
-                } finally {
-                    threadRefLock.unlock();
-                }
-                return;
-            } catch (Exception ex) {
-                // Nowhere to really log this.
-            }
-        }
-    }
-
-    /**
-     * Checks if the thread's context ClassLoader is active. This is usually true but some application managers implement a life-cycle mechanism in their
-     * ClassLoaders that is linked to the corresponding application's life-cycle. As such, a stopped/ended application will have a ClassLoader unable to load
-     * anything and, eventually, they throw an exception when trying to do so. When this happens, this thread has no point in being alive anymore.
-     */
-    private void checkThreadContextClassLoader() {
-        try {
-            threadRef.getContextClassLoader().getResource("");
-        } catch (Throwable e) {
-            // Shutdown no matter what.
-            uncheckedShutdown();
-        }
-    }
-
     /**
      * Checks if the context ClassLoaders from this and the caller thread are the same.
      *
@@ -142,8 +98,7 @@ public class AbandonedConnectionCleanupThread implements Runnable {
     /**
      * Shuts down this thread either checking or not the context ClassLoaders from the involved threads.
      *
-     * @param checked
-     *            does a checked shutdown if true, unchecked otherwise
+     * @param checked does a checked shutdown if true, unchecked otherwise
      */
     private static void shutdown(boolean checked) {
         if (checked && !consistentClassLoaders()) {
@@ -188,10 +143,8 @@ public class AbandonedConnectionCleanupThread implements Runnable {
     /**
      * Tracks the finalization of a {@link MysqlConnection} object and keeps a reference to its {@link NetworkResources} so that they can be later released.
      *
-     * @param conn
-     *            the Connection object to track for finalization
-     * @param io
-     *            the network resources to close on the connection finalization
+     * @param conn the Connection object to track for finalization
+     * @param io   the network resources to close on the connection finalization
      */
     protected static void trackConnection(MysqlConnection conn, NetworkResources io) {
         if (abandonedConnectionCleanupDisabled) {
@@ -211,8 +164,7 @@ public class AbandonedConnectionCleanupThread implements Runnable {
     /**
      * Release resources from the given {@link ConnectionFinalizerPhantomReference} and remove it from the references set.
      *
-     * @param reference
-     *            the {@link ConnectionFinalizerPhantomReference} to finalize.
+     * @param reference the {@link ConnectionFinalizerPhantomReference} to finalize.
      */
     private static void finalizeResource(ConnectionFinalizerPhantomReference reference) {
         try {
@@ -220,6 +172,50 @@ public class AbandonedConnectionCleanupThread implements Runnable {
             reference.clear();
         } finally {
             connectionFinalizerPhantomRefs.remove(reference);
+        }
+    }
+
+    @Override
+    public void run() {
+        for (; ; ) {
+            try {
+                checkThreadContextClassLoader();
+                Reference<? extends MysqlConnection> reference = referenceQueue.remove(5000);
+                if (reference != null) {
+                    finalizeResource((ConnectionFinalizerPhantomReference) reference);
+                }
+            } catch (InterruptedException e) {
+                threadRefLock.lock();
+                try {
+                    threadRef = null;
+
+                    // Finalize remaining references.
+                    Reference<? extends MysqlConnection> reference;
+                    while ((reference = referenceQueue.poll()) != null) {
+                        finalizeResource((ConnectionFinalizerPhantomReference) reference);
+                    }
+                    connectionFinalizerPhantomRefs.clear();
+                } finally {
+                    threadRefLock.unlock();
+                }
+                return;
+            } catch (Exception ex) {
+                // Nowhere to really log this.
+            }
+        }
+    }
+
+    /**
+     * Checks if the thread's context ClassLoader is active. This is usually true but some application managers implement a life-cycle mechanism in their
+     * ClassLoaders that is linked to the corresponding application's life-cycle. As such, a stopped/ended application will have a ClassLoader unable to load
+     * anything and, eventually, they throw an exception when trying to do so. When this happens, this thread has no point in being alive anymore.
+     */
+    private void checkThreadContextClassLoader() {
+        try {
+            threadRef.getContextClassLoader().getResource("");
+        } catch (Throwable e) {
+            // Shutdown no matter what.
+            uncheckedShutdown();
         }
     }
 

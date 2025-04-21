@@ -26,8 +26,7 @@ import java.util.List;
 /**
  * A set of elements from a query command.
  *
- * @param <T>
- *            the type of element returned from the query (doc or row)
+ * @param <T> the type of element returned from the query (doc or row)
  */
 public interface FetchResult<T> extends Iterator<T>, Iterable<T> {
 

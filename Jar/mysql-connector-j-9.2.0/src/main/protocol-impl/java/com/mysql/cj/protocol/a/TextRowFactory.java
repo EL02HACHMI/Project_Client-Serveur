@@ -33,7 +33,7 @@ import com.mysql.cj.protocol.a.result.TextBufferRow;
 public class TextRowFactory extends AbstractRowFactory implements ProtocolEntityFactory<ResultsetRow, NativePacketPayload> {
 
     public TextRowFactory(NativeProtocol protocol, ColumnDefinition colDefinition, Resultset.Concurrency resultSetConcurrency,
-            boolean canReuseRowPacketForBufferRow) {
+                          boolean canReuseRowPacketForBufferRow) {
         this.columnDefinition = colDefinition;
         this.resultSetConcurrency = resultSetConcurrency;
         this.canReuseRowPacketForBufferRow = canReuseRowPacketForBufferRow;

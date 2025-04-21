@@ -577,7 +577,7 @@ public class CallableStatementRegressionTest extends BaseTestCase {
         this.pstmt.setInt(1, 1);
         this.rs = this.pstmt.executeQuery();
 
-        String[] ids = new String[] { "a", "b", "c", "d", "e" };
+        String[] ids = new String[]{"a", "b", "c", "d", "e"};
         int pos = 0;
 
         while (this.rs.next()) {
@@ -682,7 +682,7 @@ public class CallableStatementRegressionTest extends BaseTestCase {
             }
             int il = buf.length;
 
-            int[] typesToTest = new int[] { Types.BIT, Types.BINARY, Types.BLOB, Types.JAVA_OBJECT, Types.LONGVARBINARY, Types.VARBINARY };
+            int[] typesToTest = new int[]{Types.BIT, Types.BINARY, Types.BLOB, Types.JAVA_OBJECT, Types.LONGVARBINARY, Types.VARBINARY};
 
             for (int i = 0; i < typesToTest.length; i++) {
 
@@ -754,19 +754,19 @@ public class CallableStatementRegressionTest extends BaseTestCase {
         this.conn.prepareCall("{call testBug26959(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)}").close();
         this.rs = this.conn.getMetaData().getProcedureColumns(this.conn.getCatalog(), null, "testBug26959", "%");
 
-        String[] parameterNames = new String[] { "_ACTION", "/*dumb-identifier-1*/", "#dumb-identifier-2", "--dumb-identifier-3", "_CLIENT_ID", "_LOGIN_ID",
-                "_WHERE", "_SORT", "_SQL", "_SONG_ID", "_NOTES", "_RESULT" };
+        String[] parameterNames = new String[]{"_ACTION", "/*dumb-identifier-1*/", "#dumb-identifier-2", "--dumb-identifier-3", "_CLIENT_ID", "_LOGIN_ID",
+                "_WHERE", "_SORT", "_SQL", "_SONG_ID", "_NOTES", "_RESULT"};
 
-        int[] parameterTypes = new int[] { Types.VARCHAR, Types.INTEGER, Types.INTEGER, Types.INTEGER, Types.INTEGER, Types.INTEGER, Types.VARCHAR,
-                Types.VARCHAR, Types.VARCHAR, Types.INTEGER, Types.VARCHAR, Types.VARCHAR };
+        int[] parameterTypes = new int[]{Types.VARCHAR, Types.INTEGER, Types.INTEGER, Types.INTEGER, Types.INTEGER, Types.INTEGER, Types.VARCHAR,
+                Types.VARCHAR, Types.VARCHAR, Types.INTEGER, Types.VARCHAR, Types.VARCHAR};
 
-        int[] direction = new int[] { java.sql.DatabaseMetaData.procedureColumnIn, java.sql.DatabaseMetaData.procedureColumnIn,
+        int[] direction = new int[]{java.sql.DatabaseMetaData.procedureColumnIn, java.sql.DatabaseMetaData.procedureColumnIn,
                 java.sql.DatabaseMetaData.procedureColumnIn, java.sql.DatabaseMetaData.procedureColumnIn, java.sql.DatabaseMetaData.procedureColumnIn,
                 java.sql.DatabaseMetaData.procedureColumnIn, java.sql.DatabaseMetaData.procedureColumnIn, java.sql.DatabaseMetaData.procedureColumnIn,
                 java.sql.DatabaseMetaData.procedureColumnOut, java.sql.DatabaseMetaData.procedureColumnIn, java.sql.DatabaseMetaData.procedureColumnIn,
-                java.sql.DatabaseMetaData.procedureColumnOut };
+                java.sql.DatabaseMetaData.procedureColumnOut};
 
-        int[] precision = new int[] { 20, 10, 10, 10, 10, 10, 2000, 2000, 8000, 10, 2000, 10 };
+        int[] precision = new int[]{20, 10, 10, 10, 10, 10, 2000, 2000, 8000, 10, 2000, 10};
 
         int index = 0;
 
@@ -794,11 +794,11 @@ public class CallableStatementRegressionTest extends BaseTestCase {
         this.rs.close();
 
         index = 0;
-        parameterNames = new String[] { "/*id*/", "result2" };
-        parameterTypes = new int[] { Types.VARCHAR, Types.DECIMAL };
-        precision = new int[] { 20, 10 };
-        direction = new int[] { java.sql.DatabaseMetaData.procedureColumnIn, java.sql.DatabaseMetaData.procedureColumnOut };
-        int[] scale = new int[] { 0, 2 };
+        parameterNames = new String[]{"/*id*/", "result2"};
+        parameterTypes = new int[]{Types.VARCHAR, Types.DECIMAL};
+        precision = new int[]{20, 10};
+        direction = new int[]{java.sql.DatabaseMetaData.procedureColumnIn, java.sql.DatabaseMetaData.procedureColumnOut};
+        int[] scale = new int[]{0, 2};
 
         this.conn.prepareCall("{call testBug26959_1(?, ?)}").close();
 
@@ -852,7 +852,7 @@ public class CallableStatementRegressionTest extends BaseTestCase {
 
     /**
      * Tests fix for BUG#28689 - CallableStatement.executeBatch() doesn't work when connection property "noAccessToProcedureBodies" has been set to "true".
-     *
+     * <p>
      * The fix involves changing the behavior of "noAccessToProcedureBodies", in that the driver will now report all paramters as "IN" paramters but allow
      * callers to call registerOutParameter() on them.
      *
@@ -935,7 +935,7 @@ public class CallableStatementRegressionTest extends BaseTestCase {
                     if (args.length == 2 && args[0].equals(Integer.TYPE)) {
                         if (!args[1].isPrimitive()) {
                             try {
-                                setters[i].invoke(callable, new Object[] { new Integer(2), null });
+                                setters[i].invoke(callable, new Object[]{new Integer(2), null});
                             } catch (InvocationTargetException ive) {
                                 if (!(ive.getCause() instanceof SQLFeatureNotSupportedException)) {
                                     throw ive;
@@ -944,7 +944,7 @@ public class CallableStatementRegressionTest extends BaseTestCase {
                         } else {
                             if (args[1].getName().equals("boolean")) {
                                 try {
-                                    setters[i].invoke(callable, new Object[] { new Integer(2), Boolean.FALSE });
+                                    setters[i].invoke(callable, new Object[]{new Integer(2), Boolean.FALSE});
                                 } catch (InvocationTargetException ive) {
                                     if (!(ive.getCause() instanceof SQLFeatureNotSupportedException)) {
                                         throw ive;
@@ -955,7 +955,7 @@ public class CallableStatementRegressionTest extends BaseTestCase {
                             if (args[1].getName().equals("byte")) {
 
                                 try {
-                                    setters[i].invoke(callable, new Object[] { new Integer(2), new Byte((byte) 0) });
+                                    setters[i].invoke(callable, new Object[]{new Integer(2), new Byte((byte) 0)});
                                 } catch (InvocationTargetException ive) {
                                     if (!(ive.getCause() instanceof SQLFeatureNotSupportedException)) {
                                         throw ive;
@@ -967,7 +967,7 @@ public class CallableStatementRegressionTest extends BaseTestCase {
                             if (args[1].getName().equals("double")) {
 
                                 try {
-                                    setters[i].invoke(callable, new Object[] { new Integer(2), new Double(0) });
+                                    setters[i].invoke(callable, new Object[]{new Integer(2), new Double(0)});
                                 } catch (InvocationTargetException ive) {
                                     if (!(ive.getCause() instanceof SQLFeatureNotSupportedException)) {
                                         throw ive;
@@ -979,7 +979,7 @@ public class CallableStatementRegressionTest extends BaseTestCase {
                             if (args[1].getName().equals("float")) {
 
                                 try {
-                                    setters[i].invoke(callable, new Object[] { new Integer(2), new Float(0) });
+                                    setters[i].invoke(callable, new Object[]{new Integer(2), new Float(0)});
                                 } catch (InvocationTargetException ive) {
                                     if (!(ive.getCause() instanceof SQLFeatureNotSupportedException)) {
                                         throw ive;
@@ -991,7 +991,7 @@ public class CallableStatementRegressionTest extends BaseTestCase {
                             if (args[1].getName().equals("int")) {
 
                                 try {
-                                    setters[i].invoke(callable, new Object[] { new Integer(2), new Integer(0) });
+                                    setters[i].invoke(callable, new Object[]{new Integer(2), new Integer(0)});
                                 } catch (InvocationTargetException ive) {
                                     if (!(ive.getCause() instanceof SQLFeatureNotSupportedException)) {
                                         throw ive;
@@ -1002,7 +1002,7 @@ public class CallableStatementRegressionTest extends BaseTestCase {
 
                             if (args[1].getName().equals("long")) {
                                 try {
-                                    setters[i].invoke(callable, new Object[] { new Integer(2), new Long(0) });
+                                    setters[i].invoke(callable, new Object[]{new Integer(2), new Long(0)});
                                 } catch (InvocationTargetException ive) {
                                     if (!(ive.getCause() instanceof SQLFeatureNotSupportedException)) {
                                         throw ive;
@@ -1012,7 +1012,7 @@ public class CallableStatementRegressionTest extends BaseTestCase {
 
                             if (args[1].getName().equals("short")) {
                                 try {
-                                    setters[i].invoke(callable, new Object[] { new Integer(2), new Short((short) 0) });
+                                    setters[i].invoke(callable, new Object[]{new Integer(2), new Short((short) 0)});
                                 } catch (InvocationTargetException ive) {
                                     if (!(ive.getCause() instanceof SQLFeatureNotSupportedException)) {
                                         throw ive;
@@ -1240,10 +1240,10 @@ public class CallableStatementRegressionTest extends BaseTestCase {
      * Problem was in CallableStatement.java,
      * <code>
      * private void determineParameterTypes() throws SQLException
-     *   if (procName.indexOf(".") == -1) {
-     *     useCatalog = true;
-     *   }
-     *</code>
+     * if (procName.indexOf(".") == -1) {
+     * useCatalog = true;
+     * }
+     * </code>
      * The fix will be to "sanitize" db.sp call just like in noAccessToProcedureBodies.
      *
      * @throws Exception
@@ -1349,8 +1349,8 @@ public class CallableStatementRegressionTest extends BaseTestCase {
         String dbName1 = ((JdbcConnection) this.conn).getPropertySet().<DatabaseTerm>getEnumProperty(PropertyKey.databaseTerm).getValue() == DatabaseTerm.SCHEMA
                 ? this.conn.getSchema()
                 : this.conn.getCatalog();
-        String[] sql = new String[] { String.format("{CALL %s.testBug79561(?)}", dbName1), String.format("{CALL `%s`.testBug79561(?)}", dbName1),
-                String.format("{CALL %s.`testBug79561`(?)}", dbName1), String.format("{CALL `%s`.`testBug79561`(?)}", dbName1) };
+        String[] sql = new String[]{String.format("{CALL %s.testBug79561(?)}", dbName1), String.format("{CALL `%s`.testBug79561(?)}", dbName1),
+                String.format("{CALL %s.`testBug79561`(?)}", dbName1), String.format("{CALL `%s`.`testBug79561`(?)}", dbName1)};
 
         for (int i = 0; i < sql.length; i++) {
             for (int m = 0; m < 4; m++) { // Method call type: 0) by index; 1) by name; 2) by invalid index; 3) by invalid name;
@@ -1569,7 +1569,7 @@ public class CallableStatementRegressionTest extends BaseTestCase {
 
         Connection con = null;
         try {
-            for (boolean getProcRetFuncs : new boolean[] { false, true }) {
+            for (boolean getProcRetFuncs : new boolean[]{false, true}) {
                 Properties props = new Properties();
                 props.setProperty(PropertyKey.sslMode.getKeyName(), SslMode.DISABLED.name());
                 props.setProperty(PropertyKey.allowPublicKeyRetrieval.getKeyName(), "true");

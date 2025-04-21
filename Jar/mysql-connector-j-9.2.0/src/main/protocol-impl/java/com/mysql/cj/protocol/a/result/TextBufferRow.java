@@ -32,7 +32,7 @@ import com.mysql.cj.result.ValueFactory;
 /**
  * A ResultSetRow implementation that holds one row packet (which is re-used by the driver, and thus saves memory allocations), and tries when possible to avoid
  * allocations to break out the results as individual byte[]s.
- *
+ * <p>
  * (this isn't possible when doing things like reading floating point values).
  */
 public class TextBufferRow extends AbstractBufferRow {

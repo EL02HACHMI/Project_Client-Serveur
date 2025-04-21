@@ -32,8 +32,6 @@ import com.mysql.cj.xdevapi.ExprUtil;
 
 public class XServerCapabilities implements ServerCapabilities {
 
-    private Map<String, Any> capabilities;
-
     static String KEY_COMPRESSION = "compression";
     static String KEY_SESSION_CONNECT_ATTRS = "session_connect_attrs";
     static String KEY_TLS = "tls";
@@ -41,12 +39,13 @@ public class XServerCapabilities implements ServerCapabilities {
     static String KEY_CLIENT_PWD_EXPIRE_OK = "client.pwd_expire_ok";
     static String KEY_AUTHENTICATION_MECHANISMS = "authentication.mechanisms";
     static String KEY_DOC_FORMATS = "doc.formats";
-
     static String SUBKEY_COMPRESSION_ALGORITHM = "algorithm";
     static String SUBKEY_COMPRESSION_SERVER_COMBINE_MIXED_MESSAGES = "server_combine_mixed_messages";
     static String SUBKEY_COMPRESSION_SERVER_MAX_COMBINE_MESSAGES = "server_max_combine_messages";
-
-    /** Server-assigned client-id. */
+    private Map<String, Any> capabilities;
+    /**
+     * Server-assigned client-id.
+     */
     private long clientId = -1;
 
     public XServerCapabilities(Map<String, Any> capabilities) {

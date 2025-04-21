@@ -171,30 +171,30 @@ public class IntegerValueFactoryTest extends CommonAsserts {
 
     @Test
     public void testCreateFromBit() {
-        assertEquals(Integer.valueOf(0), this.vf.createFromBit(new byte[] { 0 }, 0, 1));
-        assertEquals(Integer.valueOf(1), this.vf.createFromBit(new byte[] { 1 }, 0, 1));
-        assertEquals(Integer.valueOf(2), this.vf.createFromBit(new byte[] { 2 }, 0, 1));
-        assertEquals(Integer.valueOf(255), this.vf.createFromBit(new byte[] { (byte) 0xff }, 0, 1));
-        assertEquals(Integer.valueOf((int) 0xffffL), this.vf.createFromBit(new byte[] { (byte) 0xff, (byte) 0xff }, 0, 2));
-        assertEquals(Integer.valueOf((int) 0xffffffL), this.vf.createFromBit(new byte[] { (byte) 0xff, (byte) 0xff, (byte) 0xff }, 0, 3));
-        assertEquals(Integer.valueOf((int) 0xffffffffL), this.vf.createFromBit(new byte[] { (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff }, 0, 4));
+        assertEquals(Integer.valueOf(0), this.vf.createFromBit(new byte[]{0}, 0, 1));
+        assertEquals(Integer.valueOf(1), this.vf.createFromBit(new byte[]{1}, 0, 1));
+        assertEquals(Integer.valueOf(2), this.vf.createFromBit(new byte[]{2}, 0, 1));
+        assertEquals(Integer.valueOf(255), this.vf.createFromBit(new byte[]{(byte) 0xff}, 0, 1));
+        assertEquals(Integer.valueOf((int) 0xffffL), this.vf.createFromBit(new byte[]{(byte) 0xff, (byte) 0xff}, 0, 2));
+        assertEquals(Integer.valueOf((int) 0xffffffL), this.vf.createFromBit(new byte[]{(byte) 0xff, (byte) 0xff, (byte) 0xff}, 0, 3));
+        assertEquals(Integer.valueOf((int) 0xffffffffL), this.vf.createFromBit(new byte[]{(byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff}, 0, 4));
 
         assertThrows(NumberOutOfRange.class, "Value .+ is outside of valid range for type java.lang.Integer", () -> {
-            IntegerValueFactoryTest.this.vf.createFromBit(new byte[] { (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff }, 0, 5);
+            IntegerValueFactoryTest.this.vf.createFromBit(new byte[]{(byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff}, 0, 5);
             return null;
         });
         assertThrows(NumberOutOfRange.class, "Value .+ is outside of valid range for type java.lang.Integer", () -> {
-            IntegerValueFactoryTest.this.vf.createFromBit(new byte[] { (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff }, 0, 6);
-            return null;
-        });
-        assertThrows(NumberOutOfRange.class, "Value .+ is outside of valid range for type java.lang.Integer", () -> {
-            IntegerValueFactoryTest.this.vf
-                    .createFromBit(new byte[] { (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff }, 0, 7);
+            IntegerValueFactoryTest.this.vf.createFromBit(new byte[]{(byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff}, 0, 6);
             return null;
         });
         assertThrows(NumberOutOfRange.class, "Value .+ is outside of valid range for type java.lang.Integer", () -> {
             IntegerValueFactoryTest.this.vf
-                    .createFromBit(new byte[] { (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff }, 0, 8);
+                    .createFromBit(new byte[]{(byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff}, 0, 7);
+            return null;
+        });
+        assertThrows(NumberOutOfRange.class, "Value .+ is outside of valid range for type java.lang.Integer", () -> {
+            IntegerValueFactoryTest.this.vf
+                    .createFromBit(new byte[]{(byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff}, 0, 8);
             return null;
         });
     }

@@ -62,6 +62,20 @@ public class DevApiBaseTestCase extends InternalXBaseTestCase {
 
     private Boolean mysqlRunningLocally = null;
 
+    protected static void assertNonSecureSession(Session sess) {
+        assertSessionStatusEquals(sess, "mysqlx_ssl_cipher", "");
+    }
+
+    protected static void assertSecureSession(Session sess) {
+        assertSessionStatusNotEquals(sess, "mysqlx_ssl_cipher", "");
+    }
+
+    protected static void assertSecureSession(Session sess, String user) {
+        assertSecureSession(sess);
+        SqlResult res = sess.sql("SELECT CURRENT_USER()").execute();
+        assertEquals(user, res.fetchOne().getString(0).split("@")[0]);
+    }
+
     public boolean setupTestSession() {
         if (this.isSetForXTests) {
             this.session = new SessionImpl(this.testHostInfo);
@@ -203,7 +217,7 @@ public class DevApiBaseTestCase extends InternalXBaseTestCase {
 
     int getPreparedStatementExecutionsCount(Session sess, int prepStmtId) {
         SqlResult res = sess.sql("SELECT psi.count_execute FROM performance_schema.prepared_statements_instances psi INNER JOIN performance_schema.threads t "
-                + "ON psi.owner_thread_id = t.thread_id WHERE t.processlist_id = connection_id() AND psi.statement_id = mysqlx_get_prepared_statement_id(?)")
+                        + "ON psi.owner_thread_id = t.thread_id WHERE t.processlist_id = connection_id() AND psi.statement_id = mysqlx_get_prepared_statement_id(?)")
                 .bind(prepStmtId).execute();
         if (res.hasNext()) {
             return res.next().getInt(0);
@@ -268,20 +282,6 @@ public class DevApiBaseTestCase extends InternalXBaseTestCase {
             psCount = getPreparedStatementsCount(threadId);
         } while (psCount != 0 && --countdown > 0);
         assertEquals(expectedCount, psCount);
-    }
-
-    protected static void assertNonSecureSession(Session sess) {
-        assertSessionStatusEquals(sess, "mysqlx_ssl_cipher", "");
-    }
-
-    protected static void assertSecureSession(Session sess) {
-        assertSessionStatusNotEquals(sess, "mysqlx_ssl_cipher", "");
-    }
-
-    protected static void assertSecureSession(Session sess, String user) {
-        assertSecureSession(sess);
-        SqlResult res = sess.sql("SELECT CURRENT_USER()").execute();
-        assertEquals(user, res.fetchOne().getString(0).split("@")[0]);
     }
 
     public String buildString(int length, char charToFill) {

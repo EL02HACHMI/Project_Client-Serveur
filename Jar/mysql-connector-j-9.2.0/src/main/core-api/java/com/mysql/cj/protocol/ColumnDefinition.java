@@ -27,7 +27,6 @@ import com.mysql.cj.result.Field;
 /**
  * Represents protocol specific result set metadata,
  * eg., for native protocol, Protocol::ColumnDefinition41 protocol entity.
- *
  */
 public interface ColumnDefinition extends ProtocolEntity {
 

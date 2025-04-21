@@ -47,18 +47,15 @@ public class StandardLogger implements Log {
     /**
      * Creates a new StandardLogger object.
      *
-     * @param name
-     *            the name of the configuration to use -- ignored
+     * @param name the name of the configuration to use -- ignored
      */
     public StandardLogger(String name) {
         this(name, false);
     }
 
     /**
-     * @param name
-     *            the name of the configuration to use -- ignored
-     * @param logLocationInfo
-     *            logLocationInfo
+     * @param name            the name of the configuration to use -- ignored
+     * @param logLocationInfo logLocationInfo
      */
     public StandardLogger(String name, boolean logLocationInfo) {
         this.logLocationInfo = logLocationInfo;
@@ -97,8 +94,7 @@ public class StandardLogger implements Log {
     /**
      * Logs the given message instance using the 'debug' level
      *
-     * @param message
-     *            the message to log
+     * @param message the message to log
      */
     @Override
     public void logDebug(Object message) {
@@ -108,10 +104,8 @@ public class StandardLogger implements Log {
     /**
      * Logs the given message and Throwable at the 'debug' level.
      *
-     * @param message
-     *            the message to log
-     * @param exception
-     *            the throwable to log (may be null)
+     * @param message   the message to log
+     * @param exception the throwable to log (may be null)
      */
     @Override
     public void logDebug(Object message, Throwable exception) {
@@ -121,8 +115,7 @@ public class StandardLogger implements Log {
     /**
      * Logs the given message instance using the 'error' level
      *
-     * @param message
-     *            the message to log
+     * @param message the message to log
      */
     @Override
     public void logError(Object message) {
@@ -132,10 +125,8 @@ public class StandardLogger implements Log {
     /**
      * Logs the given message and Throwable at the 'error' level.
      *
-     * @param message
-     *            the message to log
-     * @param exception
-     *            the throwable to log (may be null)
+     * @param message   the message to log
+     * @param exception the throwable to log (may be null)
      */
     @Override
     public void logError(Object message, Throwable exception) {
@@ -145,8 +136,7 @@ public class StandardLogger implements Log {
     /**
      * Logs the given message instance using the 'fatal' level
      *
-     * @param message
-     *            the message to log
+     * @param message the message to log
      */
     @Override
     public void logFatal(Object message) {
@@ -156,10 +146,8 @@ public class StandardLogger implements Log {
     /**
      * Logs the given message and Throwable at the 'fatal' level.
      *
-     * @param message
-     *            the message to log
-     * @param exception
-     *            the throwable to log (may be null)
+     * @param message   the message to log
+     * @param exception the throwable to log (may be null)
      */
     @Override
     public void logFatal(Object message, Throwable exception) {
@@ -169,8 +157,7 @@ public class StandardLogger implements Log {
     /**
      * Logs the given message instance using the 'info' level
      *
-     * @param message
-     *            the message to log
+     * @param message the message to log
      */
     @Override
     public void logInfo(Object message) {
@@ -180,10 +167,8 @@ public class StandardLogger implements Log {
     /**
      * Logs the given message and Throwable at the 'info' level.
      *
-     * @param message
-     *            the message to log
-     * @param exception
-     *            the throwable to log (may be null)
+     * @param message   the message to log
+     * @param exception the throwable to log (may be null)
      */
     @Override
     public void logInfo(Object message, Throwable exception) {
@@ -193,8 +178,7 @@ public class StandardLogger implements Log {
     /**
      * Logs the given message instance using the 'trace' level
      *
-     * @param message
-     *            the message to log
+     * @param message the message to log
      */
     @Override
     public void logTrace(Object message) {
@@ -204,10 +188,8 @@ public class StandardLogger implements Log {
     /**
      * Logs the given message and Throwable at the 'trace' level.
      *
-     * @param message
-     *            the message to log
-     * @param exception
-     *            the throwable to log (may be null)
+     * @param message   the message to log
+     * @param exception the throwable to log (may be null)
      */
     @Override
     public void logTrace(Object message, Throwable exception) {
@@ -217,8 +199,7 @@ public class StandardLogger implements Log {
     /**
      * Logs the given message instance using the 'warn' level
      *
-     * @param message
-     *            the message to log
+     * @param message the message to log
      */
     @Override
     public void logWarn(Object message) {
@@ -228,10 +209,8 @@ public class StandardLogger implements Log {
     /**
      * Logs the given message and Throwable at the 'warn' level.
      *
-     * @param message
-     *            the message to log
-     * @param exception
-     *            the throwable to log (may be null)
+     * @param message   the message to log
+     * @param exception the throwable to log (may be null)
      */
     @Override
     public void logWarn(Object message, Throwable exception) {

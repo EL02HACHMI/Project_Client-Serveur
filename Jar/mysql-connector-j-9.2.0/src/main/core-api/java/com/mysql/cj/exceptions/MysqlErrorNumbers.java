@@ -5929,9 +5929,8 @@ public final class MysqlErrorNumbers {
     public static final String SQLSTATE_CONNJ_INVALID_COLUMN_NUMBER = "S1002"; // Invalid column number
     public static final String SQLSTATE_CONNJ_ILLEGAL_ARGUMENT = "S1009"; // Invalid argument value
     public static final String SQLSTATE_CONNJ_DRIVER_NOT_CAPABLE = "S1C00"; // Driver not capable
-
-    private static Map<String, String> sqlstateMessages;
     public static Map<Integer, String> mysqlToSqlstate;
+    private static Map<String, String> sqlstateMessages;
 
     static {
         /*
@@ -6574,9 +6573,7 @@ public final class MysqlErrorNumbers {
     /**
      * Map MySQL error codes to SQL:2023 error codes.
      *
-     * @param errno
-     *            the MySQL error code
-     *
+     * @param errno the MySQL error code
      * @return the corresponding SQL:2023 error code
      */
     public static String mysqlToSqlstate(int errno) {

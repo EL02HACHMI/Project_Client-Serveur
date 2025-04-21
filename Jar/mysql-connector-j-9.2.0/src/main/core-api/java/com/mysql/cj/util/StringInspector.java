@@ -29,9 +29,9 @@ import com.mysql.cj.Messages;
 
 /**
  * Utility class to inspect a MySQL string, typically a query string.
- *
+ * <p>
  * Provides string searching and manipulation operations such as finding sub-strings, matching sub-strings or building a comments-free version of a string.
- *
+ * <p>
  * This object keeps internal state that affect the operations, e.g., executing an indexOf operation after another causes the second to start the search form
  * where the previous one stopped.
  */
@@ -61,21 +61,16 @@ public class StringInspector {
      * This object provides string searching and manipulation operations such as finding sub-strings, matching sub-strings or building a comments-free version
      * of a string.
      *
-     * @param source
-     *            the source string to process
-     * @param openingMarkers
-     *            the characters that can delimit the beginning of a quoted text block
-     * @param closingMarkers
-     *            the characters that can delimit the end of a of a quoted text block. The length of this parameter must match the length of th previous one
-     * @param overridingMarkers
-     *            the subset of <code>openingMarkers</code> that override the remaining markers, e.g., if <code>openingMarkers = "'("</code>,
-     *            <code>closingMarkers = "')"</code> and <code>overridingMarkers = "'"</code> then the block between the outer parenthesis in <code>"start
-     *            ('max('); end"</code> is strictly consumed, otherwise the suffix <code>"'); end"</code> would end up being consumed too in the process of
-     *            handling the nested parenthesis.
-     * @param searchMode
-     *            a <code>Set</code>, ideally an <code>EnumSet</code>, containing the default flags from the enum {@link SearchMode} that determine the behavior
-     *            of the search and manipulation operations. Note that some operation may override the search mode according to their needs, but the default one
-     *            is not touched.
+     * @param source            the source string to process
+     * @param openingMarkers    the characters that can delimit the beginning of a quoted text block
+     * @param closingMarkers    the characters that can delimit the end of a of a quoted text block. The length of this parameter must match the length of th previous one
+     * @param overridingMarkers the subset of <code>openingMarkers</code> that override the remaining markers, e.g., if <code>openingMarkers = "'("</code>,
+     *                          <code>closingMarkers = "')"</code> and <code>overridingMarkers = "'"</code> then the block between the outer parenthesis in <code>"start
+     *                          ('max('); end"</code> is strictly consumed, otherwise the suffix <code>"'); end"</code> would end up being consumed too in the process of
+     *                          handling the nested parenthesis.
+     * @param searchMode        a <code>Set</code>, ideally an <code>EnumSet</code>, containing the default flags from the enum {@link SearchMode} that determine the behavior
+     *                          of the search and manipulation operations. Note that some operation may override the search mode according to their needs, but the default one
+     *                          is not touched.
      */
     public StringInspector(String source, String openingMarkers, String closingMarkers, String overridingMarkers, Set<SearchMode> searchMode) {
         this(source, 0, openingMarkers, closingMarkers, overridingMarkers, searchMode);
@@ -85,26 +80,20 @@ public class StringInspector {
      * This object provides string searching and manipulation operations such as finding sub-strings, matching sub-strings or building a comments-free version
      * of a string.
      *
-     * @param source
-     *            the source string to process
-     * @param startingPosition
-     *            the position from where the source string will be processed
-     * @param openingMarkers
-     *            the characters that can delimit the beginning of a quoted text block
-     * @param closingMarkers
-     *            the characters that can delimit the end of a of a quoted text block. The length of this parameter must match the length of th previous one
-     * @param overridingMarkers
-     *            the subset of <code>openingMarkers</code> that override the remaining markers, e.g., if <code>openingMarkers = "'("</code>,
-     *            <code>closingMarkers = "')"</code> and <code>overridingMarkers = "'"</code> then the block between the outer parenthesis in <code>"start
-     *            ('max('); end"</code> is strictly consumed, otherwise the suffix <code>"'); end"</code> would end up being consumed too in the process of
-     *            handling the nested parenthesis.
-     * @param searchMode
-     *            a <code>Set</code>, ideally an <code>EnumSet</code>, containing the default flags from the enum {@link SearchMode} that determine the behavior
-     *            of the search and manipulation operations. Note that some operation may override the search mode according to their needs, but the default one
-     *            is not touched.
+     * @param source            the source string to process
+     * @param startingPosition  the position from where the source string will be processed
+     * @param openingMarkers    the characters that can delimit the beginning of a quoted text block
+     * @param closingMarkers    the characters that can delimit the end of a of a quoted text block. The length of this parameter must match the length of th previous one
+     * @param overridingMarkers the subset of <code>openingMarkers</code> that override the remaining markers, e.g., if <code>openingMarkers = "'("</code>,
+     *                          <code>closingMarkers = "')"</code> and <code>overridingMarkers = "'"</code> then the block between the outer parenthesis in <code>"start
+     *                          ('max('); end"</code> is strictly consumed, otherwise the suffix <code>"'); end"</code> would end up being consumed too in the process of
+     *                          handling the nested parenthesis.
+     * @param searchMode        a <code>Set</code>, ideally an <code>EnumSet</code>, containing the default flags from the enum {@link SearchMode} that determine the behavior
+     *                          of the search and manipulation operations. Note that some operation may override the search mode according to their needs, but the default one
+     *                          is not touched.
      */
     public StringInspector(String source, int startingPosition, String openingMarkers, String closingMarkers, String overridingMarkers,
-            Set<SearchMode> searchMode) {
+                           Set<SearchMode> searchMode) {
         if (source == null) {
             throw new IllegalArgumentException(Messages.getString("StringInspector.1"));
         }
@@ -117,14 +106,14 @@ public class StringInspector {
 
         if (this.defaultSearchMode.contains(SearchMode.SKIP_BETWEEN_MARKERS)) {
             if (this.openingMarkers == null || this.closingMarkers == null || this.openingMarkers.length() != this.closingMarkers.length()) {
-                throw new IllegalArgumentException(Messages.getString("StringInspector.2", new String[] { this.openingMarkers, this.closingMarkers }));
+                throw new IllegalArgumentException(Messages.getString("StringInspector.2", new String[]{this.openingMarkers, this.closingMarkers}));
             }
             if (this.overridingMarkers == null) {
-                throw new IllegalArgumentException(Messages.getString("StringInspector.3", new String[] { this.overridingMarkers, this.openingMarkers }));
+                throw new IllegalArgumentException(Messages.getString("StringInspector.3", new String[]{this.overridingMarkers, this.openingMarkers}));
             }
             for (char c : this.overridingMarkers.toCharArray()) {
                 if (this.openingMarkers.indexOf(c) == -1) {
-                    throw new IllegalArgumentException(Messages.getString("StringInspector.3", new String[] { this.overridingMarkers, this.openingMarkers }));
+                    throw new IllegalArgumentException(Messages.getString("StringInspector.3", new String[]{this.overridingMarkers, this.openingMarkers}));
                 }
             }
         }
@@ -140,10 +129,8 @@ public class StringInspector {
      * Sets the position from where the source string will be processed from now on, taking into consideration the "escaped" status of current character, if
      * the mode {@link SearchMode#ALLOW_BACKSLASH_ESCAPE} is present in the default search mode.
      *
-     * @param pos
-     *            the position from where the source string will be processed
-     * @return
-     *         the previous current position value
+     * @param pos the position from where the source string will be processed
+     * @return the previous current position value
      */
     public int setStartPosition(int pos) {
         if (pos < 0) {
@@ -162,10 +149,8 @@ public class StringInspector {
     /**
      * Sets the position where the source string processing will stop.
      *
-     * @param pos
-     *            the position where the source string will stop being processed
-     * @return
-     *         the previous stop position value
+     * @param pos the position where the source string will stop being processed
+     * @return the previous stop position value
      */
     public int setStopPosition(int pos) {
         if (pos < 0) {
@@ -212,8 +197,7 @@ public class StringInspector {
     /**
      * Returns the character in the current position.
      *
-     * @return
-     *         the character in the current position
+     * @return the character in the current position
      */
     public char getChar() {
         if (this.pos >= this.stopAt) {
@@ -225,8 +209,7 @@ public class StringInspector {
     /**
      * Returns the current position.
      *
-     * @return
-     *         the current position
+     * @return the current position
      */
     public int getPosition() {
         return this.pos;
@@ -236,8 +219,7 @@ public class StringInspector {
      * Increments the current position index, by one, taking into consideration the "escaped" status of current character, if the mode
      * {@link SearchMode#ALLOW_BACKSLASH_ESCAPE} is present in the default search mode.
      *
-     * @return
-     *         the new current position
+     * @return the new current position
      */
     public int incrementPosition() {
         return incrementPosition(this.defaultSearchMode);
@@ -247,10 +229,8 @@ public class StringInspector {
      * Increments the current position index, by one, taking into consideration the "escaped" status of current character, if the mode
      * {@link SearchMode#ALLOW_BACKSLASH_ESCAPE} is present in the search mode specified.
      *
-     * @param searchMode
-     *            the search mode to use in this operation
-     * @return
-     *         the new current position
+     * @param searchMode the search mode to use in this operation
+     * @return the new current position
      */
     public int incrementPosition(Set<SearchMode> searchMode) {
         if (this.pos >= this.stopAt) {
@@ -268,10 +248,8 @@ public class StringInspector {
      * Increments the current position index, by be given number, taking into consideration the "escaped" status of current character, if the mode
      * {@link SearchMode#ALLOW_BACKSLASH_ESCAPE} is present in the default search mode.
      *
-     * @param by
-     *            the number of positions to increment
-     * @return
-     *         the new current position
+     * @param by the number of positions to increment
+     * @return the new current position
      */
     public int incrementPosition(int by) {
         return incrementPosition(by, this.defaultSearchMode);
@@ -281,12 +259,9 @@ public class StringInspector {
      * Increments the current position index, by be given number, taking into consideration the "escaped" status of current character, if the mode
      * {@link SearchMode#ALLOW_BACKSLASH_ESCAPE} is present in the specified search mode.
      *
-     * @param by
-     *            the number of positions to increment
-     * @param searchMode
-     *            the search mode to use in this operation
-     * @return
-     *         the new current position
+     * @param by         the number of positions to increment
+     * @param searchMode the search mode to use in this operation
+     * @return the new current position
      */
     public int incrementPosition(int by, Set<SearchMode> searchMode) {
         for (int i = 0; i < by; i++) {
@@ -319,8 +294,7 @@ public class StringInspector {
      * If the character in the current position matches one of the prefixes that determine a skipping block, then the position marker advances to the first
      * character after the block to skip.
      *
-     * @return
-     *         the position of the next valid character, or the current position if already on a valid character
+     * @return the position of the next valid character, or the current position if already on a valid character
      */
     public int indexOfNextChar() {
         return indexOfNextChar(this.defaultSearchMode);
@@ -332,10 +306,8 @@ public class StringInspector {
      * If the character in the current position matches one of the prefixes that determine a skipping block, then the position marker advances to the first
      * character after the block to skip.
      *
-     * @param searchMode
-     *            the search mode to use in this operation
-     * @return
-     *         the position of the next valid character, or the current position if already on a valid character
+     * @param searchMode the search mode to use in this operation
+     * @return the position of the next valid character, or the current position if already on a valid character
      */
     private int indexOfNextChar(Set<SearchMode> searchMode) {
         if (this.source == null || this.pos >= this.stopAt) {
@@ -385,7 +357,7 @@ public class StringInspector {
 
             } else if (checkSkipConditions && searchMode.contains(SearchMode.SKIP_LINE_COMMENTS)
                     && (c0 == '-' && c1 == '-' && (Character.isWhitespace(c2) || (dashDashCommentImmediateEnd = c2 == ';') || c2 == Character.MIN_VALUE)
-                            || c0 == '#')) {
+                    || c0 == '#')) {
                 if (dashDashCommentImmediateEnd) {
                     // Comments line found but closed immediately by query delimiter marker.
                     this.pos++; // Move to next char ('-').
@@ -481,10 +453,8 @@ public class StringInspector {
      * Returns the position of the next closing marker corresponding to the opening marker in the current position.
      * If the current position is not an opening marker, then -1 is returned instead.
      *
-     * @param searchMode
-     *            the search mode to use in this operation
-     * @return
-     *         the position of the next closing marker corresponding to the opening marker in the current position
+     * @param searchMode the search mode to use in this operation
+     * @return the position of the next closing marker corresponding to the opening marker in the current position
      */
     private int indexOfClosingMarker(Set<SearchMode> searchMode) {
         if (this.source == null || this.pos >= this.stopAt) {
@@ -541,8 +511,7 @@ public class StringInspector {
      * If the character in the current position matches one of the prefixes that determine a skipping block, then the position marker advances to the first
      * alphanumeric character after the block to skip.
      *
-     * @return
-     *         the position of the next valid character, or the current position if already on a valid character
+     * @return the position of the next valid character, or the current position if already on a valid character
      */
     public int indexOfNextAlphanumericChar() {
         if (this.source == null || this.pos >= this.stopAt) {
@@ -577,8 +546,7 @@ public class StringInspector {
      * If the character in the current position matches one of the prefixes that determine a skipping block, then the position marker advances to the first
      * non-whitespace character after the block to skip.
      *
-     * @return
-     *         the position of the next valid character, or the current position if already on a valid character
+     * @return the position of the next valid character, or the current position if already on a valid character
      */
     public int indexOfNextNonWsChar() {
         if (this.source == null || this.pos >= this.stopAt) {
@@ -600,8 +568,7 @@ public class StringInspector {
      * If the character in the current position matches one of the prefixes that determine a skipping block, then the position marker advances to the first
      * whitespace character after the block to skip.
      *
-     * @return
-     *         the position of the next valid character, or the current position if already on a valid character
+     * @return the position of the next valid character, or the current position if already on a valid character
      */
     public int indexOfNextWsChar() {
         if (this.source == null || this.pos >= this.stopAt) {
@@ -634,10 +601,8 @@ public class StringInspector {
      * Finds the position of the given string within the source string, ignoring case, with the option to skip text delimited by the specified markers or inside
      * comment blocks.
      *
-     * @param searchFor
-     *            the sub-string to search for
-     * @return
-     *         the position where the sub-string is found, starting from the current position, or -1 if not found
+     * @param searchFor the sub-string to search for
+     * @return the position where the sub-string is found, starting from the current position, or -1 if not found
      */
     public int indexOfIgnoreCase(String searchFor) {
         return indexOfIgnoreCase(searchFor, this.defaultSearchMode);
@@ -647,12 +612,9 @@ public class StringInspector {
      * Finds the position of the given string within the source string, ignoring case, with the option to skip text delimited by the specified markers or inside
      * comment blocks.
      *
-     * @param searchFor
-     *            the sub-string to search for
-     * @param searchMode
-     *            the search mode to use in this operation
-     * @return
-     *         the position where the sub-string is found, starting from the current position, or -1 if not found
+     * @param searchFor  the sub-string to search for
+     * @param searchMode the search mode to use in this operation
+     * @return the position where the sub-string is found, starting from the current position, or -1 if not found
      */
     public int indexOfIgnoreCase(String searchFor, Set<SearchMode> searchMode) {
         if (searchFor == null) {
@@ -705,10 +667,8 @@ public class StringInspector {
      * be added and {@link SearchMode#SKIP_BETWEEN_MARKERS} removed.
      * </p>
      *
-     * @param searchFor
-     *            the sequence of sub-strings to search
-     * @return
-     *         the position where the first sub-string is found, starting from the current position, or -1 if not found
+     * @param searchFor the sequence of sub-strings to search
+     * @return the position where the first sub-string is found, starting from the current position, or -1 if not found
      */
     public int indexOfIgnoreCase(String... searchFor) {
         if (searchFor == null) {
@@ -780,10 +740,8 @@ public class StringInspector {
      * Checks if the given string matches the source string counting from the current position, ignoring case, with the option to skip text delimited by the
      * specified markers or inside comment blocks.
      *
-     * @param toMatch
-     *            the sub-string to match
-     * @return
-     *         the position where the sub-string match ended, or -1 if not matched
+     * @param toMatch the sub-string to match
+     * @return the position where the sub-string match ended, or -1 if not matched
      */
     public int matchesIgnoreCase(String toMatch) {
         if (toMatch == null) {
@@ -821,10 +779,8 @@ public class StringInspector {
      * added and {@link SearchMode#SKIP_BETWEEN_MARKERS} removed.
      * </p>
      *
-     * @param toMatch
-     *            the sequence of sub-strings to match
-     * @return
-     *         the position where the sequence of sub-strings match ended, or -1 if not matched
+     * @param toMatch the sequence of sub-strings to match
+     * @return the position where the sequence of sub-strings match ended, or -1 if not matched
      */
     public int matchesIgnoreCase(String... toMatch) {
         if (toMatch == null) {
@@ -882,8 +838,7 @@ public class StringInspector {
     /**
      * Returns a copy of the source string stripped of all comments and hints.
      *
-     * @return
-     *         a comments-free string
+     * @return a comments-free string
      */
     public String stripCommentsAndHints() {
         restart();
@@ -924,12 +879,9 @@ public class StringInspector {
     /**
      * Splits the source string by the given delimiter. Consecutive delimiters result in empty string parts.
      *
-     * @param delimiter
-     *            the characters sequence where to split the source string
-     * @param trim
-     *            whether each one of the parts should be trimmed or not
-     * @return
-     *         a {@link List} containing all the string parts
+     * @param delimiter the characters sequence where to split the source string
+     * @param trim      whether each one of the parts should be trimmed or not
+     * @return a {@link List} containing all the string parts
      */
     public List<String> split(String delimiter, boolean trim) {
         if (delimiter == null) {

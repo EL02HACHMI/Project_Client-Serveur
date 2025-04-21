@@ -45,408 +45,8 @@ import com.mysql.cj.xdevapi.Table;
 
 public class RowLockingTest extends BaseCollectionTestCase {
 
-    int CheckFlag = 0;
-
     static Throwable initException[] = null;
-
-    static class MyUncaughtExceptionHandler implements UncaughtExceptionHandler {
-
-        private int index = 0;
-
-        MyUncaughtExceptionHandler(int n) {
-            this.index = n;
-        }
-
-        @Override
-        public void uncaughtException(Thread t, Throwable e) {
-            System.out.println("I caught the exception");
-            initException[this.index] = e;
-        }
-
-    }
-
-    public class SelectRowLock extends Thread {
-
-        private int action;
-        private int lock;
-        private int shouldWait;
-        private int bindVal;
-        private String condition;
-
-        SelectRowLock(int action, int lock, int shouldWait, int bindVal, String condition) {
-            this.action = action;
-            this.lock = lock;
-            this.shouldWait = shouldWait;
-            this.bindVal = bindVal;
-            this.condition = condition;
-        }
-
-        @Override
-        public void run() {
-            System.out.println("Action is " + this.action);
-            System.out.println("Lock is " + this.lock);
-            System.out.println("Condition is " + this.condition);
-            System.out.println("CheckFlag is " + RowLockingTest.this.CheckFlag);
-
-            RowResult rows = null;
-            Session sess = null;
-
-            try {
-                sess = new SessionFactory().getSession(RowLockingTest.this.baseUrl);
-                Table table = sess.getDefaultSchema().getCollectionAsTable(RowLockingTest.this.collectionName);
-
-                if (this.shouldWait == 1) {
-                    System.out.println("wait started");
-                    do {
-                        Thread.sleep(1000);
-                    } while (RowLockingTest.this.CheckFlag != 1);
-                    System.out.println("wait ended");
-                }
-
-                sess.startTransaction();
-                switch (this.action) {
-                    case 1: {
-                        if (this.lock == 1) {
-                            rows = table.select("doc->$.F2").where(this.condition).bind("bVal", this.bindVal).lockExclusive().execute();
-                        } else if (this.lock == 2) {
-                            rows = table.select("doc->$.F2").where(this.condition).bind("bVal", this.bindVal).lockShared().execute();
-                        }
-                        rows.next();
-                        break;
-                    }
-                    case 2: {
-                        Map<String, Object> params = new HashMap<>();
-                        params.put("bVal", this.bindVal);
-                        if (this.lock == 1) {
-                            rows = table.select("doc->$.F2").where(this.condition).bind(params).lockExclusive().execute();
-                        } else if (this.lock == 2) {
-                            rows = table.select("doc->$.F2").where(this.condition).bind(params).lockShared().execute();
-                        }
-                        rows.next();
-                        break;
-                    }
-                    case 3: {
-                        table.update().set("doc", expr("JSON_REPLACE(doc, \"$.F2\", \"NewData\")")).where(this.condition).bind("bVal", this.bindVal).execute();
-                        break;
-                    }
-                    case 4: {
-                        table.delete().where(this.condition).bind("bVal", this.bindVal).execute();
-                        break;
-                    }
-                }
-
-                if (this.shouldWait == 0) {
-                    RowLockingTest.this.CheckFlag = 1;
-                    Thread.sleep(10000);
-                    if (2 == RowLockingTest.this.CheckFlag) {
-                        throw new RuntimeException("Second thread moved ahead");
-                    }
-                } else if (this.shouldWait == 1) {
-                    RowLockingTest.this.CheckFlag = 2;
-                } else if (this.shouldWait == 2) {
-                    RowLockingTest.this.CheckFlag = 1;
-                    Thread.sleep(10000);
-                    if (2 == RowLockingTest.this.CheckFlag) {
-                        throw new RuntimeException("Second thread stuck even thoung different conditions executed");
-                    }
-                }
-
-                sess.commit();
-
-            } catch (Exception e) {
-                System.err.print("InterruptedException: ");
-                System.err.println(e.getMessage());
-                e.printStackTrace();
-                throw new RuntimeException(e);
-            } finally {
-                if (this.shouldWait != 1) {
-                    RowLockingTest.this.CheckFlag = 1;
-                }
-                if (sess != null) {
-                    sess.close();
-                }
-            }
-        }
-
-    }
-
-    public class FindRowLock extends Thread {
-
-        private int action;
-        private int lock;
-        private int shouldWait;
-        private int bindVal;
-        private String condition;
-
-        FindRowLock(int action, int lock, int shouldWait, int bindVal, String condition) {
-            this.action = action;
-            this.lock = lock;
-            this.shouldWait = shouldWait;
-            this.bindVal = bindVal;
-            this.condition = condition;
-        }
-
-        @SuppressWarnings("deprecation")
-        @Override
-        public void run() {
-            System.out.println("Action is " + this.action);
-            System.out.println("Lock is " + this.lock);
-            System.out.println("Condition is " + this.condition);
-            System.out.println("CheckFlag is " + RowLockingTest.this.CheckFlag);
-
-            DocResult docs = null;
-            Session sess = null;
-
-            try {
-                sess = new SessionFactory().getSession(RowLockingTest.this.baseUrl);
-                Collection coll = sess.getDefaultSchema().getCollection(RowLockingTest.this.collectionName);
-
-                if (this.shouldWait == 1) {
-                    System.out.println("wait started");
-                    do {
-                        Thread.sleep(1000);
-                    } while (RowLockingTest.this.CheckFlag != 1);
-                    System.out.println("wait ended");
-                }
-
-                sess.startTransaction();
-                switch (this.action) {
-                    case 1: {
-                        if (this.lock == 1) {
-                            docs = coll.find(this.condition).bind(new Object[] { this.bindVal }).fields("$.F2 as F2").orderBy("$.F1").lockExclusive().execute();
-                        } else if (this.lock == 2) {
-                            docs = coll.find(this.condition).bind(new Object[] { this.bindVal }).fields("$.F2 as F2").orderBy("$.F1").lockShared().execute();
-                        }
-                        docs.next();
-                        break;
-                    }
-                    case 2: {
-                        coll.modify(this.condition).set("$.F2", "Data_New").bind(new Object[] { this.bindVal }).sort("$.F1 asc").execute();
-                        break;
-                    }
-                    case 3: {
-                        coll.remove(this.condition).bind(new Object[] { this.bindVal }).orderBy("$.F1 asc").execute();
-                        break;
-                    }
-                }
-
-                if (this.shouldWait == 0) {
-                    RowLockingTest.this.CheckFlag = 1;
-                    Thread.sleep(10000);
-                    if (2 == RowLockingTest.this.CheckFlag) {
-                        throw new RuntimeException("Second thread moved ahead");
-                    }
-                } else if (this.shouldWait == 1) {
-                    RowLockingTest.this.CheckFlag = 2;
-                } else if (this.shouldWait == 2) {
-                    RowLockingTest.this.CheckFlag = 1;
-                    Thread.sleep(10000);
-                    if (2 == RowLockingTest.this.CheckFlag) {
-                        throw new RuntimeException("Second thread stuck even thoung different conditions executed");
-                    }
-                }
-
-                sess.commit();
-
-            } catch (Exception e) {
-                System.err.print("InterruptedException: ");
-                System.err.println(e.getMessage());
-                e.printStackTrace();
-                throw new RuntimeException(e);
-            } finally {
-                if (this.shouldWait != 1) {
-                    RowLockingTest.this.CheckFlag = 1;
-                }
-                if (sess != null) {
-                    sess.close();
-                }
-            }
-        }
-
-    }
-
-    public class SelectRowDeadLock extends Thread {
-
-        private int action;
-        private int lock;
-        private String condition;
-
-        SelectRowDeadLock(int action, int lock, String condition) {
-            this.action = action;
-            this.lock = lock;
-            this.condition = condition;
-        }
-
-        @Override
-        public void run() {
-            System.out.println("Action is " + this.action);
-            System.out.println("Lock is " + this.lock);
-            System.out.println("Condition is " + this.condition);
-            System.out.println("CheckFlag is " + RowLockingTest.this.CheckFlag);
-
-            String tabname = "newtable";
-            Session sess = null;
-
-            try {
-                sess = new SessionFactory().getSession(RowLockingTest.this.baseUrl);
-                Table table = sess.getDefaultSchema().getTable(tabname);
-
-                sess.startTransaction();
-                switch (this.action) {
-                    case 1: {
-                        if (this.lock == 1) {
-                            table.select("F1").where("F0 = 1").lockExclusive().execute();
-                        } else if (this.lock == 2) {
-                            table.select("F1").where("F0 = 1").lockShared().execute();
-                        }
-
-                        RowLockingTest.this.CheckFlag = 1;
-                        do {
-                            Thread.sleep(1000);
-                        } while (RowLockingTest.this.CheckFlag != 2);
-
-                        try {
-                            if (this.lock == 1) {
-                                table.select("F1").where("F0 = 2").lockExclusive().execute();
-                            } else if (this.lock == 2) {
-                                table.select("F1").where("F0 = 2").lockShared().execute();
-                            }
-                        } catch (Exception e) {
-                            System.out.println("ERROR(3) " + e.getMessage());
-                            assertTrue(e.getMessage().contains("Deadlock"));
-                        }
-
-                        break;
-                    }
-                    case 2: {
-                        do {
-                            Thread.sleep(1000);
-                        } while (RowLockingTest.this.CheckFlag != 1);
-
-                        if (this.lock == 1) {
-                            table.select("F1").where("F0 = 2").lockExclusive().execute();
-                        } else if (this.lock == 2) {
-                            table.select("F1").where("F0 = 2").lockShared().execute();
-                        }
-
-                        RowLockingTest.this.CheckFlag = 2;
-
-                        try {
-                            if (this.lock == 1) {
-                                table.select("F1").where("F0 = 1").lockExclusive().execute();
-                            } else if (this.lock == 2) {
-                                table.select("F1").where("F0 = 1").lockShared().execute();
-                            }
-                        } catch (Exception e) {
-                            System.out.println("ERROR(3) " + e.getMessage());
-                            assertTrue(e.getMessage().contains("Deadlock"));
-                        }
-
-                        break;
-                    }
-                }
-
-                sess.commit();
-
-            } catch (Exception e) {
-                System.err.print("InterruptedException: ");
-                System.err.println(e.getMessage());
-                e.printStackTrace();
-                throw new RuntimeException(e);
-            } finally {
-                if (sess != null) {
-                    sess.close();
-                }
-            }
-        }
-
-    }
-
-    public class FindRowDeadLock extends Thread {
-
-        private int action;
-        private int lock;
-        private String condition;
-
-        FindRowDeadLock(int action, int lock, String condition) {
-            this.action = action;
-            this.lock = lock;
-            this.condition = condition;
-        }
-
-        @Override
-        public void run() {
-            System.out.println("Action is " + this.action);
-            System.out.println("Lock is " + this.lock);
-            System.out.println("Condition is " + this.condition);
-            System.out.println("CheckFlag is " + RowLockingTest.this.CheckFlag);
-
-            Session sess = null;
-
-            try {
-                sess = new SessionFactory().getSession(RowLockingTest.this.baseUrl);
-                Collection coll = RowLockingTest.this.schema.getCollection(RowLockingTest.this.collectionName);
-
-                sess.startTransaction();
-                switch (this.action) {
-                    case 1: {
-                        if (this.lock == 1) {
-                            coll.find("$.F1 = 1").fields("$.F2 as F2").lockExclusive().execute();
-                        } else if (this.lock == 2) {
-                            coll.find("$.F1 = 1").fields("$.F2 as F2").lockShared().execute();
-                        }
-
-                        RowLockingTest.this.CheckFlag = 1;
-                        do {
-                            Thread.sleep(1000);
-                        } while (RowLockingTest.this.CheckFlag != 2);
-
-                        if (this.lock == 1) {
-                            coll.find("$.F1 = 2").fields("$.F2 as F2").lockExclusive().execute();
-                        } else if (this.lock == 2) {
-                            coll.find("$.F1 = 2").fields("$.F2 as F2").lockShared().execute();
-                        }
-
-                        break;
-                    }
-                    case 2: {
-                        do {
-                            Thread.sleep(1000);
-                        } while (RowLockingTest.this.CheckFlag != 1);
-
-                        if (this.lock == 1) {
-                            coll.find("$.F1 = 2").fields("$.F2 as F2").lockExclusive().execute();
-                        } else if (this.lock == 2) {
-                            coll.find("$.F1 = 2").fields("$.F2 as F2").lockShared().execute();
-                        }
-
-                        RowLockingTest.this.CheckFlag = 2;
-
-                        if (this.lock == 1) {
-                            coll.find("$.F1 = 1").fields("$.F2 as F2").lockExclusive().execute();
-                        } else if (this.lock == 2) {
-                            coll.find("$.F1 = 1").fields("$.F2 as F2").lockShared().execute();
-                        }
-
-                        break;
-                    }
-                }
-
-                sess.commit();
-
-            } catch (Exception e) {
-                System.err.print("InterruptedException: ");
-                System.err.println(e.getMessage());
-                e.printStackTrace();
-                throw new RuntimeException(e);
-            } finally {
-                if (sess != null) {
-                    sess.close();
-                }
-            }
-        }
-
-    }
+    int CheckFlag = 0;
 
     /**
      * START collection.find() tests
@@ -816,6 +416,405 @@ public class RowLockingTest extends BaseCollectionTestCase {
         } finally {
             this.session.sql("drop table if exists newtable").execute();
         }
+    }
+
+    static class MyUncaughtExceptionHandler implements UncaughtExceptionHandler {
+
+        private int index = 0;
+
+        MyUncaughtExceptionHandler(int n) {
+            this.index = n;
+        }
+
+        @Override
+        public void uncaughtException(Thread t, Throwable e) {
+            System.out.println("I caught the exception");
+            initException[this.index] = e;
+        }
+
+    }
+
+    public class SelectRowLock extends Thread {
+
+        private int action;
+        private int lock;
+        private int shouldWait;
+        private int bindVal;
+        private String condition;
+
+        SelectRowLock(int action, int lock, int shouldWait, int bindVal, String condition) {
+            this.action = action;
+            this.lock = lock;
+            this.shouldWait = shouldWait;
+            this.bindVal = bindVal;
+            this.condition = condition;
+        }
+
+        @Override
+        public void run() {
+            System.out.println("Action is " + this.action);
+            System.out.println("Lock is " + this.lock);
+            System.out.println("Condition is " + this.condition);
+            System.out.println("CheckFlag is " + RowLockingTest.this.CheckFlag);
+
+            RowResult rows = null;
+            Session sess = null;
+
+            try {
+                sess = new SessionFactory().getSession(RowLockingTest.this.baseUrl);
+                Table table = sess.getDefaultSchema().getCollectionAsTable(RowLockingTest.this.collectionName);
+
+                if (this.shouldWait == 1) {
+                    System.out.println("wait started");
+                    do {
+                        Thread.sleep(1000);
+                    } while (RowLockingTest.this.CheckFlag != 1);
+                    System.out.println("wait ended");
+                }
+
+                sess.startTransaction();
+                switch (this.action) {
+                    case 1: {
+                        if (this.lock == 1) {
+                            rows = table.select("doc->$.F2").where(this.condition).bind("bVal", this.bindVal).lockExclusive().execute();
+                        } else if (this.lock == 2) {
+                            rows = table.select("doc->$.F2").where(this.condition).bind("bVal", this.bindVal).lockShared().execute();
+                        }
+                        rows.next();
+                        break;
+                    }
+                    case 2: {
+                        Map<String, Object> params = new HashMap<>();
+                        params.put("bVal", this.bindVal);
+                        if (this.lock == 1) {
+                            rows = table.select("doc->$.F2").where(this.condition).bind(params).lockExclusive().execute();
+                        } else if (this.lock == 2) {
+                            rows = table.select("doc->$.F2").where(this.condition).bind(params).lockShared().execute();
+                        }
+                        rows.next();
+                        break;
+                    }
+                    case 3: {
+                        table.update().set("doc", expr("JSON_REPLACE(doc, \"$.F2\", \"NewData\")")).where(this.condition).bind("bVal", this.bindVal).execute();
+                        break;
+                    }
+                    case 4: {
+                        table.delete().where(this.condition).bind("bVal", this.bindVal).execute();
+                        break;
+                    }
+                }
+
+                if (this.shouldWait == 0) {
+                    RowLockingTest.this.CheckFlag = 1;
+                    Thread.sleep(10000);
+                    if (2 == RowLockingTest.this.CheckFlag) {
+                        throw new RuntimeException("Second thread moved ahead");
+                    }
+                } else if (this.shouldWait == 1) {
+                    RowLockingTest.this.CheckFlag = 2;
+                } else if (this.shouldWait == 2) {
+                    RowLockingTest.this.CheckFlag = 1;
+                    Thread.sleep(10000);
+                    if (2 == RowLockingTest.this.CheckFlag) {
+                        throw new RuntimeException("Second thread stuck even thoung different conditions executed");
+                    }
+                }
+
+                sess.commit();
+
+            } catch (Exception e) {
+                System.err.print("InterruptedException: ");
+                System.err.println(e.getMessage());
+                e.printStackTrace();
+                throw new RuntimeException(e);
+            } finally {
+                if (this.shouldWait != 1) {
+                    RowLockingTest.this.CheckFlag = 1;
+                }
+                if (sess != null) {
+                    sess.close();
+                }
+            }
+        }
+
+    }
+
+    public class FindRowLock extends Thread {
+
+        private int action;
+        private int lock;
+        private int shouldWait;
+        private int bindVal;
+        private String condition;
+
+        FindRowLock(int action, int lock, int shouldWait, int bindVal, String condition) {
+            this.action = action;
+            this.lock = lock;
+            this.shouldWait = shouldWait;
+            this.bindVal = bindVal;
+            this.condition = condition;
+        }
+
+        @SuppressWarnings("deprecation")
+        @Override
+        public void run() {
+            System.out.println("Action is " + this.action);
+            System.out.println("Lock is " + this.lock);
+            System.out.println("Condition is " + this.condition);
+            System.out.println("CheckFlag is " + RowLockingTest.this.CheckFlag);
+
+            DocResult docs = null;
+            Session sess = null;
+
+            try {
+                sess = new SessionFactory().getSession(RowLockingTest.this.baseUrl);
+                Collection coll = sess.getDefaultSchema().getCollection(RowLockingTest.this.collectionName);
+
+                if (this.shouldWait == 1) {
+                    System.out.println("wait started");
+                    do {
+                        Thread.sleep(1000);
+                    } while (RowLockingTest.this.CheckFlag != 1);
+                    System.out.println("wait ended");
+                }
+
+                sess.startTransaction();
+                switch (this.action) {
+                    case 1: {
+                        if (this.lock == 1) {
+                            docs = coll.find(this.condition).bind(new Object[]{this.bindVal}).fields("$.F2 as F2").orderBy("$.F1").lockExclusive().execute();
+                        } else if (this.lock == 2) {
+                            docs = coll.find(this.condition).bind(new Object[]{this.bindVal}).fields("$.F2 as F2").orderBy("$.F1").lockShared().execute();
+                        }
+                        docs.next();
+                        break;
+                    }
+                    case 2: {
+                        coll.modify(this.condition).set("$.F2", "Data_New").bind(new Object[]{this.bindVal}).sort("$.F1 asc").execute();
+                        break;
+                    }
+                    case 3: {
+                        coll.remove(this.condition).bind(new Object[]{this.bindVal}).orderBy("$.F1 asc").execute();
+                        break;
+                    }
+                }
+
+                if (this.shouldWait == 0) {
+                    RowLockingTest.this.CheckFlag = 1;
+                    Thread.sleep(10000);
+                    if (2 == RowLockingTest.this.CheckFlag) {
+                        throw new RuntimeException("Second thread moved ahead");
+                    }
+                } else if (this.shouldWait == 1) {
+                    RowLockingTest.this.CheckFlag = 2;
+                } else if (this.shouldWait == 2) {
+                    RowLockingTest.this.CheckFlag = 1;
+                    Thread.sleep(10000);
+                    if (2 == RowLockingTest.this.CheckFlag) {
+                        throw new RuntimeException("Second thread stuck even thoung different conditions executed");
+                    }
+                }
+
+                sess.commit();
+
+            } catch (Exception e) {
+                System.err.print("InterruptedException: ");
+                System.err.println(e.getMessage());
+                e.printStackTrace();
+                throw new RuntimeException(e);
+            } finally {
+                if (this.shouldWait != 1) {
+                    RowLockingTest.this.CheckFlag = 1;
+                }
+                if (sess != null) {
+                    sess.close();
+                }
+            }
+        }
+
+    }
+
+    public class SelectRowDeadLock extends Thread {
+
+        private int action;
+        private int lock;
+        private String condition;
+
+        SelectRowDeadLock(int action, int lock, String condition) {
+            this.action = action;
+            this.lock = lock;
+            this.condition = condition;
+        }
+
+        @Override
+        public void run() {
+            System.out.println("Action is " + this.action);
+            System.out.println("Lock is " + this.lock);
+            System.out.println("Condition is " + this.condition);
+            System.out.println("CheckFlag is " + RowLockingTest.this.CheckFlag);
+
+            String tabname = "newtable";
+            Session sess = null;
+
+            try {
+                sess = new SessionFactory().getSession(RowLockingTest.this.baseUrl);
+                Table table = sess.getDefaultSchema().getTable(tabname);
+
+                sess.startTransaction();
+                switch (this.action) {
+                    case 1: {
+                        if (this.lock == 1) {
+                            table.select("F1").where("F0 = 1").lockExclusive().execute();
+                        } else if (this.lock == 2) {
+                            table.select("F1").where("F0 = 1").lockShared().execute();
+                        }
+
+                        RowLockingTest.this.CheckFlag = 1;
+                        do {
+                            Thread.sleep(1000);
+                        } while (RowLockingTest.this.CheckFlag != 2);
+
+                        try {
+                            if (this.lock == 1) {
+                                table.select("F1").where("F0 = 2").lockExclusive().execute();
+                            } else if (this.lock == 2) {
+                                table.select("F1").where("F0 = 2").lockShared().execute();
+                            }
+                        } catch (Exception e) {
+                            System.out.println("ERROR(3) " + e.getMessage());
+                            assertTrue(e.getMessage().contains("Deadlock"));
+                        }
+
+                        break;
+                    }
+                    case 2: {
+                        do {
+                            Thread.sleep(1000);
+                        } while (RowLockingTest.this.CheckFlag != 1);
+
+                        if (this.lock == 1) {
+                            table.select("F1").where("F0 = 2").lockExclusive().execute();
+                        } else if (this.lock == 2) {
+                            table.select("F1").where("F0 = 2").lockShared().execute();
+                        }
+
+                        RowLockingTest.this.CheckFlag = 2;
+
+                        try {
+                            if (this.lock == 1) {
+                                table.select("F1").where("F0 = 1").lockExclusive().execute();
+                            } else if (this.lock == 2) {
+                                table.select("F1").where("F0 = 1").lockShared().execute();
+                            }
+                        } catch (Exception e) {
+                            System.out.println("ERROR(3) " + e.getMessage());
+                            assertTrue(e.getMessage().contains("Deadlock"));
+                        }
+
+                        break;
+                    }
+                }
+
+                sess.commit();
+
+            } catch (Exception e) {
+                System.err.print("InterruptedException: ");
+                System.err.println(e.getMessage());
+                e.printStackTrace();
+                throw new RuntimeException(e);
+            } finally {
+                if (sess != null) {
+                    sess.close();
+                }
+            }
+        }
+
+    }
+
+    public class FindRowDeadLock extends Thread {
+
+        private int action;
+        private int lock;
+        private String condition;
+
+        FindRowDeadLock(int action, int lock, String condition) {
+            this.action = action;
+            this.lock = lock;
+            this.condition = condition;
+        }
+
+        @Override
+        public void run() {
+            System.out.println("Action is " + this.action);
+            System.out.println("Lock is " + this.lock);
+            System.out.println("Condition is " + this.condition);
+            System.out.println("CheckFlag is " + RowLockingTest.this.CheckFlag);
+
+            Session sess = null;
+
+            try {
+                sess = new SessionFactory().getSession(RowLockingTest.this.baseUrl);
+                Collection coll = RowLockingTest.this.schema.getCollection(RowLockingTest.this.collectionName);
+
+                sess.startTransaction();
+                switch (this.action) {
+                    case 1: {
+                        if (this.lock == 1) {
+                            coll.find("$.F1 = 1").fields("$.F2 as F2").lockExclusive().execute();
+                        } else if (this.lock == 2) {
+                            coll.find("$.F1 = 1").fields("$.F2 as F2").lockShared().execute();
+                        }
+
+                        RowLockingTest.this.CheckFlag = 1;
+                        do {
+                            Thread.sleep(1000);
+                        } while (RowLockingTest.this.CheckFlag != 2);
+
+                        if (this.lock == 1) {
+                            coll.find("$.F1 = 2").fields("$.F2 as F2").lockExclusive().execute();
+                        } else if (this.lock == 2) {
+                            coll.find("$.F1 = 2").fields("$.F2 as F2").lockShared().execute();
+                        }
+
+                        break;
+                    }
+                    case 2: {
+                        do {
+                            Thread.sleep(1000);
+                        } while (RowLockingTest.this.CheckFlag != 1);
+
+                        if (this.lock == 1) {
+                            coll.find("$.F1 = 2").fields("$.F2 as F2").lockExclusive().execute();
+                        } else if (this.lock == 2) {
+                            coll.find("$.F1 = 2").fields("$.F2 as F2").lockShared().execute();
+                        }
+
+                        RowLockingTest.this.CheckFlag = 2;
+
+                        if (this.lock == 1) {
+                            coll.find("$.F1 = 1").fields("$.F2 as F2").lockExclusive().execute();
+                        } else if (this.lock == 2) {
+                            coll.find("$.F1 = 1").fields("$.F2 as F2").lockShared().execute();
+                        }
+
+                        break;
+                    }
+                }
+
+                sess.commit();
+
+            } catch (Exception e) {
+                System.err.print("InterruptedException: ");
+                System.err.println(e.getMessage());
+                e.printStackTrace();
+                throw new RuntimeException(e);
+            } finally {
+                if (sess != null) {
+                    sess.close();
+                }
+            }
+        }
+
     }
 
 }

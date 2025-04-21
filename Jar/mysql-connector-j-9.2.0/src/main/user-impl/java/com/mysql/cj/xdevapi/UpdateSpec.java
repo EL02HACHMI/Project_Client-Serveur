@@ -38,8 +38,7 @@ public class UpdateSpec {
     /**
      * Constructor.
      *
-     * @param updateType
-     *            update operation type
+     * @param updateType update operation type
      */
     public UpdateSpec(UpdateType updateType) {
         this.updateType = UpdateOperation.UpdateType.valueOf(updateType.name());
@@ -49,15 +48,13 @@ public class UpdateSpec {
     /**
      * Constructor.
      *
-     * @param updateType
-     *            update operation type
-     * @param source
-     *            document path expression
+     * @param updateType update operation type
+     * @param source     document path expression
      */
     public UpdateSpec(UpdateType updateType, String source) {
         this.updateType = UpdateOperation.UpdateType.valueOf(updateType.name());
         if (source == null || source.trim().isEmpty()) {
-            throw new XDevAPIError(Messages.getString("ModifyStatement.0", new String[] { "docPath" }));
+            throw new XDevAPIError(Messages.getString("ModifyStatement.0", new String[]{"docPath"}));
         }
         // accommodate parser's documentField() handling by removing "$"
         if (source.length() > 0 && source.charAt(0) == '$') {
@@ -85,24 +82,23 @@ public class UpdateSpec {
     }
 
     /**
-     * Set value to be set by this update operation.
-     *
-     * @param value
-     *            value expression
-     * @return this UpdateSpec
-     */
-    public UpdateSpec setValue(Object value) {
-        this.value = ExprUtil.argObjectToExpr(value, false);
-        return this;
-    }
-
-    /**
      * Get X Protocol value expression.
      *
      * @return X Protocol MysqlxExpr.Expr
      */
     public Object getValue() {
         return this.value;
+    }
+
+    /**
+     * Set value to be set by this update operation.
+     *
+     * @param value value expression
+     * @return this UpdateSpec
+     */
+    public UpdateSpec setValue(Object value) {
+        this.value = ExprUtil.argObjectToExpr(value, false);
+        return this;
     }
 
 }

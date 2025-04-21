@@ -52,7 +52,7 @@ public class UtilCalendarValueEncoder extends AbstractValueEncoder {
                 return binding.getCalendar() != null
                         ? TimeUtil.getSimpleDateFormat("''yyyy-MM-dd''", binding.getCalendar()).format(new java.sql.Date(x.getTimeInMillis()))
                         : TimeUtil.getSimpleDateFormat(null, "''yyyy-MM-dd''", this.serverSession.getDefaultTimeZone())
-                                .format(new java.sql.Date(x.getTimeInMillis()));
+                        .format(new java.sql.Date(x.getTimeInMillis()));
             case TIMESTAMP:
                 Timestamp ts = adjustTimestamp(new java.sql.Timestamp(((Calendar) binding.getValue()).getTimeInMillis()), binding.getField(),
                         binding.keepOrigNanos());
@@ -61,8 +61,8 @@ public class UtilCalendarValueEncoder extends AbstractValueEncoder {
                     sb.append(TimeUtil.getSimpleDateFormat("''yyyy-MM-dd HH:mm:ss", binding.getCalendar()).format(x));
                 } else {
                     sb.append(TimeUtil.getSimpleDateFormat(null, "''yyyy-MM-dd HH:mm:ss",
-                            binding.getMysqlType() == MysqlType.TIMESTAMP && this.preserveInstants.getValue() ? this.serverSession.getSessionTimeZone()
-                                    : this.serverSession.getDefaultTimeZone())
+                                    binding.getMysqlType() == MysqlType.TIMESTAMP && this.preserveInstants.getValue() ? this.serverSession.getSessionTimeZone()
+                                            : this.serverSession.getDefaultTimeZone())
                             .format(ts));
                 }
                 if (this.serverSession.getCapabilities().serverSupportsFracSecs() && ts.getNanos() > 0) {
@@ -97,7 +97,7 @@ public class UtilCalendarValueEncoder extends AbstractValueEncoder {
                 return sb.toString();
             default:
                 throw ExceptionFactory.createException(WrongArgumentException.class,
-                        Messages.getString("PreparedStatement.67", new Object[] { binding.getValue().getClass().getName(), binding.getMysqlType().toString() }),
+                        Messages.getString("PreparedStatement.67", new Object[]{binding.getValue().getClass().getName(), binding.getMysqlType().toString()}),
                         this.exceptionInterceptor);
         }
     }
@@ -152,13 +152,13 @@ public class UtilCalendarValueEncoder extends AbstractValueEncoder {
                 intoPacket
                         .writeBytes(StringSelfDataType.STRING_LENENC,
                                 StringUtils.getBytes(zdt.format(zdt.getNano() > 0 && this.serverSession.getCapabilities().serverSupportsFracSecs()
-                                        && this.sendFractionalSeconds.getValue() ? TimeUtil.DATETIME_FORMATTER_WITH_MILLIS_NO_OFFSET
+                                                && this.sendFractionalSeconds.getValue() ? TimeUtil.DATETIME_FORMATTER_WITH_MILLIS_NO_OFFSET
                                                 : TimeUtil.DATETIME_FORMATTER_NO_FRACT_NO_OFFSET),
                                         this.charEncoding.getValue()));
                 return;
             default:
                 throw ExceptionFactory.createException(WrongArgumentException.class,
-                        Messages.getString("PreparedStatement.67", new Object[] { binding.getValue().getClass().getName(), binding.getMysqlType().toString() }),
+                        Messages.getString("PreparedStatement.67", new Object[]{binding.getValue().getClass().getName(), binding.getMysqlType().toString()}),
                         this.exceptionInterceptor);
         }
     }

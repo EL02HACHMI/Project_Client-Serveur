@@ -36,14 +36,10 @@ public class ClientInfoProviderSP implements ClientInfoProvider {
     public static final String PNAME_clientInfoGetSPName = "clientInfoGetSPName";
     public static final String PNAME_clientInfoGetBulkSPName = "clientInfoGetBulkSPName";
     public static final String PNAME_clientInfoDatabase = "clientInfoDatabase";
-
-    PreparedStatement setClientInfoSp;
-
-    PreparedStatement getClientInfoSp;
-
-    PreparedStatement getClientInfoBulkSp;
-
     private final Lock lock = new ReentrantLock();
+    PreparedStatement setClientInfoSp;
+    PreparedStatement getClientInfoSp;
+    PreparedStatement getClientInfoBulkSp;
 
     @Override
     public void initialize(Connection conn, Properties configurationProps) throws SQLException {

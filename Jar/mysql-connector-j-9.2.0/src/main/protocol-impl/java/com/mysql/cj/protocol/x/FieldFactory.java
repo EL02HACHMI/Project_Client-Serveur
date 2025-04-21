@@ -69,10 +69,8 @@ public class FieldFactory implements ProtocolEntityFactory<Field, XMessage> {
     /**
      * Convert a X Protocol {@link ColumnMetaData} message to a C/J {@link Field} object.
      *
-     * @param col
-     *            the message from the server
-     * @param characterSet
-     *            the encoding of the strings in the message
+     * @param col          the message from the server
+     * @param characterSet the encoding of the strings in the message
      * @return {@link Field}
      */
     private Field columnMetaDataToField(ColumnMetaData col, String characterSet) {
@@ -190,10 +188,8 @@ public class FieldFactory implements ProtocolEntityFactory<Field, XMessage> {
      * {@link XProtocolRow}
      * results.
      *
-     * @param type
-     *            the type as the ColumnMetaData.FieldType
-     * @param contentType
-     *            the inner type
+     * @param type        the type as the ColumnMetaData.FieldType
+     * @param contentType the inner type
      * @return A <b>FIELD_TYPE</b> constant from {@link MysqlType} corresponding to the combination of input parameters.
      */
     private int xProtocolTypeToMysqlType(FieldType type, int contentType) {

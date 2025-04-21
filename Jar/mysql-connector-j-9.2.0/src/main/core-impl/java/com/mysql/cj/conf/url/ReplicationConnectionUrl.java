@@ -46,10 +46,8 @@ public class ReplicationConnectionUrl extends ConnectionUrl {
     /**
      * Constructs an instance of {@link ReplicationConnectionUrl}, performing all the required initializations.
      *
-     * @param connStrParser
-     *            a {@link ConnectionUrlParser} instance containing the parsed version of the original connection string
-     * @param info
-     *            the connection arguments map
+     * @param connStrParser a {@link ConnectionUrlParser} instance containing the parsed version of the original connection string
+     * @param info          the connection arguments map
      */
     public ReplicationConnectionUrl(ConnectionUrlParser connStrParser, Properties info) {
         super(connStrParser, info);
@@ -98,12 +96,9 @@ public class ReplicationConnectionUrl extends ConnectionUrl {
      * instead of connection string parsing.
      * {@link ConnectionUrl} instances created by this process are not cached.
      *
-     * @param sources
-     *            the source hosts list to use in this connection string
-     * @param replicas
-     *            the replica hosts list to use in this connection string
-     * @param properties
-     *            the properties common to all hosts
+     * @param sources    the source hosts list to use in this connection string
+     * @param replicas   the replica hosts list to use in this connection string
+     * @param properties the properties common to all hosts
      */
     public ReplicationConnectionUrl(List<HostInfo> sources, List<HostInfo> replicas, Map<String, String> properties) {
         this.originalConnStr = ConnectionUrl.Type.REPLICATION_CONNECTION.getScheme() + "//**internally_generated**" + System.currentTimeMillis() + "**";
@@ -119,10 +114,8 @@ public class ReplicationConnectionUrl extends ConnectionUrl {
     /**
      * Returns a list of the hosts in this connection URL, filtered for the given view.
      *
-     * @param view
-     *            the type of the view to use in the returned list of hosts.
-     * @return
-     *         the hosts list from this connection URL, filtered for the given view.
+     * @param view the type of the view to use in the returned list of hosts.
+     * @return the hosts list from this connection URL, filtered for the given view.
      */
     @Override
     public List<HostInfo> getHostsList(HostsListView view) {
@@ -139,8 +132,7 @@ public class ReplicationConnectionUrl extends ConnectionUrl {
     /**
      * Returns an existing source host info with the same host:port part or spawns a new isolated host info based on this connection URL if none was found.
      *
-     * @param hostPortPair
-     *            the host:port part to search for
+     * @param hostPortPair the host:port part to search for
      * @return the existing host info or a new independent one
      */
     public HostInfo getSourceHostOrSpawnIsolated(String hostPortPair) {
@@ -160,8 +152,7 @@ public class ReplicationConnectionUrl extends ConnectionUrl {
      * Returns the list of {@link HostInfo} instances that matches the given collection of host:port pairs in the corresponding hosts list. Isolated host info
      * elements are spawned for the missing elements.
      *
-     * @param hostPortPairs
-     *            a list of host:port pairs
+     * @param hostPortPairs a list of host:port pairs
      * @return a list of {@link HostInfo} instances corresponding to the given host:port pairs
      */
     public List<HostInfo> getSourceHostsListFromHostPortPairs(Collection<String> hostPortPairs) {
@@ -171,8 +162,7 @@ public class ReplicationConnectionUrl extends ConnectionUrl {
     /**
      * Returns an existing replica host info with the same host:port part or spawns a new isolated host info based on this connection URL if none was found.
      *
-     * @param hostPortPair
-     *            the host:port part to search for
+     * @param hostPortPair the host:port part to search for
      * @return the existing host info or a new independent one
      */
     public HostInfo getReplicaHostOrSpawnIsolated(String hostPortPair) {
@@ -192,8 +182,7 @@ public class ReplicationConnectionUrl extends ConnectionUrl {
      * Returns the list of {@link HostInfo} instances that matches the given collection of host:port pairs in the corresponding hosts list. Isolated host info
      * elements are spawned for the missing elements.
      *
-     * @param hostPortPairs
-     *            a list of host:port pairs
+     * @param hostPortPairs a list of host:port pairs
      * @return a list of {@link HostInfo} instances corresponding to the given host:port pairs
      */
     public List<HostInfo> getReplicaHostsListFromHostPortPairs(Collection<String> hostPortPairs) {

@@ -57,9 +57,9 @@ public class UtilDateValueEncoder extends AbstractValueEncoder {
             case DATE:
                 return binding.getCalendar() != null
                         ? TimeUtil.getSimpleDateFormat("''yyyy-MM-dd''", binding.getCalendar())
-                                .format(new java.sql.Date(((java.util.Date) binding.getValue()).getTime()))
+                        .format(new java.sql.Date(((java.util.Date) binding.getValue()).getTime()))
                         : TimeUtil.getSimpleDateFormat(null, "''yyyy-MM-dd''", this.serverSession.getDefaultTimeZone())
-                                .format(new java.sql.Date(((java.util.Date) binding.getValue()).getTime()));
+                        .format(new java.sql.Date(((java.util.Date) binding.getValue()).getTime()));
             case DATETIME:
             case TIMESTAMP:
             case CHAR:
@@ -98,7 +98,7 @@ public class UtilDateValueEncoder extends AbstractValueEncoder {
                 return sb.toString();
             default:
                 throw ExceptionFactory.createException(WrongArgumentException.class,
-                        Messages.getString("PreparedStatement.67", new Object[] { binding.getValue().getClass().getName(), binding.getMysqlType().toString() }),
+                        Messages.getString("PreparedStatement.67", new Object[]{binding.getValue().getClass().getName(), binding.getMysqlType().toString()}),
                         this.exceptionInterceptor);
         }
     }
@@ -173,7 +173,7 @@ public class UtilDateValueEncoder extends AbstractValueEncoder {
 
             default:
                 throw ExceptionFactory.createException(WrongArgumentException.class,
-                        Messages.getString("PreparedStatement.67", new Object[] { binding.getValue().getClass().getName(), binding.getMysqlType().toString() }),
+                        Messages.getString("PreparedStatement.67", new Object[]{binding.getValue().getClass().getName(), binding.getMysqlType().toString()}),
                         this.exceptionInterceptor);
         }
     }

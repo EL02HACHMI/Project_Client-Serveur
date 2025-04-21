@@ -94,7 +94,7 @@ public class NativeCapabilities implements ServerCapabilities {
             // X Protocol message type byte (NOTICE = 11) coincides with MySQL protocol version byte in the Initial Handshake Packet.
             if (this.protocolVersion == 11 && IndexOutOfBoundsException.class.isAssignableFrom(t.getClass())) {
                 throw ExceptionFactory.createException(UnableToConnectException.class,
-                        Messages.getString("NativeCapabilites.001", new Object[] { this.protocolVersion }));
+                        Messages.getString("NativeCapabilites.001", new Object[]{this.protocolVersion}));
             }
 
             throw t;
@@ -135,7 +135,6 @@ public class NativeCapabilities implements ServerCapabilities {
     }
 
     /**
-     *
      * @return Collation index which server provided in handshake greeting packet
      */
     @Override

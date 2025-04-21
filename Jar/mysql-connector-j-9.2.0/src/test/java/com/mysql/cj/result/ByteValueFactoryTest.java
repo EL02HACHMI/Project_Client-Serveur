@@ -166,7 +166,7 @@ public class ByteValueFactoryTest extends CommonAsserts {
 
         // jdbcCompliantTruncation=true by default
         assertEquals(Byte.valueOf((byte) '1'), this.vf.createFromBytes("1".getBytes(), 0, 1, f));
-        assertEquals(Byte.valueOf((byte) 1), this.vf.createFromBytes(new byte[] { 1 }, 0, 1, f));
+        assertEquals(Byte.valueOf((byte) 1), this.vf.createFromBytes(new byte[]{1}, 0, 1, f));
         assertThrows(NumberOutOfRange.class, "Value '-1.0' is outside of valid range for type java.lang.Byte", () -> {
             ByteValueFactoryTest.this.vf.createFromBytes("-1.0".getBytes(), 0, 4, f);
             return null;
@@ -187,14 +187,14 @@ public class ByteValueFactoryTest extends CommonAsserts {
 
     @Test
     public void testCreateFromBit() {
-        assertEquals(Byte.valueOf((byte) 0), this.vf.createFromBit(new byte[] { 0 }, 0, 1));
-        assertEquals(Byte.valueOf((byte) 1), this.vf.createFromBit(new byte[] { 1 }, 0, 1));
-        assertEquals(Byte.valueOf((byte) 2), this.vf.createFromBit(new byte[] { 2 }, 0, 1));
-        assertEquals(Byte.valueOf((byte) 127), this.vf.createFromBit(new byte[] { (byte) 127 }, 0, 1));
-        assertEquals(Byte.valueOf((byte) -128), this.vf.createFromBit(new byte[] { (byte) -128 }, 0, 1));
-        assertEquals(Byte.valueOf((byte) 0xff), this.vf.createFromBit(new byte[] { (byte) 0xff }, 0, 1));
+        assertEquals(Byte.valueOf((byte) 0), this.vf.createFromBit(new byte[]{0}, 0, 1));
+        assertEquals(Byte.valueOf((byte) 1), this.vf.createFromBit(new byte[]{1}, 0, 1));
+        assertEquals(Byte.valueOf((byte) 2), this.vf.createFromBit(new byte[]{2}, 0, 1));
+        assertEquals(Byte.valueOf((byte) 127), this.vf.createFromBit(new byte[]{(byte) 127}, 0, 1));
+        assertEquals(Byte.valueOf((byte) -128), this.vf.createFromBit(new byte[]{(byte) -128}, 0, 1));
+        assertEquals(Byte.valueOf((byte) 0xff), this.vf.createFromBit(new byte[]{(byte) 0xff}, 0, 1));
         assertThrows(NumberOutOfRange.class, "Value .+ is outside of valid range for type java.lang.Byte", () -> {
-            ByteValueFactoryTest.this.vf.createFromBit(new byte[] { (byte) 200, (byte) 100 }, 0, 2);
+            ByteValueFactoryTest.this.vf.createFromBit(new byte[]{(byte) 200, (byte) 100}, 0, 2);
             return null;
         });
     }

@@ -59,6 +59,45 @@ public class Sha256PasswordPlugin implements AuthenticationPlugin<NativePacketPa
     protected String publicKeyString = null;
     protected RuntimeProperty<String> serverRSAPublicKeyFile = null;
 
+    protected static String readRSAKey(String pkPath, PropertySet propertySet, ExceptionInterceptor exceptionInterceptor) {
+        String res = null;
+        byte[] fileBuf = new byte[2048];
+
+        BufferedInputStream fileIn = null;
+
+        try {
+            File f = new File(pkPath);
+            String canonicalPath = f.getCanonicalPath();
+            fileIn = new BufferedInputStream(new FileInputStream(canonicalPath));
+
+            int bytesRead = 0;
+
+            StringBuilder sb = new StringBuilder();
+            while ((bytesRead = fileIn.read(fileBuf)) != -1) {
+                sb.append(StringUtils.toAsciiString(fileBuf, 0, bytesRead));
+            }
+            res = sb.toString();
+
+        } catch (IOException ioEx) {
+
+            throw ExceptionFactory.createException(WrongArgumentException.class,
+                    Messages.getString("Sha256PasswordPlugin.0",
+                            propertySet.getBooleanProperty(PropertyKey.paranoid).getValue() ? new Object[]{""} : new Object[]{"'" + pkPath + "'"}),
+                    exceptionInterceptor);
+
+        } finally {
+            if (fileIn != null) {
+                try {
+                    fileIn.close();
+                } catch (IOException e) {
+                    throw ExceptionFactory.createException(Messages.getString("Sha256PasswordPlugin.1"), e, exceptionInterceptor);
+                }
+            }
+        }
+
+        return res;
+    }
+
     @Override
     public void init(Protocol<NativePacketPayload> prot, MysqlCallbackHandler cbh) {
         this.protocol = prot;
@@ -113,7 +152,7 @@ public class Sha256PasswordPlugin implements AuthenticationPlugin<NativePacketPa
 
         if (this.password == null || this.password.length() == 0 || fromServer == null) {
             // no password
-            NativePacketPayload packet = new NativePacketPayload(new byte[] { 0 });
+            NativePacketPayload packet = new NativePacketPayload(new byte[]{0});
             toServer.add(packet);
 
         } else {
@@ -153,7 +192,7 @@ public class Sha256PasswordPlugin implements AuthenticationPlugin<NativePacketPa
                     } else {
                         // build and send Public Key Retrieval packet
                         this.seed = fromServer.readString(StringSelfDataType.STRING_TERM, null);
-                        NativePacketPayload packet = new NativePacketPayload(new byte[] { 1 });
+                        NativePacketPayload packet = new NativePacketPayload(new byte[]{1});
                         toServer.add(packet);
                         this.publicKeyRequested = true;
                     }
@@ -173,49 +212,10 @@ public class Sha256PasswordPlugin implements AuthenticationPlugin<NativePacketPa
         byte[] input = null;
         input = this.password != null
                 ? StringUtils.getBytesNullTerminated(this.password, this.protocol.getServerSession().getCharsetSettings().getPasswordCharacterEncoding())
-                : new byte[] { 0 };
+                : new byte[]{0};
         byte[] mysqlScrambleBuff = new byte[input.length];
         Security.xorString(input, mysqlScrambleBuff, this.seed.getBytes(), input.length);
         return ExportControlled.encryptWithRSAPublicKey(mysqlScrambleBuff, ExportControlled.decodeRSAPublicKey(this.publicKeyString), transformation);
-    }
-
-    protected static String readRSAKey(String pkPath, PropertySet propertySet, ExceptionInterceptor exceptionInterceptor) {
-        String res = null;
-        byte[] fileBuf = new byte[2048];
-
-        BufferedInputStream fileIn = null;
-
-        try {
-            File f = new File(pkPath);
-            String canonicalPath = f.getCanonicalPath();
-            fileIn = new BufferedInputStream(new FileInputStream(canonicalPath));
-
-            int bytesRead = 0;
-
-            StringBuilder sb = new StringBuilder();
-            while ((bytesRead = fileIn.read(fileBuf)) != -1) {
-                sb.append(StringUtils.toAsciiString(fileBuf, 0, bytesRead));
-            }
-            res = sb.toString();
-
-        } catch (IOException ioEx) {
-
-            throw ExceptionFactory.createException(WrongArgumentException.class,
-                    Messages.getString("Sha256PasswordPlugin.0",
-                            propertySet.getBooleanProperty(PropertyKey.paranoid).getValue() ? new Object[] { "" } : new Object[] { "'" + pkPath + "'" }),
-                    exceptionInterceptor);
-
-        } finally {
-            if (fileIn != null) {
-                try {
-                    fileIn.close();
-                } catch (IOException e) {
-                    throw ExceptionFactory.createException(Messages.getString("Sha256PasswordPlugin.1"), e, exceptionInterceptor);
-                }
-            }
-        }
-
-        return res;
     }
 
 }

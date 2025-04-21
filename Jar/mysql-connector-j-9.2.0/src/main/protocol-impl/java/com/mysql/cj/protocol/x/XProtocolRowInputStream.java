@@ -33,7 +33,9 @@ public class XProtocolRowInputStream implements RowList {
     private XProtocol protocol;
     private boolean isDone = false;
     private int position = -1;
-    /** XProtocolRow */
+    /**
+     * XProtocolRow
+     */
     private Row next; // TODO document
     private Consumer<Notice> noticeConsumer;
 

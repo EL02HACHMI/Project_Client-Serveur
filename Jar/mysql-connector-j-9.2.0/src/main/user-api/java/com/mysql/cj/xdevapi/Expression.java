@@ -32,23 +32,22 @@ public class Expression {
     }
 
     /**
+     * Static method for static import to allow: <code>set("b", expr("a + 1"))</code>
+     *
+     * @param expressionString expression string
+     * @return {@link Expression}
+     */
+    public static Expression expr(String expressionString) {
+        return new Expression(expressionString);
+    }
+
+    /**
      * Get the string form of this expression
      *
      * @return expression string
      */
     public String getExpressionString() {
         return this.expressionString;
-    }
-
-    /**
-     * Static method for static import to allow: <code>set("b", expr("a + 1"))</code>
-     *
-     * @param expressionString
-     *            expression string
-     * @return {@link Expression}
-     */
-    public static Expression expr(String expressionString) {
-        return new Expression(expressionString);
     }
 
 }

@@ -62,14 +62,14 @@ public class SqlDateValueEncoder extends AbstractValueEncoder {
                         : TimeUtil.getSimpleDateFormat(null, "''yyyy-MM-dd HH:mm:ss''",
                                 binding.getMysqlType() == MysqlType.TIMESTAMP && this.preserveInstants.getValue() ? this.serverSession.getSessionTimeZone()
                                         : this.serverSession.getDefaultTimeZone())
-                                .format(ts);
+                        .format(ts);
             case YEAR:
                 Calendar cal = Calendar.getInstance();
                 cal.setTime((java.util.Date) binding.getValue());
                 return String.valueOf(cal.get(Calendar.YEAR));
             default:
                 throw ExceptionFactory.createException(WrongArgumentException.class,
-                        Messages.getString("PreparedStatement.67", new Object[] { binding.getValue().getClass().getName(), binding.getMysqlType().toString() }),
+                        Messages.getString("PreparedStatement.67", new Object[]{binding.getValue().getClass().getName(), binding.getMysqlType().toString()}),
                         this.exceptionInterceptor);
         }
     }
@@ -120,7 +120,7 @@ public class SqlDateValueEncoder extends AbstractValueEncoder {
                 return;
             default:
                 throw ExceptionFactory.createException(WrongArgumentException.class,
-                        Messages.getString("PreparedStatement.67", new Object[] { binding.getValue().getClass().getName(), binding.getMysqlType().toString() }),
+                        Messages.getString("PreparedStatement.67", new Object[]{binding.getValue().getClass().getName(), binding.getMysqlType().toString()}),
                         this.exceptionInterceptor);
         }
     }

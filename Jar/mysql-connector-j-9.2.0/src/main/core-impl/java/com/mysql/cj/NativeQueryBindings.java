@@ -59,21 +59,54 @@ import com.mysql.cj.util.StringUtils;
 
 public class NativeQueryBindings implements QueryBindings {
 
+    private static final Map<Class<?>, MysqlType> DEFAULT_MYSQL_TYPES = new HashMap<>();
+
+    static {
+        DEFAULT_MYSQL_TYPES.put(BigDecimal.class, MysqlType.DECIMAL);
+        DEFAULT_MYSQL_TYPES.put(BigInteger.class, MysqlType.BIGINT);
+        DEFAULT_MYSQL_TYPES.put(Blob.class, MysqlType.BLOB);
+        DEFAULT_MYSQL_TYPES.put(Boolean.class, MysqlType.BOOLEAN);
+        DEFAULT_MYSQL_TYPES.put(Byte.class, MysqlType.TINYINT);
+        DEFAULT_MYSQL_TYPES.put(byte[].class, MysqlType.BINARY);
+        DEFAULT_MYSQL_TYPES.put(Calendar.class, MysqlType.TIMESTAMP);
+        DEFAULT_MYSQL_TYPES.put(Clob.class, MysqlType.TEXT);
+        DEFAULT_MYSQL_TYPES.put(Date.class, MysqlType.DATE);
+        DEFAULT_MYSQL_TYPES.put(java.util.Date.class, MysqlType.TIMESTAMP);
+        DEFAULT_MYSQL_TYPES.put(Double.class, MysqlType.DOUBLE);
+        DEFAULT_MYSQL_TYPES.put(Duration.class, MysqlType.TIME);
+        DEFAULT_MYSQL_TYPES.put(Float.class, MysqlType.FLOAT);
+        DEFAULT_MYSQL_TYPES.put(InputStream.class, MysqlType.BLOB);
+        DEFAULT_MYSQL_TYPES.put(Instant.class, MysqlType.TIMESTAMP);
+        DEFAULT_MYSQL_TYPES.put(Integer.class, MysqlType.INT);
+        DEFAULT_MYSQL_TYPES.put(LocalDate.class, MysqlType.DATE);
+        DEFAULT_MYSQL_TYPES.put(LocalDateTime.class, MysqlType.DATETIME); // default JDBC mapping is TIMESTAMP, see B-4
+        DEFAULT_MYSQL_TYPES.put(LocalTime.class, MysqlType.TIME);
+        DEFAULT_MYSQL_TYPES.put(Long.class, MysqlType.BIGINT);
+        DEFAULT_MYSQL_TYPES.put(OffsetDateTime.class, MysqlType.TIMESTAMP); // default JDBC mapping is TIMESTAMP_WITH_TIMEZONE, see B-4
+        DEFAULT_MYSQL_TYPES.put(OffsetTime.class, MysqlType.TIME); // default JDBC mapping is TIME_WITH_TIMEZONE, see B-4
+        DEFAULT_MYSQL_TYPES.put(Reader.class, MysqlType.TEXT);
+        DEFAULT_MYSQL_TYPES.put(Short.class, MysqlType.SMALLINT);
+        DEFAULT_MYSQL_TYPES.put(String.class, MysqlType.VARCHAR);
+        DEFAULT_MYSQL_TYPES.put(Time.class, MysqlType.TIME);
+        DEFAULT_MYSQL_TYPES.put(Timestamp.class, MysqlType.TIMESTAMP);
+        DEFAULT_MYSQL_TYPES.put(ZonedDateTime.class, MysqlType.TIMESTAMP); // no JDBC mapping is defined
+    }
+
     private Session session;
-
-    /** Bind values for individual fields */
+    /**
+     * Bind values for individual fields
+     */
     private BindValue[] bindValues;
-
     private int numberOfExecutions = 0;
-
-    /** Is this query a LOAD DATA query? */
+    /**
+     * Is this query a LOAD DATA query?
+     */
     private boolean isLoadDataQuery = false;
-
     private ColumnDefinition columnDefinition;
-
-    /** Do we need to send/resend types to the server? */
+    /**
+     * Do we need to send/resend types to the server?
+     */
     private AtomicBoolean sendTypesToServer = new AtomicBoolean(false); // specific to ServerPreparedQuery
-
     private Function<Session, BindValue> bindValueConstructor;
     /**
      * Flag indicating whether or not the long parameters have been 'switched' back to normal parameters.
@@ -180,10 +213,8 @@ public class NativeQueryBindings implements QueryBindings {
      * Returns the structure representing the value that (can be)/(is)
      * bound at the given parameter index.
      *
-     * @param parameterIndex
-     *            0-based
-     * @param forLongData
-     *            is this for a stream?
+     * @param parameterIndex 0-based
+     * @param forLongData    is this for a stream?
      * @return BindValue
      */
     @Override
@@ -204,38 +235,6 @@ public class NativeQueryBindings implements QueryBindings {
         binding.setIsNational(bv.isNational());
         binding.setField(bv.getField());
         binding.setScaleOrLength(bv.getScaleOrLength());
-    }
-
-    private static final Map<Class<?>, MysqlType> DEFAULT_MYSQL_TYPES = new HashMap<>();
-    static {
-        DEFAULT_MYSQL_TYPES.put(BigDecimal.class, MysqlType.DECIMAL);
-        DEFAULT_MYSQL_TYPES.put(BigInteger.class, MysqlType.BIGINT);
-        DEFAULT_MYSQL_TYPES.put(Blob.class, MysqlType.BLOB);
-        DEFAULT_MYSQL_TYPES.put(Boolean.class, MysqlType.BOOLEAN);
-        DEFAULT_MYSQL_TYPES.put(Byte.class, MysqlType.TINYINT);
-        DEFAULT_MYSQL_TYPES.put(byte[].class, MysqlType.BINARY);
-        DEFAULT_MYSQL_TYPES.put(Calendar.class, MysqlType.TIMESTAMP);
-        DEFAULT_MYSQL_TYPES.put(Clob.class, MysqlType.TEXT);
-        DEFAULT_MYSQL_TYPES.put(Date.class, MysqlType.DATE);
-        DEFAULT_MYSQL_TYPES.put(java.util.Date.class, MysqlType.TIMESTAMP);
-        DEFAULT_MYSQL_TYPES.put(Double.class, MysqlType.DOUBLE);
-        DEFAULT_MYSQL_TYPES.put(Duration.class, MysqlType.TIME);
-        DEFAULT_MYSQL_TYPES.put(Float.class, MysqlType.FLOAT);
-        DEFAULT_MYSQL_TYPES.put(InputStream.class, MysqlType.BLOB);
-        DEFAULT_MYSQL_TYPES.put(Instant.class, MysqlType.TIMESTAMP);
-        DEFAULT_MYSQL_TYPES.put(Integer.class, MysqlType.INT);
-        DEFAULT_MYSQL_TYPES.put(LocalDate.class, MysqlType.DATE);
-        DEFAULT_MYSQL_TYPES.put(LocalDateTime.class, MysqlType.DATETIME); // default JDBC mapping is TIMESTAMP, see B-4
-        DEFAULT_MYSQL_TYPES.put(LocalTime.class, MysqlType.TIME);
-        DEFAULT_MYSQL_TYPES.put(Long.class, MysqlType.BIGINT);
-        DEFAULT_MYSQL_TYPES.put(OffsetDateTime.class, MysqlType.TIMESTAMP); // default JDBC mapping is TIMESTAMP_WITH_TIMEZONE, see B-4
-        DEFAULT_MYSQL_TYPES.put(OffsetTime.class, MysqlType.TIME); // default JDBC mapping is TIME_WITH_TIMEZONE, see B-4
-        DEFAULT_MYSQL_TYPES.put(Reader.class, MysqlType.TEXT);
-        DEFAULT_MYSQL_TYPES.put(Short.class, MysqlType.SMALLINT);
-        DEFAULT_MYSQL_TYPES.put(String.class, MysqlType.VARCHAR);
-        DEFAULT_MYSQL_TYPES.put(Time.class, MysqlType.TIME);
-        DEFAULT_MYSQL_TYPES.put(Timestamp.class, MysqlType.TIMESTAMP);
-        DEFAULT_MYSQL_TYPES.put(ZonedDateTime.class, MysqlType.TIMESTAMP); // no JDBC mapping is defined
     }
 
     @Override
@@ -347,7 +346,7 @@ public class NativeQueryBindings implements QueryBindings {
     public void setDouble(int parameterIndex, double x) {
         if (!this.session.getPropertySet().getBooleanProperty(PropertyKey.allowNanAndInf).getValue()
                 && (x == Double.POSITIVE_INFINITY || x == Double.NEGATIVE_INFINITY || Double.isNaN(x))) {
-            throw ExceptionFactory.createException(WrongArgumentException.class, Messages.getString("PreparedStatement.64", new Object[] { x }),
+            throw ExceptionFactory.createException(WrongArgumentException.class, Messages.getString("PreparedStatement.64", new Object[]{x}),
                     this.session.getExceptionInterceptor());
         }
         getBinding(parameterIndex, false).setBinding(x, MysqlType.DOUBLE, this.numberOfExecutions, this.sendTypesToServer);
@@ -482,19 +481,15 @@ public class NativeQueryBindings implements QueryBindings {
     /**
      * Set the value of a parameter using an object; use the java.lang equivalent objects for integral values.
      *
-     * <P>
+     * <p>
      * The given Java object will be converted to the targetMysqlType before being sent to the database.
      *
-     * @param parameterIndex
-     *            the first parameter is 1...
-     * @param parameterObj
-     *            the object containing the input parameter value
-     * @param targetMysqlType
-     *            The MysqlType to be send to the database
-     * @param scaleOrLength
-     *            For Types.DECIMAL or Types.NUMERIC types
-     *            this is the number of digits after the decimal. For all other
-     *            types this value will be ignored.
+     * @param parameterIndex  the first parameter is 1...
+     * @param parameterObj    the object containing the input parameter value
+     * @param targetMysqlType The MysqlType to be send to the database
+     * @param scaleOrLength   For Types.DECIMAL or Types.NUMERIC types
+     *                        this is the number of digits after the decimal. For all other
+     *                        types this value will be ignored.
      */
     @Override
     public void setObject(int parameterIndex, Object parameterObj, MysqlType targetMysqlType, int scaleOrLength) {
@@ -529,10 +524,8 @@ public class NativeQueryBindings implements QueryBindings {
     /**
      * Sets the value for the placeholder as a serialized Java object (used by various forms of setObject()
      *
-     * @param parameterIndex
-     *            parameter index
-     * @param parameterObj
-     *            value
+     * @param parameterIndex parameter index
+     * @param parameterObj   value
      */
     protected final void setSerializableObject(int parameterIndex, Object parameterObj) {
         try {

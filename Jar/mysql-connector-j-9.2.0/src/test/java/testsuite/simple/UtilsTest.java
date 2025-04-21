@@ -54,7 +54,7 @@ public class UtilsTest extends BaseTestCase {
         assertTrue(Util.isJdbcInterface(StatementImpl.class));
         assertTrue(Util.isJdbcInterface(JdbcStatement.class));
         assertTrue(Util.isJdbcInterface(ResultSetImpl.class));
-        JdbcStatement s = (JdbcStatement) Proxy.newProxyInstance(this.getClass().getClassLoader(), new Class<?>[] { JdbcStatement.class },
+        JdbcStatement s = (JdbcStatement) Proxy.newProxyInstance(this.getClass().getClassLoader(), new Class<?>[]{JdbcStatement.class},
                 (proxy, method, args) -> null);
         assertTrue(Util.isJdbcInterface(s.getClass()));
 
@@ -104,7 +104,7 @@ public class UtilsTest extends BaseTestCase {
         ifaces = Util.getImplementedInterfaces(ConnectionImpl.class);
         assertEquals(3, ifaces.length);
         List<Class<?>> ifacesList = Arrays.asList(ifaces);
-        for (Class<?> clazz : new Class<?>[] { JdbcConnection.class, Serializable.class }) {
+        for (Class<?> clazz : new Class<?>[]{JdbcConnection.class, Serializable.class}) {
             assertTrue(ifacesList.contains(clazz));
         }
     }

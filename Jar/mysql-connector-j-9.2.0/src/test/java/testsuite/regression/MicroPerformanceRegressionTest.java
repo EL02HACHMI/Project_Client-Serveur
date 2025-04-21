@@ -39,15 +39,12 @@ import testsuite.BaseTestCase;
  */
 public class MicroPerformanceRegressionTest extends BaseTestCase {
 
-    private static double[] scaleFactorSamples = new double[5];
-    private static double scaleFactor = 0.0;
-
     private final static double ORIGINAL_LOOP_TIME_MS = 2300.0;
-
     // (Used to be 10.0 for JVM < 1.7 but since HW and VMs are much faster now a minimal disruption can cause significant deviations)
     private final static double LEEWAY = 50.0; // account for VMs
-
     private final static Map<String, Double> BASELINE_TIMES = new HashMap<>();
+    private static double[] scaleFactorSamples = new double[5];
+    private static double scaleFactor = 0.0;
 
     static {
         BASELINE_TIMES.put("ResultSet.getInt()", new Double(0.00661));
@@ -77,12 +74,6 @@ public class MicroPerformanceRegressionTest extends BaseTestCase {
         }
         scaleFactor /= scaleFactorSamples.length;
         System.out.println("Global performance scaling factor is: " + scaleFactor);
-    }
-
-    @BeforeEach
-    public void setUp() throws Exception {
-        System.out.println("Adjusting global performance scaling factor...");
-        System.out.println("Gobal performance scaling factor adjusted from: " + scaleFactor + " to: " + adjustScaleFactor());
     }
 
     private static final double adjustScaleFactor() {
@@ -128,6 +119,12 @@ public class MicroPerformanceRegressionTest extends BaseTestCase {
 
         long elapsedTime = BaseTestCase.currentTimeMillis() - start;
         return elapsedTime / ORIGINAL_LOOP_TIME_MS;
+    }
+
+    @BeforeEach
+    public void setUp() throws Exception {
+        System.out.println("Adjusting global performance scaling factor...");
+        System.out.println("Gobal performance scaling factor adjusted from: " + scaleFactor + " to: " + adjustScaleFactor());
     }
 
     private synchronized void checkTime(String testType, double avgExecTimeMs) throws Exception {

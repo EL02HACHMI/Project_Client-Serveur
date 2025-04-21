@@ -31,13 +31,29 @@ public class IntegerPropertyDefinition extends AbstractPropertyDefinition<Intege
     protected int multiplier = 1;
 
     public IntegerPropertyDefinition(PropertyKey key, int defaultValue, boolean isRuntimeModifiable, String description, String sinceVersion, String category,
-            int orderInCategory) {
+                                     int orderInCategory) {
         super(key, Integer.valueOf(defaultValue), isRuntimeModifiable, description, sinceVersion, category, orderInCategory);
     }
 
     public IntegerPropertyDefinition(PropertyKey key, int defaultValue, boolean isRuntimeModifiable, String description, String sinceVersion, String category,
-            int orderInCategory, int lowerBound, int upperBound) {
+                                     int orderInCategory, int lowerBound, int upperBound) {
         super(key, Integer.valueOf(defaultValue), isRuntimeModifiable, description, sinceVersion, category, orderInCategory, lowerBound, upperBound);
+    }
+
+    public static Integer integerFrom(String name, String value, int multiplier, ExceptionInterceptor exceptionInterceptor) {
+        try {
+            // Parse decimals, too
+            int intValue = (int) (Double.parseDouble(value) * multiplier);
+
+            // TODO check bounds
+
+            return intValue;
+
+        } catch (NumberFormatException nfe) {
+            throw ExceptionFactory.createException(WrongArgumentException.class,
+                    "The connection property '" + name + "' only accepts integer values. The value '" + value + "' can not be converted to an integer.",
+                    exceptionInterceptor);
+        }
     }
 
     @Override
@@ -58,22 +74,6 @@ public class IntegerPropertyDefinition extends AbstractPropertyDefinition<Intege
     @Override
     public RuntimeProperty<Integer> createRuntimeProperty() {
         return new IntegerProperty(this);
-    }
-
-    public static Integer integerFrom(String name, String value, int multiplier, ExceptionInterceptor exceptionInterceptor) {
-        try {
-            // Parse decimals, too
-            int intValue = (int) (Double.parseDouble(value) * multiplier);
-
-            // TODO check bounds
-
-            return intValue;
-
-        } catch (NumberFormatException nfe) {
-            throw ExceptionFactory.createException(WrongArgumentException.class,
-                    "The connection property '" + name + "' only accepts integer values. The value '" + value + "' can not be converted to an integer.",
-                    exceptionInterceptor);
-        }
     }
 
 }

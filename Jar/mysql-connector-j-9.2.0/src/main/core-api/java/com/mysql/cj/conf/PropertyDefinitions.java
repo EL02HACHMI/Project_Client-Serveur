@@ -60,28 +60,48 @@ public class PropertyDefinitions {
     public static final String SYSP_testsuite_cantGrant /*                    */ = "com.mysql.cj.testsuite.cantGrant";
     public static final String SYSP_testsuite_unavailable_host /*             */ = "com.mysql.cj.testsuite.unavailable.host";
 
-    /** For testsuite.regression.DataSourceRegressionTest */
+    /**
+     * For testsuite.regression.DataSourceRegressionTest
+     */
     public static final String SYSP_testsuite_ds_host /*                      */ = "com.mysql.cj.testsuite.ds.host";
-    /** For testsuite.regression.DataSourceRegressionTest */
+    /**
+     * For testsuite.regression.DataSourceRegressionTest
+     */
     public static final String SYSP_testsuite_ds_port /*                      */ = "com.mysql.cj.testsuite.ds.port";
-    /** For testsuite.regression.DataSourceRegressionTest */
+    /**
+     * For testsuite.regression.DataSourceRegressionTest
+     */
     public static final String SYSP_testsuite_ds_db /*                        */ = "com.mysql.cj.testsuite.ds.db";
-    /** For testsuite.regression.DataSourceRegressionTest */
+    /**
+     * For testsuite.regression.DataSourceRegressionTest
+     */
     public static final String SYSP_testsuite_ds_user /*                      */ = "com.mysql.cj.testsuite.ds.user";
-    /** For testsuite.regression.DataSourceRegressionTest */
+    /**
+     * For testsuite.regression.DataSourceRegressionTest
+     */
     public static final String SYSP_testsuite_ds_password /*                  */ = "com.mysql.cj.testsuite.ds.password";
 
-    /** For testsuite.perf.LoadStorePerfTest */
+    /**
+     * For testsuite.perf.LoadStorePerfTest
+     */
     public static final String SYSP_testsuite_loadstoreperf_tabletype /*      */ = "com.mysql.cj.testsuite.loadstoreperf.tabletype"; // TODO document allowed types
-    /** For testsuite.perf.LoadStorePerfTest */
+    /**
+     * For testsuite.perf.LoadStorePerfTest
+     */
     public static final String SYSP_testsuite_loadstoreperf_useBigResults /*  */ = "com.mysql.cj.testsuite.loadstoreperf.useBigResults";
 
-    /** The system property that must exist to run the shutdown test in testsuite.simple.MiniAdminTest */
+    /**
+     * The system property that must exist to run the shutdown test in testsuite.simple.MiniAdminTest
+     */
     public static final String SYSP_testsuite_miniAdminTest_runShutdown /*    */ = "com.mysql.cj.testsuite.miniAdminTest.runShutdown";
 
-    /** Suppress debug output when running testsuite */
+    /**
+     * Suppress debug output when running testsuite
+     */
     public static final String SYSP_testsuite_noDebugOutput /*                */ = "com.mysql.cj.testsuite.noDebugOutput";
-    /** Don't remove database object created by tests */
+    /**
+     * Don't remove database object created by tests
+     */
     public static final String SYSP_testsuite_retainArtifacts /*              */ = "com.mysql.cj.testsuite.retainArtifacts";
     public static final String SYSP_testsuite_runLongTests /*                 */ = "com.mysql.cj.testsuite.runLongTests";
     public static final String SYSP_testsuite_serverController_basedir /*     */ = "com.mysql.cj.testsuite.serverController.basedir";
@@ -114,9 +134,9 @@ public class PropertyDefinitions {
     public static final String CATEGORY_XDEVAPI = Messages.getString("ConnectionProperties.categoryXDevAPI");
     public static final String CATEGORY_USER_DEFINED = Messages.getString("ConnectionProperties.categoryUserDefined");
 
-    public static final String[] PROPERTY_CATEGORIES = new String[] { CATEGORY_AUTH, CATEGORY_CONNECTION, CATEGORY_SESSION, CATEGORY_NETWORK, CATEGORY_SECURITY,
+    public static final String[] PROPERTY_CATEGORIES = new String[]{CATEGORY_AUTH, CATEGORY_CONNECTION, CATEGORY_SESSION, CATEGORY_NETWORK, CATEGORY_SECURITY,
             CATEGORY_STATEMENTS, CATEGORY_PREPARED_STATEMENTS, CATEGORY_RESULT_SETS, CATEGORY_METADATA, CATEGORY_BLOBS, CATEGORY_DATETIMES, CATEGORY_HA,
-            CATEGORY_PERFORMANCE, CATEGORY_DEBUGING_PROFILING, CATEGORY_EXCEPTIONS, CATEGORY_INTEGRATION, CATEGORY_JDBC, CATEGORY_XDEVAPI };
+            CATEGORY_PERFORMANCE, CATEGORY_DEBUGING_PROFILING, CATEGORY_EXCEPTIONS, CATEGORY_INTEGRATION, CATEGORY_JDBC, CATEGORY_XDEVAPI};
 
     /*
      * Property modifiers.
@@ -126,51 +146,23 @@ public class PropertyDefinitions {
     public static final String DEFAULT_VALUE_NULL_STRING = null;
     public static final String NO_ALIAS = null;
 
-    /** is modifiable in run-time */
+    /**
+     * is modifiable in run-time
+     */
     public static final boolean RUNTIME_MODIFIABLE = true;
 
-    /** is not modifiable in run-time (will allow to set not-null value only once) */
-    public static final boolean RUNTIME_NOT_MODIFIABLE = false;
-
-    /*
-     * Property enums.
+    /**
+     * is not modifiable in run-time (will allow to set not-null value only once)
      */
-    public enum ZeroDatetimeBehavior { // zeroDateTimeBehavior
-        CONVERT_TO_NULL, EXCEPTION, ROUND;
-    }
-
-    public enum SslMode {
-        PREFERRED, REQUIRED, VERIFY_CA, VERIFY_IDENTITY, DISABLED;
-    }
-
-    public enum OpenTelemetry {
-        PREFERRED, REQUIRED, DISABLED;
-    }
-
-    public enum XdevapiSslMode {
-        REQUIRED, VERIFY_CA, VERIFY_IDENTITY, DISABLED;
-    }
-
-    public enum AuthMech { // xdevapi.auth
-        PLAIN, MYSQL41, SHA256_MEMORY, EXTERNAL;
-    }
-
-    public enum Compression { // xdevapi.compress
-        PREFERRED, REQUIRED, DISABLED;
-    }
-
-    public enum DatabaseTerm {
-        CATALOG, SCHEMA;
-    }
-
-    private static String STANDARD_LOGGER_NAME = StandardLogger.class.getName();
-
+    public static final boolean RUNTIME_NOT_MODIFIABLE = false;
     /**
      * Static unmodifiable {@link PropertyKey} -&gt; {@link PropertyDefinition} map.
      */
     public static final Map<PropertyKey, PropertyDefinition<?>> PROPERTY_KEY_TO_PROPERTY_DEFINITION;
+    private static String STANDARD_LOGGER_NAME = StandardLogger.class.getName();
+
     static {
-        PropertyDefinition<?>[] pdefs = new PropertyDefinition<?>[] {
+        PropertyDefinition<?>[] pdefs = new PropertyDefinition<?>[]{
                 //
                 // CATEGORY_AUTHENTICATION
                 //
@@ -568,7 +560,7 @@ public class PropertyDefinitions {
 
                 new EnumPropertyDefinition<>(PropertyKey.zeroDateTimeBehavior, ZeroDatetimeBehavior.EXCEPTION, RUNTIME_MODIFIABLE,
                         Messages.getString("ConnectionProperties.zeroDateTimeBehavior",
-                                new Object[] { ZeroDatetimeBehavior.EXCEPTION, ZeroDatetimeBehavior.ROUND, ZeroDatetimeBehavior.CONVERT_TO_NULL }),
+                                new Object[]{ZeroDatetimeBehavior.EXCEPTION, ZeroDatetimeBehavior.ROUND, ZeroDatetimeBehavior.CONVERT_TO_NULL}),
                         "3.1.4", CATEGORY_DATETIMES, Integer.MIN_VALUE),
 
                 //
@@ -748,7 +740,7 @@ public class PropertyDefinitions {
                 // CATEGORY_DEBUGING_PROFILING
                 //
                 new StringPropertyDefinition(PropertyKey.logger, STANDARD_LOGGER_NAME, RUNTIME_MODIFIABLE,
-                        Messages.getString("ConnectionProperties.logger", new Object[] { Log.class.getName(), STANDARD_LOGGER_NAME }), "3.1.1",
+                        Messages.getString("ConnectionProperties.logger", new Object[]{Log.class.getName(), STANDARD_LOGGER_NAME}), "3.1.1",
                         CATEGORY_DEBUGING_PROFILING, 0),
 
                 new StringPropertyDefinition(PropertyKey.profilerEventHandler, "com.mysql.cj.log.LoggingProfilerEventHandler", RUNTIME_MODIFIABLE,
@@ -908,6 +900,37 @@ public class PropertyDefinitions {
 
     public static PropertyDefinition<?> getPropertyDefinition(PropertyKey propertyKey) {
         return PROPERTY_KEY_TO_PROPERTY_DEFINITION.get(propertyKey);
+    }
+
+    /*
+     * Property enums.
+     */
+    public enum ZeroDatetimeBehavior { // zeroDateTimeBehavior
+        CONVERT_TO_NULL, EXCEPTION, ROUND;
+    }
+
+    public enum SslMode {
+        PREFERRED, REQUIRED, VERIFY_CA, VERIFY_IDENTITY, DISABLED;
+    }
+
+    public enum OpenTelemetry {
+        PREFERRED, REQUIRED, DISABLED;
+    }
+
+    public enum XdevapiSslMode {
+        REQUIRED, VERIFY_CA, VERIFY_IDENTITY, DISABLED;
+    }
+
+    public enum AuthMech { // xdevapi.auth
+        PLAIN, MYSQL41, SHA256_MEMORY, EXTERNAL;
+    }
+
+    public enum Compression { // xdevapi.compress
+        PREFERRED, REQUIRED, DISABLED;
+    }
+
+    public enum DatabaseTerm {
+        CATALOG, SCHEMA;
     }
 
 }

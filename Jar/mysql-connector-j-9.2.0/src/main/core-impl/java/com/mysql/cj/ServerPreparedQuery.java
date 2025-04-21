@@ -58,42 +58,36 @@ public class ServerPreparedQuery extends ClientPreparedQuery {
     public static final int BLOB_STREAM_READ_BUF_SIZE = 8192;
     public static final byte OPEN_CURSOR_FLAG = 0x01;
     public static final byte PARAMETER_COUNT_AVAILABLE = 0x08;
-
-    /** The ID that the server uses to identify this PreparedStatement */
-    private long serverStatementId;
-
-    /** Field-level metadata for parameters */
-    private Field[] parameterFields;
-
-    /** Field-level metadata for result sets. From statement prepare. */
-    private ColumnDefinition resultFields;
-
-    /** The "profileSQL" connection property value */
+    /**
+     * The "profileSQL" connection property value
+     */
     protected boolean profileSQL = false;
-
-    /** The "gatherPerfMetrics" connection property value */
+    /**
+     * The "gatherPerfMetrics" connection property value
+     */
     protected boolean gatherPerfMetrics;
-
-    /** The "logSlowQueries" connection property value */
+    /**
+     * The "logSlowQueries" connection property value
+     */
     protected boolean logSlowQueries = false;
-
-    private boolean useAutoSlowLog;
-
     protected RuntimeProperty<Integer> slowQueryThresholdMillis;
-
     protected RuntimeProperty<Boolean> explainSlowQueries;
     protected boolean useCursorFetch = false;
-
     protected boolean queryWasSlow = false;
-
     protected NativeMessageBuilder commandBuilder = null;
-
-    public static ServerPreparedQuery getInstance(NativeSession sess) {
-        if (sess.getPropertySet().getBooleanProperty(PropertyKey.autoGenerateTestcaseScript).getValue()) {
-            return new ServerPreparedQueryTestcaseGenerator(sess);
-        }
-        return new ServerPreparedQuery(sess);
-    }
+    /**
+     * The ID that the server uses to identify this PreparedStatement
+     */
+    private long serverStatementId;
+    /**
+     * Field-level metadata for parameters
+     */
+    private Field[] parameterFields;
+    /**
+     * Field-level metadata for result sets. From statement prepare.
+     */
+    private ColumnDefinition resultFields;
+    private boolean useAutoSlowLog;
 
     protected ServerPreparedQuery(NativeSession sess) {
         super(sess);
@@ -107,11 +101,16 @@ public class ServerPreparedQuery extends ClientPreparedQuery {
         this.commandBuilder = (NativeMessageBuilder) sess.getProtocol().getMessageBuilder();
     }
 
+    public static ServerPreparedQuery getInstance(NativeSession sess) {
+        if (sess.getPropertySet().getBooleanProperty(PropertyKey.autoGenerateTestcaseScript).getValue()) {
+            return new ServerPreparedQueryTestcaseGenerator(sess);
+        }
+        return new ServerPreparedQuery(sess);
+    }
+
     /**
-     * @param sql
-     *            query string
-     * @throws IOException
-     *             if an i/o error occurs
+     * @param sql query string
+     * @throws IOException if an i/o error occurs
      */
     public void serverPrepare(String sql) throws IOException {
         this.session.checkClosed();
@@ -171,20 +170,15 @@ public class ServerPreparedQuery extends ClientPreparedQuery {
     }
 
     /**
-     * @param <T>
-     *            extends {@link Resultset}
-     * @param maxRowsToRetrieve
-     *            rows limit
-     * @param createStreamingResultSet
-     *            should c/J create a streaming result?
-     * @param metadata
-     *            use this metadata instead of the one provided on wire
-     * @param resultSetFactory
-     *            {@link ProtocolEntityFactory}
+     * @param <T>                      extends {@link Resultset}
+     * @param maxRowsToRetrieve        rows limit
+     * @param createStreamingResultSet should c/J create a streaming result?
+     * @param metadata                 use this metadata instead of the one provided on wire
+     * @param resultSetFactory         {@link ProtocolEntityFactory}
      * @return T instance
      */
     public <T extends Resultset> T serverExecute(int maxRowsToRetrieve, boolean createStreamingResultSet, ColumnDefinition metadata,
-            ProtocolEntityFactory<T, NativePacketPayload> resultSetFactory) {
+                                                 ProtocolEntityFactory<T, NativePacketPayload> resultSetFactory) {
         if (this.session.shouldIntercept()) {
             T interceptedResults = this.session.invokeQueryInterceptorsPre(this::getOriginalSql, this, true);
 
@@ -289,8 +283,8 @@ public class ServerPreparedQuery extends ClientPreparedQuery {
 
                 if (this.queryWasSlow) {
                     this.session.getProfilerEventHandler().processEvent(ProfilerEvent.TYPE_SLOW_QUERY, this.session, this, null, executeTime, new Throwable(),
-                            Messages.getString("ServerPreparedStatement.15", new String[] { String.valueOf(this.session.getSlowQueryThreshold()),
-                                    String.valueOf(executeTime), this.originalSql, queryAsString }));
+                            Messages.getString("ServerPreparedStatement.15", new String[]{String.valueOf(this.session.getSlowQueryThreshold()),
+                                    String.valueOf(executeTime), this.originalSql, queryAsString}));
                 }
             }
 
@@ -319,7 +313,7 @@ public class ServerPreparedQuery extends ClientPreparedQuery {
     }
 
     public <T extends Resultset> T readExecuteResult(NativePacketPayload resultPacket, int maxRowsToRetrieve, boolean createStreamingResultSet,
-            ColumnDefinition metadata, ProtocolEntityFactory<T, NativePacketPayload> resultSetFactory, String queryAsString) {
+                                                     ColumnDefinition metadata, ProtocolEntityFactory<T, NativePacketPayload> resultSetFactory, String queryAsString) {
         // TODO queryAsString should be shared instead of passed
         try {
             long fetchStartTime = this.profileSQL ? this.session.getCurrentTimeNanosOrMillis() : 0;
@@ -381,10 +375,8 @@ public class ServerPreparedQuery extends ClientPreparedQuery {
      *    will  be returned
      * </pre>
      *
-     * @param parameterIndex
-     *            parameter index
-     * @param binding
-     *            {@link BindValue containing long data}
+     * @param parameterIndex parameter index
+     * @param binding        {@link BindValue containing long data}
      */
     private void serverLongData(int parameterIndex, BindValue binding) {
         this.lock.lock();
@@ -561,8 +553,7 @@ public class ServerPreparedQuery extends ClientPreparedQuery {
     }
 
     /**
-     * @param clearServerParameters
-     *            flag indicating whether we need an additional clean up
+     * @param clearServerParameters flag indicating whether we need an additional clean up
      */
     public void clearParameters(boolean clearServerParameters) {
         boolean hadLongData = false;
@@ -651,7 +642,7 @@ public class ServerPreparedQuery extends ClientPreparedQuery {
             }
         }
 
-        return new long[] { maxSizeOfParameterSet, sizeOfEntireBatch };
+        return new long[]{maxSizeOfParameterSet, sizeOfEntireBatch};
     }
 
     private String truncateQueryToLog(String sql) {

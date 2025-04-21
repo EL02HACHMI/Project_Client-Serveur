@@ -24,7 +24,7 @@ import java.util.function.Supplier;
 
 /**
  * A telemetry span wrapper that hides all specific details from the underlying telemetry library.
- *
+ * <p>
  * A default no-op implementation is provided so that telemetry may be turned off with minimal impact on the driver code.
  */
 public interface TelemetrySpan extends AutoCloseable {
@@ -32,18 +32,15 @@ public interface TelemetrySpan extends AutoCloseable {
     /**
      * Takes this telemetry span and makes it current in the global telemetry context.
      *
-     * @return
-     *         an {@link AutoCloseable} telemetry scope that represents the current telemetry context.
+     * @return an {@link AutoCloseable} telemetry scope that represents the current telemetry context.
      */
     TelemetryScope makeCurrent();
 
     /**
      * Adds the specified String attribute to this telemetry span.
      *
-     * @param key
-     *            the key for this attribute
-     * @param value
-     *            the value for this attribute
+     * @param key   the key for this attribute
+     * @param value the value for this attribute
      */
     default void setAttribute(TelemetryAttribute key, String value) {
         // Noop.
@@ -52,10 +49,8 @@ public interface TelemetrySpan extends AutoCloseable {
     /**
      * Adds the specified long attribute to this telemetry span.
      *
-     * @param key
-     *            the key for this attribute
-     * @param value
-     *            the value for this attribute
+     * @param key   the key for this attribute
+     * @param value the value for this attribute
      */
     default void setAttribute(TelemetryAttribute key, long value) {
         // Noop.
@@ -64,12 +59,9 @@ public interface TelemetrySpan extends AutoCloseable {
     /**
      * Adds the attribute given by the specified supplier to this telemetry span.
      *
-     * @param <T>
-     *            the type of the attribute value
-     * @param key
-     *            the key for this attribute
-     * @param valueSupplier
-     *            the supplier for the value for this attribute
+     * @param <T>           the type of the attribute value
+     * @param key           the key for this attribute
+     * @param valueSupplier the supplier for the value for this attribute
      */
     default <T> void setAttribute(TelemetryAttribute key, Supplier<T> valueSupplier) {
         // Noop
@@ -78,8 +70,7 @@ public interface TelemetrySpan extends AutoCloseable {
     /**
      * Sets the status code of this telemetry span as ERROR and records the stack trace of the specified exception.
      *
-     * @param cause
-     *            the cause for setting this span status code to ERROR
+     * @param cause the cause for setting this span status code to ERROR
      */
     default void setError(Throwable cause) {
         // Noop.

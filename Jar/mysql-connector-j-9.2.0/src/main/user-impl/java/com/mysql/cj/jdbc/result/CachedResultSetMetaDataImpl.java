@@ -24,7 +24,9 @@ import com.mysql.cj.result.DefaultColumnDefinition;
 
 public class CachedResultSetMetaDataImpl extends DefaultColumnDefinition implements CachedResultSetMetaData {
 
-    /** Cached ResultSetMetaData */
+    /**
+     * Cached ResultSetMetaData
+     */
     java.sql.ResultSetMetaData metadata;
 
     @Override

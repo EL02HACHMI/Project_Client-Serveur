@@ -39,8 +39,7 @@ public class BufferedRowList implements RowList {
     /**
      * Create a new instance by filling the internal buffer by draining the row stream.
      *
-     * @param ris
-     *            {@link Row}s iterator
+     * @param ris {@link Row}s iterator
      */
     public BufferedRowList(Iterator<Row> ris) {
         this.rowList = StreamSupport.stream(Spliterators.spliteratorUnknownSize(ris, 0), false).collect(Collectors.toList());

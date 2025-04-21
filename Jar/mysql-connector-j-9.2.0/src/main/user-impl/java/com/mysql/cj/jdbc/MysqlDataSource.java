@@ -46,10 +46,11 @@ import com.mysql.cj.util.StringUtils;
  */
 public class MysqlDataSource extends JdbcPropertySetImpl implements DataSource, Referenceable, Serializable, JdbcPropertySet {
 
-    static final long serialVersionUID = -5515846944416881264L;
-
-    /** The driver to create connections with */
+    /**
+     * The driver to create connections with
+     */
     protected final static NonRegisteringDriver mysqlDriver;
+    static final long serialVersionUID = -5515846944416881264L;
 
     static {
         try {
@@ -59,37 +60,59 @@ public class MysqlDataSource extends JdbcPropertySetImpl implements DataSource, 
         }
     }
 
-    /** Log stream */
+    /**
+     * Log stream
+     */
     protected transient PrintWriter logWriter = null;
 
-    /** Database Name */
+    /**
+     * Database Name
+     */
     protected String databaseName = null;
 
-    /** Character Encoding */
+    /**
+     * Character Encoding
+     */
     protected String encoding = null;
 
-    /** The JDBC URL */
+    /**
+     * The JDBC URL
+     */
     protected String url = null;
 
-    /** Should we construct the URL, or has it been set explicitly? */
+    /**
+     * Should we construct the URL, or has it been set explicitly?
+     */
     protected boolean explicitUrl = false;
 
-    /** Hostname */
+    /**
+     * Hostname
+     */
     protected String hostName = null;
 
-    /** Port number */
+    /**
+     * Port number
+     */
     protected int port = ConnectionUrl.DEFAULT_PORT;
 
-    /** Was the port explicitly set? */
+    /**
+     * Was the port explicitly set?
+     */
     protected boolean explicitPort = false;
 
-    /** User name */
+    /**
+     * User name
+     */
     protected String user = null;
 
-    /** Password */
+    /**
+     * Password
+     */
     protected String password = null;
 
-    /** The profileSQL property */
+    /**
+     * The profileSQL property
+     */
     protected String profileSQLString = "false";
 
     protected String description = "MySQL Connector/J Data Source";
@@ -129,16 +152,6 @@ public class MysqlDataSource extends JdbcPropertySetImpl implements DataSource, 
     }
 
     /**
-     * Sets the database name.
-     *
-     * @param dbName
-     *            the name of the database
-     */
-    public void setDatabaseName(String dbName) {
-        this.databaseName = dbName;
-    }
-
-    /**
      * Gets the name of the database
      *
      * @return the name of the database for this data source
@@ -147,9 +160,13 @@ public class MysqlDataSource extends JdbcPropertySetImpl implements DataSource, 
         return this.databaseName != null ? this.databaseName : "";
     }
 
-    @Override
-    public void setLogWriter(PrintWriter output) throws SQLException {
-        this.logWriter = output;
+    /**
+     * Sets the database name.
+     *
+     * @param dbName the name of the database
+     */
+    public void setDatabaseName(String dbName) {
+        this.databaseName = dbName;
     }
 
     @Override
@@ -158,8 +175,8 @@ public class MysqlDataSource extends JdbcPropertySetImpl implements DataSource, 
     }
 
     @Override
-    public void setLoginTimeout(int seconds) throws SQLException {
-        // TODO
+    public void setLogWriter(PrintWriter output) throws SQLException {
+        this.logWriter = output;
     }
 
     @Override
@@ -167,14 +184,9 @@ public class MysqlDataSource extends JdbcPropertySetImpl implements DataSource, 
         return 0;
     }
 
-    /**
-     * Sets the password
-     *
-     * @param pass
-     *            the password
-     */
-    public void setPassword(String pass) {
-        this.password = pass;
+    @Override
+    public void setLoginTimeout(int seconds) throws SQLException {
+        // TODO
     }
 
     /**
@@ -187,14 +199,12 @@ public class MysqlDataSource extends JdbcPropertySetImpl implements DataSource, 
     }
 
     /**
-     * Sets the database port.
+     * Sets the password
      *
-     * @param p
-     *            the port
+     * @param pass the password
      */
-    public void setPort(int p) {
-        this.port = p;
-        this.explicitPort = true;
+    public void setPassword(String pass) {
+        this.password = pass;
     }
 
     /**
@@ -207,13 +217,13 @@ public class MysqlDataSource extends JdbcPropertySetImpl implements DataSource, 
     }
 
     /**
-     * Sets the port number
+     * Sets the database port.
      *
-     * @param p
-     *            the port
+     * @param p the port
      */
-    public void setPortNumber(int p) {
-        setPort(p);
+    public void setPort(int p) {
+        this.port = p;
+        this.explicitPort = true;
     }
 
     /**
@@ -226,14 +236,21 @@ public class MysqlDataSource extends JdbcPropertySetImpl implements DataSource, 
     }
 
     /**
+     * Sets the port number
+     *
+     * @param p the port
+     */
+    public void setPortNumber(int p) {
+        setPort(p);
+    }
+
+    /**
      * Initializes driver properties that come from a JNDI reference (in the
      * case of a javax.sql.DataSource bound into some name service that doesn't
      * handle Java objects directly).
      *
-     * @param ref
-     *            The JNDI Reference that holds RefAddrs for all properties
-     * @throws SQLException
-     *             if error occurs
+     * @param ref The JNDI Reference that holds RefAddrs for all properties
+     * @throws SQLException if error occurs
      */
     public void setPropertiesViaRef(Reference ref) throws SQLException {
         for (PropertyKey propKey : PropertyDefinitions.PROPERTY_KEY_TO_PROPERTY_DEFINITION.keySet()) {
@@ -251,9 +268,7 @@ public class MysqlDataSource extends JdbcPropertySetImpl implements DataSource, 
      * Required method to support this class as a <CODE>Referenceable</CODE>.
      *
      * @return a Reference to this data source
-     *
-     * @throws NamingException
-     *             if a JNDI error occurs
+     * @throws NamingException if a JNDI error occurs
      */
     @Override
     public Reference getReference() throws NamingException {
@@ -285,16 +300,6 @@ public class MysqlDataSource extends JdbcPropertySetImpl implements DataSource, 
     }
 
     /**
-     * Sets the server name.
-     *
-     * @param serverName
-     *            the server name
-     */
-    public void setServerName(String serverName) {
-        this.hostName = serverName;
-    }
-
-    /**
      * Returns the name of the database server
      *
      * @return the name of the database server
@@ -303,19 +308,18 @@ public class MysqlDataSource extends JdbcPropertySetImpl implements DataSource, 
         return this.hostName != null ? this.hostName : "";
     }
 
+    /**
+     * Sets the server name.
+     *
+     * @param serverName the server name
+     */
+    public void setServerName(String serverName) {
+        this.hostName = serverName;
+    }
+
     //
     // I've seen application servers use both formats, URL or url (doh)
     //
-
-    /**
-     * Sets the URL for this connection
-     *
-     * @param url
-     *            the URL for this connection
-     */
-    public void setURL(String url) {
-        setUrl(url);
-    }
 
     /**
      * Returns the URL for this connection
@@ -327,16 +331,12 @@ public class MysqlDataSource extends JdbcPropertySetImpl implements DataSource, 
     }
 
     /**
-     * This method is used by the app server to set the url string specified
-     * within the datasource deployment descriptor. It is discovered using
-     * introspection and matches if property name in descriptor is "url".
+     * Sets the URL for this connection
      *
-     * @param url
-     *            url to be used within driver.connect
+     * @param url the URL for this connection
      */
-    public void setUrl(String url) {
-        this.url = url;
-        this.explicitUrl = true;
+    public void setURL(String url) {
+        setUrl(url);
     }
 
     /**
@@ -363,13 +363,15 @@ public class MysqlDataSource extends JdbcPropertySetImpl implements DataSource, 
     }
 
     /**
-     * Sets the user ID.
+     * This method is used by the app server to set the url string specified
+     * within the datasource deployment descriptor. It is discovered using
+     * introspection and matches if property name in descriptor is "url".
      *
-     * @param userID
-     *            the User ID
+     * @param url url to be used within driver.connect
      */
-    public void setUser(String userID) {
-        this.user = userID;
+    public void setUrl(String url) {
+        this.url = url;
+        this.explicitUrl = true;
     }
 
     /**
@@ -382,15 +384,20 @@ public class MysqlDataSource extends JdbcPropertySetImpl implements DataSource, 
     }
 
     /**
+     * Sets the user ID.
+     *
+     * @param userID the User ID
+     */
+    public void setUser(String userID) {
+        this.user = userID;
+    }
+
+    /**
      * Creates a connection using the specified properties.
      *
-     * @param props
-     *            the properties to connect with
-     *
+     * @param props the properties to connect with
      * @return a connection to the database
-     *
-     * @throws SQLException
-     *             if an error occurs
+     * @throws SQLException if an error occurs
      */
     protected java.sql.Connection getConnection(Properties props) throws SQLException {
         String jdbcUrlToUse = this.explicitUrl ? this.url : getUrl();
@@ -426,11 +433,9 @@ public class MysqlDataSource extends JdbcPropertySetImpl implements DataSource, 
     /**
      * Used in properties getters added by instrumentation.
      *
-     * @param name
-     *            property name property name
+     * @param name property name property name
      * @return property value
-     * @throws SQLException
-     *             if error occurs
+     * @throws SQLException if error occurs
      */
     protected String getStringRuntimeProperty(String name) throws SQLException {
         return getStringProperty(name).getValue();
@@ -439,12 +444,9 @@ public class MysqlDataSource extends JdbcPropertySetImpl implements DataSource, 
     /**
      * Used in properties setters added by instrumentation.
      *
-     * @param name
-     *            property name
-     * @param value
-     *            value
-     * @throws SQLException
-     *             if error occurs
+     * @param name  property name
+     * @param value value
+     * @throws SQLException if error occurs
      */
     protected void setStringRuntimeProperty(String name, String value) throws SQLException {
         ((AbstractRuntimeProperty<String>) getStringProperty(name)).setValueInternal(value, null, null);
@@ -453,11 +455,9 @@ public class MysqlDataSource extends JdbcPropertySetImpl implements DataSource, 
     /**
      * Used in properties getters added by instrumentation.
      *
-     * @param name
-     *            property name
+     * @param name property name
      * @return property value
-     * @throws SQLException
-     *             if error occurs
+     * @throws SQLException if error occurs
      */
     protected boolean getBooleanRuntimeProperty(String name) throws SQLException {
         return getBooleanProperty(name).getValue();
@@ -466,12 +466,9 @@ public class MysqlDataSource extends JdbcPropertySetImpl implements DataSource, 
     /**
      * Used in properties setters added by instrumentation.
      *
-     * @param name
-     *            property name
-     * @param value
-     *            value
-     * @throws SQLException
-     *             if error occurs
+     * @param name  property name
+     * @param value value
+     * @throws SQLException if error occurs
      */
     protected void setBooleanRuntimeProperty(String name, boolean value) throws SQLException {
         ((AbstractRuntimeProperty<Boolean>) getBooleanProperty(name)).setValueInternal(value, null, null);
@@ -480,11 +477,9 @@ public class MysqlDataSource extends JdbcPropertySetImpl implements DataSource, 
     /**
      * Used in properties getters added by instrumentation.
      *
-     * @param name
-     *            property name
+     * @param name property name
      * @return property value
-     * @throws SQLException
-     *             if error occurs
+     * @throws SQLException if error occurs
      */
     protected int getIntegerRuntimeProperty(String name) throws SQLException {
         return getIntegerProperty(name).getValue();
@@ -493,12 +488,9 @@ public class MysqlDataSource extends JdbcPropertySetImpl implements DataSource, 
     /**
      * Used in properties setters added by instrumentation.
      *
-     * @param name
-     *            property name
-     * @param value
-     *            value
-     * @throws SQLException
-     *             if error occurs
+     * @param name  property name
+     * @param value value
+     * @throws SQLException if error occurs
      */
     protected void setIntegerRuntimeProperty(String name, int value) throws SQLException {
         ((AbstractRuntimeProperty<Integer>) getIntegerProperty(name)).setValueInternal(value, null, null);
@@ -507,11 +499,9 @@ public class MysqlDataSource extends JdbcPropertySetImpl implements DataSource, 
     /**
      * Used in properties getters added by instrumentation.
      *
-     * @param name
-     *            property name
+     * @param name property name
      * @return property value
-     * @throws SQLException
-     *             if error occurs
+     * @throws SQLException if error occurs
      */
     protected long getLongRuntimeProperty(String name) throws SQLException {
         return getLongProperty(name).getValue();
@@ -520,12 +510,9 @@ public class MysqlDataSource extends JdbcPropertySetImpl implements DataSource, 
     /**
      * Used in properties setters added by instrumentation.
      *
-     * @param name
-     *            property name
-     * @param value
-     *            value
-     * @throws SQLException
-     *             if error occurs
+     * @param name  property name
+     * @param value value
+     * @throws SQLException if error occurs
      */
     protected void setLongRuntimeProperty(String name, long value) throws SQLException {
         ((AbstractRuntimeProperty<Long>) getLongProperty(name)).setValueInternal(value, null, null);
@@ -534,11 +521,9 @@ public class MysqlDataSource extends JdbcPropertySetImpl implements DataSource, 
     /**
      * Used in properties getters added by instrumentation.
      *
-     * @param name
-     *            property name
+     * @param name property name
      * @return property value
-     * @throws SQLException
-     *             if error occurs
+     * @throws SQLException if error occurs
      */
     protected int getMemorySizeRuntimeProperty(String name) throws SQLException {
         return getMemorySizeProperty(name).getValue();
@@ -547,12 +532,9 @@ public class MysqlDataSource extends JdbcPropertySetImpl implements DataSource, 
     /**
      * Used in properties setters added by instrumentation.
      *
-     * @param name
-     *            property name
-     * @param value
-     *            value
-     * @throws SQLException
-     *             if error occurs
+     * @param name  property name
+     * @param value value
+     * @throws SQLException if error occurs
      */
     protected void setMemorySizeRuntimeProperty(String name, int value) throws SQLException {
         ((AbstractRuntimeProperty<Integer>) getMemorySizeProperty(name)).setValueInternal(value, null, null);
@@ -561,11 +543,9 @@ public class MysqlDataSource extends JdbcPropertySetImpl implements DataSource, 
     /**
      * Used in properties getters added by instrumentation.
      *
-     * @param name
-     *            property name
+     * @param name property name
      * @return property value
-     * @throws SQLException
-     *             if error occurs
+     * @throws SQLException if error occurs
      */
     protected String getEnumRuntimeProperty(String name) throws SQLException {
         return getEnumProperty(name).getStringValue();
@@ -574,12 +554,9 @@ public class MysqlDataSource extends JdbcPropertySetImpl implements DataSource, 
     /**
      * Used in properties setters added by instrumentation.
      *
-     * @param name
-     *            property name
-     * @param value
-     *            value
-     * @throws SQLException
-     *             if error occurs
+     * @param name  property name
+     * @param value value
+     * @throws SQLException if error occurs
      */
     protected void setEnumRuntimeProperty(String name, String value) throws SQLException {
         ((AbstractRuntimeProperty<?>) getEnumProperty(name)).setValueInternal(value, null);

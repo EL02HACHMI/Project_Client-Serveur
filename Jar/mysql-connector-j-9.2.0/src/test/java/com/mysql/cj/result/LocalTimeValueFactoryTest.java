@@ -41,14 +41,14 @@ import com.mysql.cj.protocol.InternalTimestamp;
 
 public class LocalTimeValueFactoryTest extends CommonAsserts {
 
+    PropertySet pset = new DefaultPropertySet();
+    LocalTimeValueFactory vf = new LocalTimeValueFactory(this.pset,
+            warning -> assertEquals("Precision lost converting DATETIME/TIMESTAMP to java.time.LocalTime", warning));
+
     @Test
     public void testBasics() {
         assertEquals("java.time.LocalTime", this.vf.getTargetTypeName());
     }
-
-    PropertySet pset = new DefaultPropertySet();
-    LocalTimeValueFactory vf = new LocalTimeValueFactory(this.pset,
-            warning -> assertEquals("Precision lost converting DATETIME/TIMESTAMP to java.time.LocalTime", warning));
 
     @Test
     public void testCreateFromDate() {
@@ -118,7 +118,7 @@ public class LocalTimeValueFactoryTest extends CommonAsserts {
     public void testCreateFromBytes() {
         assertThrows(DataConversionException.class, "Cannot convert string '1' to java.time.LocalTime value", () -> {
             Field f = new Field("test", "test", 33, "UTF-8", MysqlType.VARCHAR, 2);
-            LocalTimeValueFactoryTest.this.vf.createFromBytes(new byte[] { '1' }, 0, 1, f);
+            LocalTimeValueFactoryTest.this.vf.createFromBytes(new byte[]{'1'}, 0, 1, f);
             return null;
         });
 
@@ -141,7 +141,7 @@ public class LocalTimeValueFactoryTest extends CommonAsserts {
         assertEquals(LocalTime.of(0, 0), this.vf.createFromBytes("2018-01-02".getBytes(), 0, 10, f));
 
         assertThrows(DataConversionException.class, "Cannot convert string '1' to java.time.LocalTime value", () -> {
-            LocalTimeValueFactoryTest.this.vf.createFromBytes(new byte[] { '1' }, 0, 1, f);
+            LocalTimeValueFactoryTest.this.vf.createFromBytes(new byte[]{'1'}, 0, 1, f);
             return null;
         });
 
@@ -159,7 +159,7 @@ public class LocalTimeValueFactoryTest extends CommonAsserts {
     @Test
     public void testCreateFromBit() {
         assertThrows(DataConversionException.class, "Unsupported conversion from BIT to java.time.LocalTime", () -> {
-            LocalTimeValueFactoryTest.this.vf.createFromBit(new byte[] { 1 }, 0, 2);
+            LocalTimeValueFactoryTest.this.vf.createFromBit(new byte[]{1}, 0, 2);
             return null;
         });
     }

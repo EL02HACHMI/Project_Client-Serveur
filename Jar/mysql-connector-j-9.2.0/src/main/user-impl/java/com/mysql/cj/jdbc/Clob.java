@@ -112,7 +112,7 @@ public class Clob implements java.sql.Clob, OutputStreamWatcher, WriterWatcher {
     @Override
     public long position(String stringToFind, long startPos) throws SQLException {
         if (startPos < 1) {
-            throw SQLError.createSQLException(Messages.getString("Clob.8", new Object[] { startPos }), MysqlErrorNumbers.SQLSTATE_CONNJ_ILLEGAL_ARGUMENT,
+            throw SQLError.createSQLException(Messages.getString("Clob.8", new Object[]{startPos}), MysqlErrorNumbers.SQLSTATE_CONNJ_ILLEGAL_ARGUMENT,
                     this.exceptionInterceptor);
         }
 

@@ -43,10 +43,10 @@ import com.mysql.cj.protocol.InternalTimestamp;
  */
 public class SqlTimeValueFactory extends AbstractDateTimeValueFactory<Time> {
 
-    private WarningListener warningListener;
     // cached per instance to avoid re-creation on every create*() call
     private final Calendar cal;
     private final Lock calLock = new ReentrantLock();
+    private WarningListener warningListener;
 
     public SqlTimeValueFactory(PropertySet pset, Calendar calendar, TimeZone tz) {
         super(pset);
@@ -82,7 +82,7 @@ public class SqlTimeValueFactory extends AbstractDateTimeValueFactory<Time> {
     @Override
     public Time localCreateFromTime(InternalTime it) {
         if (it.getHours() < 0 || it.getHours() >= 24) {
-            throw new DataReadException(Messages.getString("ResultSet.InvalidTimeValue", new Object[] { it.toString() }));
+            throw new DataReadException(Messages.getString("ResultSet.InvalidTimeValue", new Object[]{it.toString()}));
         }
 
         this.calLock.lock();
@@ -105,7 +105,7 @@ public class SqlTimeValueFactory extends AbstractDateTimeValueFactory<Time> {
     public Time localCreateFromDatetime(InternalTimestamp its) {
         if (this.warningListener != null) {
             // TODO: need column context
-            this.warningListener.warningEncountered(Messages.getString("ResultSet.PrecisionLostWarning", new Object[] { "java.sql.Time" }));
+            this.warningListener.warningEncountered(Messages.getString("ResultSet.PrecisionLostWarning", new Object[]{"java.sql.Time"}));
         }
 
         // truncate date information
@@ -116,7 +116,7 @@ public class SqlTimeValueFactory extends AbstractDateTimeValueFactory<Time> {
     public Time localCreateFromTimestamp(InternalTimestamp its) {
         if (this.warningListener != null) {
             // TODO: need column context
-            this.warningListener.warningEncountered(Messages.getString("ResultSet.PrecisionLostWarning", new Object[] { "java.sql.Time" }));
+            this.warningListener.warningEncountered(Messages.getString("ResultSet.PrecisionLostWarning", new Object[]{"java.sql.Time"}));
         }
 
         // truncate date information

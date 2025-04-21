@@ -29,14 +29,6 @@ public class InternalDate {
     protected int month = 0;
     protected int day = 0;
 
-    public static InternalDate from(LocalDate x) {
-        return new InternalDate(x.getYear(), x.getMonthValue(), x.getDayOfMonth());
-    }
-
-    public static InternalDate from(Calendar x) {
-        return new InternalDate(x.get(Calendar.YEAR), x.get(Calendar.MONTH) + 1, x.get(Calendar.DAY_OF_MONTH));
-    }
-
     /**
      * Constructs a zero date.
      */
@@ -47,6 +39,14 @@ public class InternalDate {
         this.year = year;
         this.month = month;
         this.day = day;
+    }
+
+    public static InternalDate from(LocalDate x) {
+        return new InternalDate(x.getYear(), x.getMonthValue(), x.getDayOfMonth());
+    }
+
+    public static InternalDate from(Calendar x) {
+        return new InternalDate(x.get(Calendar.YEAR), x.get(Calendar.MONTH) + 1, x.get(Calendar.DAY_OF_MONTH));
     }
 
     public int getYear() {

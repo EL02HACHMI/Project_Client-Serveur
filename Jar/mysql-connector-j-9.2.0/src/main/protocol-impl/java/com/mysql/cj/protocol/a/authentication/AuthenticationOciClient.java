@@ -50,10 +50,8 @@ import com.oracle.bmc.ConfigFileReader.ConfigFile;
 public class AuthenticationOciClient implements AuthenticationPlugin<NativePacketPayload> {
 
     public static String PLUGIN_NAME = "authentication_oci_client";
-
-    private String sourceOfAuthData = PLUGIN_NAME;
-
     protected Protocol<NativePacketPayload> protocol = null;
+    private String sourceOfAuthData = PLUGIN_NAME;
     private MysqlCallbackHandler usernameCallbackHandler = null;
     private String configFingerprint = null;
     private String configKeyFile = null;

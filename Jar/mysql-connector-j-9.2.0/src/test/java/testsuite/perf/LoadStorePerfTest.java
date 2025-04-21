@@ -37,7 +37,9 @@ import testsuite.BaseTestCase;
  */
 public class LoadStorePerfTest extends BasePerfTest {
 
-    /** The table type to use (only for MySQL), 'HEAP' by default */
+    /**
+     * The table type to use (only for MySQL), 'HEAP' by default
+     */
     private String tableType = "HEAP";
 
     private boolean takeMeasurements = false;
@@ -136,8 +138,7 @@ public class LoadStorePerfTest extends BasePerfTest {
     /**
      * Tests and times 1000 load/store type transactions
      *
-     * @throws Exception
-     *             if an error occurs
+     * @throws Exception if an error occurs
      */
     @Test
     public void test1000Transactions() throws Exception {
@@ -282,8 +283,7 @@ public class LoadStorePerfTest extends BasePerfTest {
     /**
      * Runs the test 10 times to get JIT going, and GC going
      *
-     * @throws Exception
-     *             if an error occurs.
+     * @throws Exception if an error occurs.
      */
     protected void warmUp() throws Exception {
         try {

@@ -800,7 +800,7 @@ public class SecureSessionTest extends DevApiBaseTestCase {
 
         List<String> serverSupportedProtocols = Arrays.asList(value.trim().split("\\s*,\\s*"));
         String highestCommonTlsVersion = "";
-        for (String p : new String[] { "TLSv1.3", "TLSv1.2", "TLSv1.1", "TLSv1" }) {
+        for (String p : new String[]{"TLSv1.3", "TLSv1.2", "TLSv1.1", "TLSv1"}) {
             if (jvmSupportedProtocols.contains(p) && serverSupportedProtocols.contains(p)) {
                 highestCommonTlsVersion = p;
                 break;
@@ -903,7 +903,7 @@ public class SecureSessionTest extends DevApiBaseTestCase {
 
     /**
      * Tests fix for Bug#26227653, WL#10528 DIFF BEHAVIOUR WHEN SYSTEM PROP JAVAX.NET.SSL.TRUSTSTORETYPE IS SET
-     *
+     * <p>
      * The actual bug is: if wrong system-wide SSL settings are provided, the session should not fail if 'xdevapi.ssl-mode=REQUIRED'.
      */
     @Test

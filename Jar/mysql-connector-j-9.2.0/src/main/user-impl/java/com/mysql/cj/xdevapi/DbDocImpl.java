@@ -35,7 +35,7 @@ import java.util.TreeMap;
  *
  * <b>key</b> is a JSON <b>string</b>.
  * <b>value</b> is any of JSON <b>object</b>, <b>array</b>, <b>number</b>, <b>string</b>, true, false, null.
- *
+ * <p>
  * Example of valid JSON object:
  *
  * <pre>
@@ -57,14 +57,14 @@ import java.util.TreeMap;
  * "field7" : ["arr1", 3, true, false, null, [], {}]
  * }
  * </pre>
- *
+ * <p>
  * To create {@link DbDoc} from existing string representation you need to use {@link JsonParser#parseDoc(java.io.StringReader)} method:
  *
  * <pre>
  *
  * DbDoc doc = JsonParser.parseDoc(new StringReader(&quot;{\&quot;key1\&quot; : \&quot;value1\&quot;}&quot;));
  * </pre>
- *
+ * <p>
  * You can construct JSON document by {@link DbDoc}, {@link JsonString}, {@link JsonNumber}, {@link JsonArray} and {@link JsonLiteral} methods and get JSON
  * string representation by using {@link #toString()} method. For example, to get the document shown above:
  *

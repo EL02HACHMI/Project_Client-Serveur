@@ -132,11 +132,8 @@ public interface PropertyDefinition<T> {
     /**
      * Returns the value object parsed from it's string representation and checked against allowable values.
      *
-     * @param value
-     *            value
-     * @param exceptionInterceptor
-     *            exception interceptor
-     *
+     * @param value                value
+     * @param exceptionInterceptor exception interceptor
      * @return the value object
      */
     T parseObject(String value, ExceptionInterceptor exceptionInterceptor);

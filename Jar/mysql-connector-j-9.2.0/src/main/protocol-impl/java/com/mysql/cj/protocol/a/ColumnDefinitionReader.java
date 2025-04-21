@@ -64,11 +64,8 @@ public class ColumnDefinitionReader implements ProtocolEntityReader<ColumnDefini
     /**
      * Unpacks the Field information from the given packet.
      *
-     * @param packet
-     *            the packet containing the field information
-     * @param characterSetMetadata
-     *            encoding of the metadata in the packet
-     *
+     * @param packet               the packet containing the field information
+     * @param characterSetMetadata encoding of the metadata in the packet
      * @return the unpacked field
      */
     protected Field unpackField(NativePacketPayload packet, String characterSetMetadata) {

@@ -29,8 +29,7 @@ public interface OutputStreamWatcher {
     /**
      * Called when the OutputStream being watched has .close() called
      *
-     * @param out
-     *            {@link WatchableStream}
+     * @param out {@link WatchableStream}
      */
     void streamClosed(WatchableStream out);
 

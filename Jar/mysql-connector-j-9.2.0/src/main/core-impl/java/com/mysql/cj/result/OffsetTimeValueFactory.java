@@ -64,7 +64,7 @@ public class OffsetTimeValueFactory extends AbstractDateTimeValueFactory<OffsetT
     @Override
     public OffsetTime localCreateFromTime(InternalTime it) {
         if (it.getHours() < 0 || it.getHours() >= 24) {
-            throw new DataReadException(Messages.getString("ResultSet.InvalidTimeValue", new Object[] { it.toString() }));
+            throw new DataReadException(Messages.getString("ResultSet.InvalidTimeValue", new Object[]{it.toString()}));
         }
         return LocalTime.of(it.getHours(), it.getMinutes(), it.getSeconds(), it.getNanos()).atOffset(ZoneOffset.ofTotalSeconds(this.tz.getRawOffset() / 1000));
     }
@@ -72,7 +72,7 @@ public class OffsetTimeValueFactory extends AbstractDateTimeValueFactory<OffsetT
     @Override
     public OffsetTime localCreateFromTimestamp(InternalTimestamp its) {
         if (this.warningListener != null) {
-            this.warningListener.warningEncountered(Messages.getString("ResultSet.PrecisionLostWarning", new Object[] { getTargetTypeName() }));
+            this.warningListener.warningEncountered(Messages.getString("ResultSet.PrecisionLostWarning", new Object[]{getTargetTypeName()}));
         }
         // truncate date information
         return createFromTime(new InternalTime(its.getHours(), its.getMinutes(), its.getSeconds(), its.getNanos(), its.getScale()));
@@ -81,7 +81,7 @@ public class OffsetTimeValueFactory extends AbstractDateTimeValueFactory<OffsetT
     @Override
     public OffsetTime localCreateFromDatetime(InternalTimestamp its) {
         if (this.warningListener != null) {
-            this.warningListener.warningEncountered(Messages.getString("ResultSet.PrecisionLostWarning", new Object[] { getTargetTypeName() }));
+            this.warningListener.warningEncountered(Messages.getString("ResultSet.PrecisionLostWarning", new Object[]{getTargetTypeName()}));
         }
         // truncate date information
         return createFromTime(new InternalTime(its.getHours(), its.getMinutes(), its.getSeconds(), its.getNanos(), its.getScale()));
@@ -110,7 +110,7 @@ public class OffsetTimeValueFactory extends AbstractDateTimeValueFactory<OffsetT
         try {
             return OffsetTime.parse(s);
         } catch (DateTimeParseException e) {
-            throw new DataConversionException(Messages.getString("ResultSet.UnableToConvertString", new Object[] { s, getTargetTypeName() }));
+            throw new DataConversionException(Messages.getString("ResultSet.UnableToConvertString", new Object[]{s, getTargetTypeName()}));
         }
     }
 

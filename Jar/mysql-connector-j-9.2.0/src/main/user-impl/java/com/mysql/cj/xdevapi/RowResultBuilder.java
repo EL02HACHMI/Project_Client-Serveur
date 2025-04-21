@@ -45,13 +45,12 @@ import com.mysql.cj.result.Row;
  */
 public class RowResultBuilder implements ResultBuilder<RowResult> {
 
+    TimeZone defaultTimeZone;
+    PropertySet pset;
     private ArrayList<Field> fields = new ArrayList<>();
     private ColumnDefinition metadata;
     private List<Row> rows = new ArrayList<>();
     private RowResult result;
-
-    TimeZone defaultTimeZone;
-    PropertySet pset;
     private StatementExecuteOkBuilder statementExecuteOkBuilder = new StatementExecuteOkBuilder();
 
     public RowResultBuilder(MysqlxSession sess) {
@@ -67,7 +66,7 @@ public class RowResultBuilder implements ResultBuilder<RowResult> {
 
         } else if (entity instanceof Row) {
             if (this.metadata == null) {
-                this.metadata = new DefaultColumnDefinition(this.fields.toArray(new Field[] {}));
+                this.metadata = new DefaultColumnDefinition(this.fields.toArray(new Field[]{}));
             }
             this.rows.add(((Row) entity).setMetadata(this.metadata));
             return false;
@@ -88,7 +87,7 @@ public class RowResultBuilder implements ResultBuilder<RowResult> {
     @Override
     public RowResult build() {
         if (this.metadata == null) {
-            this.metadata = new DefaultColumnDefinition(this.fields.toArray(new Field[] {}));
+            this.metadata = new DefaultColumnDefinition(this.fields.toArray(new Field[]{}));
         }
         this.result = new RowResultImpl(this.metadata, this.defaultTimeZone, new BufferedRowList(this.rows), () -> this.statementExecuteOkBuilder.build(),
                 this.pset);

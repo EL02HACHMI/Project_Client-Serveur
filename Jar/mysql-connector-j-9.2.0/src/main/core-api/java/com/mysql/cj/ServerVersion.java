@@ -41,6 +41,49 @@ public class ServerVersion implements Comparable<ServerVersion> {
         this(null, major, minor, subminor);
     }
 
+    /**
+     * Parse the server version into major/minor/subminor.
+     *
+     * @param versionString string version representation
+     * @return {@link ServerVersion}
+     */
+    public static ServerVersion parseVersion(final String versionString) {
+        int point = versionString.indexOf('.');
+
+        if (point != -1) {
+            try {
+                int serverMajorVersion = Integer.parseInt(versionString.substring(0, point));
+
+                String remaining = versionString.substring(point + 1, versionString.length());
+                point = remaining.indexOf('.');
+
+                if (point != -1) {
+                    int serverMinorVersion = Integer.parseInt(remaining.substring(0, point));
+
+                    remaining = remaining.substring(point + 1, remaining.length());
+
+                    int pos = 0;
+
+                    while (pos < remaining.length()) {
+                        if (remaining.charAt(pos) < '0' || remaining.charAt(pos) > '9') {
+                            break;
+                        }
+
+                        pos++;
+                    }
+
+                    int serverSubminorVersion = Integer.parseInt(remaining.substring(0, pos));
+
+                    return new ServerVersion(versionString, serverMajorVersion, serverMinorVersion, serverSubminorVersion);
+                }
+            } catch (NumberFormatException NFE1) {
+            }
+        }
+
+        // can't parse the server version
+        return new ServerVersion(0, 0, 0);
+    }
+
     public int getMajor() {
         return this.major;
     }
@@ -105,56 +148,11 @@ public class ServerVersion implements Comparable<ServerVersion> {
     /**
      * Does this version meet the minimum specified by `min'?
      *
-     * @param min
-     *            The minimum version to compare against.
+     * @param min The minimum version to compare against.
      * @return true if version meets the minimum specified by `min'
      */
     public boolean meetsMinimum(ServerVersion min) {
         return compareTo(min) >= 0;
-    }
-
-    /**
-     * Parse the server version into major/minor/subminor.
-     *
-     * @param versionString
-     *            string version representation
-     * @return {@link ServerVersion}
-     */
-    public static ServerVersion parseVersion(final String versionString) {
-        int point = versionString.indexOf('.');
-
-        if (point != -1) {
-            try {
-                int serverMajorVersion = Integer.parseInt(versionString.substring(0, point));
-
-                String remaining = versionString.substring(point + 1, versionString.length());
-                point = remaining.indexOf('.');
-
-                if (point != -1) {
-                    int serverMinorVersion = Integer.parseInt(remaining.substring(0, point));
-
-                    remaining = remaining.substring(point + 1, remaining.length());
-
-                    int pos = 0;
-
-                    while (pos < remaining.length()) {
-                        if (remaining.charAt(pos) < '0' || remaining.charAt(pos) > '9') {
-                            break;
-                        }
-
-                        pos++;
-                    }
-
-                    int serverSubminorVersion = Integer.parseInt(remaining.substring(0, pos));
-
-                    return new ServerVersion(versionString, serverMajorVersion, serverMinorVersion, serverSubminorVersion);
-                }
-            } catch (NumberFormatException NFE1) {
-            }
-        }
-
-        // can't parse the server version
-        return new ServerVersion(0, 0, 0);
     }
 
 }

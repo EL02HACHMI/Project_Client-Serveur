@@ -34,7 +34,7 @@ public class EnumPropertyDefinition<T extends Enum<T>> extends AbstractPropertyD
     private Class<T> enumType;
 
     public EnumPropertyDefinition(PropertyKey key, T defaultValue, boolean isRuntimeModifiable, String description, String sinceVersion, String category,
-            int orderInCategory) {
+                                  int orderInCategory) {
         super(key, defaultValue, isRuntimeModifiable, description, sinceVersion, category, orderInCategory);
         if (defaultValue == null) {
             throw ExceptionFactory.createException("Enum property '" + key.getKeyName() + "' cannot be initialized with null.");
@@ -54,7 +54,7 @@ public class EnumPropertyDefinition<T extends Enum<T>> extends AbstractPropertyD
         } catch (Exception e) {
             throw ExceptionFactory.createException(
                     Messages.getString("PropertyDefinition.1",
-                            new Object[] { getName(), StringUtils.stringArrayToString(getAllowableValues(), "'", "', '", "' or '", "'"), value }),
+                            new Object[]{getName(), StringUtils.stringArrayToString(getAllowableValues(), "'", "', '", "' or '", "'"), value}),
                     e, exceptionInterceptor);
         }
     }

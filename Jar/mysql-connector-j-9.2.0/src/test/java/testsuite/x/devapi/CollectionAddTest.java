@@ -76,7 +76,7 @@ public class CollectionAddTest extends BaseCollectionTestCase {
         assertEquals(true, this.collection.find("_id = 2").execute().hasNext());
         assertEquals(false, this.collection.find("_id = 3").execute().hasNext());
 
-        this.collection.add(new String[] { "{\"_id\": 3}", "{\"_id\": 4}" }).execute();
+        this.collection.add(new String[]{"{\"_id\": 3}", "{\"_id\": 4}"}).execute();
         assertEquals(true, this.collection.find("_id = 1").execute().hasNext());
         assertEquals(true, this.collection.find("_id = 2").execute().hasNext());
         assertEquals(true, this.collection.find("_id = 3").execute().hasNext());
@@ -123,13 +123,13 @@ public class CollectionAddTest extends BaseCollectionTestCase {
         assertEquals(2, docs.count());
 
         if (mysqlVersionMeetsMinimum(ServerVersion.parseVersion("8.0.5"))) {
-            AddResult res2 = this.collection.add(new DbDoc[] { this.collection.newDoc().add("f1", new JsonString().setValue("doc3")),
-                    this.collection.newDoc().add("f1", new JsonString().setValue("doc4")) }).execute();
+            AddResult res2 = this.collection.add(new DbDoc[]{this.collection.newDoc().add("f1", new JsonString().setValue("doc3")),
+                    this.collection.newDoc().add("f1", new JsonString().setValue("doc4"))}).execute();
             assertTrue(res2.getGeneratedIds().get(0).matches("[a-f0-9]{28}"));
         } else {
             AddResult res2 = this.collection
-                    .add(new DbDoc[] { this.collection.newDoc().add("_id", new JsonString().setValue("3")).add("f1", new JsonString().setValue("doc3")),
-                            this.collection.newDoc().add("_id", new JsonString().setValue("4")).add("f1", new JsonString().setValue("doc4")) })
+                    .add(new DbDoc[]{this.collection.newDoc().add("_id", new JsonString().setValue("3")).add("f1", new JsonString().setValue("doc3")),
+                            this.collection.newDoc().add("_id", new JsonString().setValue("4")).add("f1", new JsonString().setValue("doc4"))})
                     .execute();
             assertEquals(0, res2.getGeneratedIds().size());
         }
@@ -211,11 +211,11 @@ public class CollectionAddTest extends BaseCollectionTestCase {
 
     @Test
     public void testAddNoDocs() throws Exception {
-        Result res = this.collection.add(new DbDoc[] {}).execute();
+        Result res = this.collection.add(new DbDoc[]{}).execute();
         assertEquals(0, res.getAffectedItemsCount());
         assertEquals(0, res.getWarningsCount());
 
-        CompletableFuture<AddResult> f = this.collection.add(new DbDoc[] {}).executeAsync();
+        CompletableFuture<AddResult> f = this.collection.add(new DbDoc[]{}).executeAsync();
         res = f.get();
         assertEquals(0, res.getAffectedItemsCount());
         assertEquals(0, res.getWarningsCount());

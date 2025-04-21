@@ -419,35 +419,6 @@ public class CharsetRegressionTest extends BaseTestCase {
         }
     }
 
-    public static class TestBug64205QueryInterceptor extends BaseQueryInterceptor {
-
-        private JdbcConnection connection;
-
-        @Override
-        public QueryInterceptor init(MysqlConnection conn, Properties props, Log log) {
-            this.connection = (JdbcConnection) conn;
-            return super.init(conn, props, log);
-        }
-
-        @Override
-        public <M extends Message> M postProcess(M queryPacket, M originalResponsePacket) {
-            String sql = StringUtils.toString(queryPacket.getByteBuffer(), 1, queryPacket.getPosition() - 1);
-            if (sql.contains("lc_messages=ru_RU")) {
-                try {
-                    this.connection.createStatement()
-                            .executeQuery("SELECT * FROM `"
-                                    + (this.connection.getPropertySet().<DatabaseTerm>getEnumProperty(PropertyKey.databaseTerm)
-                                            .getValue() == DatabaseTerm.SCHEMA ? this.connection.getSchema() : this.connection.getCatalog())
-                                    + "`.`\u307b\u3052\u307b\u3052`");
-                } catch (Exception e) {
-                    throw ExceptionFactory.createException(e.getMessage(), e);
-                }
-            }
-            return originalResponsePacket;
-        }
-
-    }
-
     /**
      * Bug #41730 - SQL Injection when using U+00A5 and SJIS/Windows-31J
      *
@@ -543,11 +514,11 @@ public class CharsetRegressionTest extends BaseTestCase {
 
         //byte[] testStringAsBytes = testString.getBytes("SJIS");
 
-        byte[] origByteStream = new byte[] { (byte) 0x95, (byte) 0x5c, (byte) 0x8e, (byte) 0x96, (byte) 0x5c, (byte) 0x62, (byte) 0x5c };
+        byte[] origByteStream = new byte[]{(byte) 0x95, (byte) 0x5c, (byte) 0x8e, (byte) 0x96, (byte) 0x5c, (byte) 0x62, (byte) 0x5c};
 
         //String origString = "\u955c\u8e96\u5c62\\";
 
-        origByteStream = new byte[] { (byte) 0x8d, (byte) 0xb2, (byte) 0x93, (byte) 0x91, (byte) 0x81, (byte) 0x40, (byte) 0x8c, (byte) 0x5c };
+        origByteStream = new byte[]{(byte) 0x8d, (byte) 0xb2, (byte) 0x93, (byte) 0x91, (byte) 0x81, (byte) 0x40, (byte) 0x8c, (byte) 0x5c};
 
         testString = new String(origByteStream, "SJIS");
 
@@ -627,7 +598,7 @@ public class CharsetRegressionTest extends BaseTestCase {
 
     /**
      * Tests fix for Bug#73663 (19479242), utf8mb4 does not work for connector/j >=5.1.13
-     *
+     * <p>
      * This test is only run when character_set_server=utf8mb4 and collation-server set to one of utf8mb4 collations (it's better to test two configurations:
      * with default utf8mb4_general_ci and one of non-default, say utf8mb4_bin)
      *
@@ -652,27 +623,6 @@ public class CharsetRegressionTest extends BaseTestCase {
 
         getConnectionWithProps(p);
         // failure will be thrown from the statement interceptor if any "SET NAMES utf8" statement is issued instead of "SET NAMES utf8mb4"
-    }
-
-    /**
-     * Statement interceptor used to implement preceding test.
-     */
-    public static class Bug73663QueryInterceptor extends BaseQueryInterceptor {
-
-        @Override
-        public <M extends Message> M preProcess(M queryPacket) {
-            String sql = StringUtils.toString(queryPacket.getByteBuffer(), 1, queryPacket.getPosition() - 1);
-            assertFalse(sql.contains("SET NAMES utf8") && !sql.contains("utf8mb4"), "Character set statement issued: " + sql);
-            return null;
-        }
-
-        @Override
-        public <T extends Resultset> T preProcess(Supplier<String> str, Query interceptedQuery) {
-            String sql = str.get();
-            assertFalse(sql.contains("SET NAMES utf8") && !sql.contains("utf8mb4"), "Character set statement issued: " + sql);
-            return null;
-        }
-
     }
 
     /**
@@ -811,7 +761,7 @@ public class CharsetRegressionTest extends BaseTestCase {
 
     /**
      * Tests fix for Bug#25554464, CONNECT FAILS WITH NPE WHEN THE SERVER STARTED WITH CUSTOM COLLATION.
-     *
+     * <p>
      * This test requires a special server configuration with:
      * <ul>
      * <li>character-set-server = custom
@@ -865,7 +815,7 @@ public class CharsetRegressionTest extends BaseTestCase {
 
     /**
      * Tests fix for Bug#25554464, CONNECT FAILS WITH NPE WHEN THE SERVER STARTED WITH CUSTOM COLLATION.
-     *
+     * <p>
      * This test requires a special server configuration with:
      * <ul>
      * <li>character-set-server = custom
@@ -911,37 +861,6 @@ public class CharsetRegressionTest extends BaseTestCase {
         p.setProperty(PropertyKey.characterEncoding.getKeyName(), "Cp1252");
         p.remove(PropertyKey.connectionCollation.getKeyName());
         checkCollationConnection(p, "SET NAMES custom", true, "custom_general_ci");
-    }
-
-    public static class TestSetNamesQueryInterceptor extends BaseQueryInterceptor {
-
-        public static String query = "";
-        public static boolean usedSetNames = false;
-
-        @Override
-        public QueryInterceptor init(MysqlConnection conn, Properties props, Log log) {
-            usedSetNames = false;
-            return super.init(conn, props, log);
-        }
-
-        @Override
-        public <M extends Message> M preProcess(M queryPacket) {
-            String sql = StringUtils.toString(queryPacket.getByteBuffer(), 1, queryPacket.getPosition() - 1);
-            if (sql.contains(query)) {
-                usedSetNames = true;
-            }
-            return null;
-        }
-
-        @Override
-        public <T extends Resultset> T preProcess(Supplier<String> str, Query interceptedQuery) {
-            String sql = str.get();
-            if (sql.contains(query)) {
-                usedSetNames = true;
-            }
-            return null;
-        }
-
     }
 
     @Test
@@ -1019,24 +938,6 @@ public class CharsetRegressionTest extends BaseTestCase {
         si = (Bug71038QueryInterceptor) c.getQueryInterceptorsInstances().get(0);
         assertTrue(si.cnt > 0, "SELECT from INFORMATION_SCHEMA.COLLATIONS wasn't issued when detectCustomCollations=true");
         c.close();
-    }
-
-    /**
-     * Counts the number of issued "SHOW COLLATION" statements.
-     */
-    public static class Bug71038QueryInterceptor extends BaseQueryInterceptor {
-
-        int cnt = 0;
-
-        @Override
-        public <M extends Message> M preProcess(M queryPacket) {
-            String sql = StringUtils.toString(queryPacket.getByteBuffer(), 1, queryPacket.getPosition() - 1);
-            if (sql.contains("from INFORMATION_SCHEMA.COLLATIONS")) {
-                this.cnt++;
-            }
-            return null;
-        }
-
     }
 
     /**
@@ -1121,10 +1022,10 @@ public class CharsetRegressionTest extends BaseTestCase {
 
     /**
      * Test for Bug#72712 - SET NAMES issued unnecessarily.
-     *
+     * <p>
      * Using a statement interceptor, ensure that SET NAMES is not called if the encoding requested by the client application matches that of
      * character_set_server.
-     *
+     * <p>
      * Also test that character_set_results is not set unnecessarily.
      *
      * @throws Exception
@@ -1143,23 +1044,6 @@ public class CharsetRegressionTest extends BaseTestCase {
 
         getConnectionWithProps(p);
         // exception will be thrown from the statement interceptor if any SET statements are issued
-    }
-
-    /**
-     * Statement interceptor used to implement preceding test.
-     */
-    public static class Bug72712QueryInterceptor extends BaseQueryInterceptor {
-
-        @Override
-        public <T extends Resultset> T preProcess(Supplier<String> str, Query interceptedQuery) {
-            String sql = str.get();
-            if (sql.contains("SET NAMES")
-                    || sql.contains(CharsetSettings.CHARACTER_SET_RESULTS) && !(sql.contains("SHOW VARIABLES") || sql.contains("SELECT  @@"))) {
-                throw ExceptionFactory.createException("Wrongt statement issued: " + sql);
-            }
-            return null;
-        }
-
     }
 
     /**
@@ -1246,6 +1130,159 @@ public class CharsetRegressionTest extends BaseTestCase {
         con.close();
     }
 
+    /**
+     * Tests fix for Bug#34090350, Update mappings for utf8mb3 and utf8mb4 collations.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testBug34090350() throws Exception {
+        Properties props = new Properties();
+        props.setProperty(PropertyKey.sslMode.getKeyName(), SslMode.DISABLED.name());
+        props.setProperty(PropertyKey.allowPublicKeyRetrieval.getKeyName(), "true");
+
+        for (String coll : new String[]{"utf8_unicode_ci", "utf8mb3_unicode_ci", "utf8mb4_unicode_ci"}) {
+            props.setProperty(PropertyKey.connectionCollation.getKeyName(), coll);
+
+            try (Connection testConn = getConnectionWithProps(props)) {
+                this.stmt = testConn.createStatement();
+                this.rs = this.stmt.executeQuery("SHOW VARIABLES LIKE 'character_set_connection'");
+                assertTrue(this.rs.next());
+                String connCharSet = this.rs.getString(2);
+                if (coll.startsWith("utf8mb4")) {
+                    assertEquals("utf8mb4", connCharSet);
+                } else {
+                    assertEquals(versionMeetsMinimum(8, 0, 24) ? "utf8mb3" : "utf8", connCharSet);
+                }
+
+                this.rs = this.stmt.executeQuery("SHOW VARIABLES LIKE 'collation_connection'");
+                assertTrue(this.rs.next());
+                String connColl = this.rs.getString(2);
+                if (coll.startsWith("utf8mb4")) {
+                    assertEquals("utf8mb4_unicode_ci", connColl);
+                } else {
+                    assertEquals(versionMeetsMinimum(8, 0, 30) ? "utf8mb3_unicode_ci" : "utf8_unicode_ci", connColl);
+                }
+            }
+        }
+    }
+
+    public static class TestBug64205QueryInterceptor extends BaseQueryInterceptor {
+
+        private JdbcConnection connection;
+
+        @Override
+        public QueryInterceptor init(MysqlConnection conn, Properties props, Log log) {
+            this.connection = (JdbcConnection) conn;
+            return super.init(conn, props, log);
+        }
+
+        @Override
+        public <M extends Message> M postProcess(M queryPacket, M originalResponsePacket) {
+            String sql = StringUtils.toString(queryPacket.getByteBuffer(), 1, queryPacket.getPosition() - 1);
+            if (sql.contains("lc_messages=ru_RU")) {
+                try {
+                    this.connection.createStatement()
+                            .executeQuery("SELECT * FROM `"
+                                    + (this.connection.getPropertySet().<DatabaseTerm>getEnumProperty(PropertyKey.databaseTerm)
+                                    .getValue() == DatabaseTerm.SCHEMA ? this.connection.getSchema() : this.connection.getCatalog())
+                                    + "`.`\u307b\u3052\u307b\u3052`");
+                } catch (Exception e) {
+                    throw ExceptionFactory.createException(e.getMessage(), e);
+                }
+            }
+            return originalResponsePacket;
+        }
+
+    }
+
+    /**
+     * Statement interceptor used to implement preceding test.
+     */
+    public static class Bug73663QueryInterceptor extends BaseQueryInterceptor {
+
+        @Override
+        public <M extends Message> M preProcess(M queryPacket) {
+            String sql = StringUtils.toString(queryPacket.getByteBuffer(), 1, queryPacket.getPosition() - 1);
+            assertFalse(sql.contains("SET NAMES utf8") && !sql.contains("utf8mb4"), "Character set statement issued: " + sql);
+            return null;
+        }
+
+        @Override
+        public <T extends Resultset> T preProcess(Supplier<String> str, Query interceptedQuery) {
+            String sql = str.get();
+            assertFalse(sql.contains("SET NAMES utf8") && !sql.contains("utf8mb4"), "Character set statement issued: " + sql);
+            return null;
+        }
+
+    }
+
+    public static class TestSetNamesQueryInterceptor extends BaseQueryInterceptor {
+
+        public static String query = "";
+        public static boolean usedSetNames = false;
+
+        @Override
+        public QueryInterceptor init(MysqlConnection conn, Properties props, Log log) {
+            usedSetNames = false;
+            return super.init(conn, props, log);
+        }
+
+        @Override
+        public <M extends Message> M preProcess(M queryPacket) {
+            String sql = StringUtils.toString(queryPacket.getByteBuffer(), 1, queryPacket.getPosition() - 1);
+            if (sql.contains(query)) {
+                usedSetNames = true;
+            }
+            return null;
+        }
+
+        @Override
+        public <T extends Resultset> T preProcess(Supplier<String> str, Query interceptedQuery) {
+            String sql = str.get();
+            if (sql.contains(query)) {
+                usedSetNames = true;
+            }
+            return null;
+        }
+
+    }
+
+    /**
+     * Counts the number of issued "SHOW COLLATION" statements.
+     */
+    public static class Bug71038QueryInterceptor extends BaseQueryInterceptor {
+
+        int cnt = 0;
+
+        @Override
+        public <M extends Message> M preProcess(M queryPacket) {
+            String sql = StringUtils.toString(queryPacket.getByteBuffer(), 1, queryPacket.getPosition() - 1);
+            if (sql.contains("from INFORMATION_SCHEMA.COLLATIONS")) {
+                this.cnt++;
+            }
+            return null;
+        }
+
+    }
+
+    /**
+     * Statement interceptor used to implement preceding test.
+     */
+    public static class Bug72712QueryInterceptor extends BaseQueryInterceptor {
+
+        @Override
+        public <T extends Resultset> T preProcess(Supplier<String> str, Query interceptedQuery) {
+            String sql = str.get();
+            if (sql.contains("SET NAMES")
+                    || sql.contains(CharsetSettings.CHARACTER_SET_RESULTS) && !(sql.contains("SHOW VARIABLES") || sql.contains("SELECT  @@"))) {
+                throw ExceptionFactory.createException("Wrongt statement issued: " + sql);
+            }
+            return null;
+        }
+
+    }
+
     public static class Bug95139QueryInterceptor extends BaseQueryInterceptor {
 
         int queryVarsCnt = 0;
@@ -1284,43 +1321,6 @@ public class CharsetRegressionTest extends BaseTestCase {
             return null;
         }
 
-    }
-
-    /**
-     * Tests fix for Bug#34090350, Update mappings for utf8mb3 and utf8mb4 collations.
-     *
-     * @throws Exception
-     */
-    @Test
-    public void testBug34090350() throws Exception {
-        Properties props = new Properties();
-        props.setProperty(PropertyKey.sslMode.getKeyName(), SslMode.DISABLED.name());
-        props.setProperty(PropertyKey.allowPublicKeyRetrieval.getKeyName(), "true");
-
-        for (String coll : new String[] { "utf8_unicode_ci", "utf8mb3_unicode_ci", "utf8mb4_unicode_ci" }) {
-            props.setProperty(PropertyKey.connectionCollation.getKeyName(), coll);
-
-            try (Connection testConn = getConnectionWithProps(props)) {
-                this.stmt = testConn.createStatement();
-                this.rs = this.stmt.executeQuery("SHOW VARIABLES LIKE 'character_set_connection'");
-                assertTrue(this.rs.next());
-                String connCharSet = this.rs.getString(2);
-                if (coll.startsWith("utf8mb4")) {
-                    assertEquals("utf8mb4", connCharSet);
-                } else {
-                    assertEquals(versionMeetsMinimum(8, 0, 24) ? "utf8mb3" : "utf8", connCharSet);
-                }
-
-                this.rs = this.stmt.executeQuery("SHOW VARIABLES LIKE 'collation_connection'");
-                assertTrue(this.rs.next());
-                String connColl = this.rs.getString(2);
-                if (coll.startsWith("utf8mb4")) {
-                    assertEquals("utf8mb4_unicode_ci", connColl);
-                } else {
-                    assertEquals(versionMeetsMinimum(8, 0, 30) ? "utf8mb3_unicode_ci" : "utf8_unicode_ci", connColl);
-                }
-            }
-        }
     }
 
 }

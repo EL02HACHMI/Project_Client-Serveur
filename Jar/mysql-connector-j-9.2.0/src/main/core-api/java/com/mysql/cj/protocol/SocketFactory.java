@@ -39,33 +39,23 @@ public interface SocketFactory extends SocketMetadata {
      * &quot;socketFactory&quot;, where the standard is <code>com.mysql.cj.protocol.StandardSocketFactory</code> Implementing classes
      * are responsible for handling synchronization of this method (if needed).
      *
-     * @param host
-     *            the hostname passed in the URL. It will be a single
-     *            hostname, as the driver parses multi-hosts (for failover) and
-     *            calls this method for each host connection attempt.
-     *
-     * @param portNumber
-     *            the port number to connect to (if required).
-     *
-     * @param props
-     *            properties passed to the driver via the URL and/or properties
-     *            instance.
-     * @param loginTimeout
-     *            login timeout in milliseconds
-     * @param <T>
-     *            result type
-     *
+     * @param host         the hostname passed in the URL. It will be a single
+     *                     hostname, as the driver parses multi-hosts (for failover) and
+     *                     calls this method for each host connection attempt.
+     * @param portNumber   the port number to connect to (if required).
+     * @param props        properties passed to the driver via the URL and/or properties
+     *                     instance.
+     * @param loginTimeout login timeout in milliseconds
+     * @param <T>          result type
      * @return a socket connected to the given host
-     * @throws IOException
-     *             if an I/O error occurs
+     * @throws IOException if an I/O error occurs
      */
     <T extends Closeable> T connect(String host, int portNumber, PropertySet props, int loginTimeout) throws IOException;
 
     /**
      * Called by the driver before issuing the MySQL protocol handshake.
      *
-     * @throws IOException
-     *             if an I/O error occurs
+     * @throws IOException if an I/O error occurs
      */
     default void beforeHandshake() throws IOException {
     }
@@ -74,15 +64,11 @@ public interface SocketFactory extends SocketMetadata {
      * If required, called by the driver during MySQL protocol handshake to transform
      * original socket to SSL socket and perform TLS handshake.
      *
-     * @param socketConnection
-     *            current SocketConnection
-     * @param serverSession
-     *            current ServerSession
-     * @param <T>
-     *            result type
+     * @param socketConnection current SocketConnection
+     * @param serverSession    current ServerSession
+     * @param <T>              result type
      * @return SSL socket
-     * @throws IOException
-     *             if an I/O error occurs
+     * @throws IOException if an I/O error occurs
      */
     <T extends Closeable> T performTlsHandshake(SocketConnection socketConnection, ServerSession serverSession) throws IOException;
 
@@ -90,17 +76,12 @@ public interface SocketFactory extends SocketMetadata {
      * If required, called by the driver during MySQL protocol handshake to transform
      * original socket to SSL socket and perform TLS handshake.
      *
-     * @param socketConnection
-     *            current SocketConnection
-     * @param serverSession
-     *            current ServerSession
-     * @param <T>
-     *            result type
-     * @param log
-     *            logger
+     * @param socketConnection current SocketConnection
+     * @param serverSession    current ServerSession
+     * @param <T>              result type
+     * @param log              logger
      * @return SSL socket
-     * @throws IOException
-     *             if an I/O error occurs
+     * @throws IOException if an I/O error occurs
      */
     default <T extends Closeable> T performTlsHandshake(SocketConnection socketConnection, ServerSession serverSession, Log log) throws IOException {
         return performTlsHandshake(socketConnection, serverSession);
@@ -110,8 +91,7 @@ public interface SocketFactory extends SocketMetadata {
      * Called by the driver after completing the MySQL protocol handshake and
      * reading the results of the authentication.
      *
-     * @throws IOException
-     *             if an I/O error occurs
+     * @throws IOException if an I/O error occurs
      */
     default void afterHandshake() throws IOException {
     }

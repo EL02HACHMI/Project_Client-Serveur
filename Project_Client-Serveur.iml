@@ -9,6 +9,14 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="mysql-connector-j-9.2.0" level="project" />
     <orderEntry type="library" name="openpdf-2.0.3" level="project" />
-    <orderEntry type="library" name="flatlaf-demo-3.6" level="project" />
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/Jar/flatlaf-demo-3.6.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
   </component>
 </module>

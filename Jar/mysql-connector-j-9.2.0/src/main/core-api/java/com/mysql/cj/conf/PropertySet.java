@@ -62,8 +62,7 @@ public interface PropertySet {
      * Initializes the property set with driver properties that come from URL or passed to
      * the driver manager.
      *
-     * @param props
-     *            properties
+     * @param props properties
      */
     void initializeProperties(Properties props);
 

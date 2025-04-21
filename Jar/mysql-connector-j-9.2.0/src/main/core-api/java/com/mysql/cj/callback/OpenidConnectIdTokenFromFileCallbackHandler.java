@@ -32,7 +32,7 @@ import com.mysql.cj.util.StringUtils;
 
 /**
  * A callback handler that reads an OpenID Identity Token from a file.
- *
+ * <p>
  * The file containing the Identity Token must exist and not be larger than 10KB.
  */
 public class OpenidConnectIdTokenFromFileCallbackHandler implements MysqlCallbackHandler {

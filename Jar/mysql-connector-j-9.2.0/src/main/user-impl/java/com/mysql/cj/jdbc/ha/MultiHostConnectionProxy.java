@@ -59,74 +59,25 @@ public abstract class MultiHostConnectionProxy implements InvocationHandler {
     private static final String METHOD_GET_DATABASE = "getDatabase";
     private static final String METHOD_GET_TRANSACTION_ISOLATION = "getTransactionIsolation";
     private static final String METHOD_GET_SESSION_MAX_ROWS = "getSessionMaxRows";
-
-    List<HostInfo> hostsList;
+    private final Lock lock = new ReentrantLock();
     protected ConnectionUrl connectionUrl;
-
+    // Keep track of the last exception processed in 'dealWithInvocationException()' in order to avoid creating connections repeatedly from each time the same
+    // exception is caught in every proxy instance belonging to the same call stack.
+    protected Throwable lastExceptionDealtWith = null;
+    List<HostInfo> hostsList;
     boolean autoReconnect = false;
-
     JdbcConnection thisAsConnection = null;
     JdbcConnection parentProxyConnection = null;
     JdbcConnection topProxyConnection = null;
-
     JdbcConnection currentConnection = null;
-
     boolean isClosed = false;
     boolean closedExplicitly = false;
     String closedReason = null;
 
-    // Keep track of the last exception processed in 'dealWithInvocationException()' in order to avoid creating connections repeatedly from each time the same
-    // exception is caught in every proxy instance belonging to the same call stack.
-    protected Throwable lastExceptionDealtWith = null;
-
-    private final Lock lock = new ReentrantLock();
-
-    public Lock getLock() {
-        return this.lock;
-    }
-
-    /**
-     * Proxy class to intercept and deal with errors that may occur in any object bound to the current connection.
-     */
-    class JdbcInterfaceProxy implements InvocationHandler {
-
-        Object invokeOn = null;
-
-        JdbcInterfaceProxy(Object toInvokeOn) {
-            this.invokeOn = toInvokeOn;
-        }
-
-        @Override
-        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-            if (METHOD_EQUALS.equals(method.getName())) {
-                // Let args[0] "unwrap" to its InvocationHandler if it is a proxy.
-                return args[0].equals(this);
-            }
-
-            getLock().lock();
-            try {
-                Object result = null;
-
-                try {
-                    result = method.invoke(this.invokeOn, args);
-                    result = proxyIfReturnTypeIsJdbcInterface(method.getReturnType(), result);
-                } catch (InvocationTargetException e) {
-                    dealWithInvocationException(e);
-                }
-
-                return result;
-            } finally {
-                getLock().unlock();
-            }
-        }
-
-    }
-
     /**
      * Initializes a connection wrapper for this MultiHostConnectionProxy instance.
      *
-     * @throws SQLException
-     *             if an error occurs
+     * @throws SQLException if an error occurs
      */
     MultiHostConnectionProxy() throws SQLException {
         this.thisAsConnection = getNewWrapperForThisAsConnection();
@@ -135,26 +86,25 @@ public abstract class MultiHostConnectionProxy implements InvocationHandler {
     /**
      * Constructs a MultiHostConnectionProxy instance for the given connection URL.
      *
-     * @param connectionUrl
-     *            The connection URL.
-     * @throws SQLException
-     *             if an error occurs
+     * @param connectionUrl The connection URL.
+     * @throws SQLException if an error occurs
      */
     MultiHostConnectionProxy(ConnectionUrl connectionUrl) throws SQLException {
         this();
         initializeHostsSpecs(connectionUrl, connectionUrl.getHostsList());
     }
 
+    public Lock getLock() {
+        return this.lock;
+    }
+
     /**
      * Initializes the hosts lists and makes a "clean" local copy of the given connection properties so that it can be later used to create standard
      * connections.
      *
-     * @param connUrl
-     *            The connection URL that initialized this multi-host connection.
-     * @param hosts
-     *            The list of hosts for this multi-host connection.
-     * @return
-     *         The number of hosts found in the hosts list.
+     * @param connUrl The connection URL that initialized this multi-host connection.
+     * @param hosts   The list of hosts for this multi-host connection.
+     * @return The number of hosts found in the hosts list.
      */
     int initializeHostsSpecs(ConnectionUrl connUrl, List<HostInfo> hosts) {
         this.connectionUrl = connUrl;
@@ -174,29 +124,17 @@ public abstract class MultiHostConnectionProxy implements InvocationHandler {
      * A multi-host connection may not be at top level in the multi-host connections chain. In such case the first connection in the chain is available as a
      * proxy.
      *
-     * @return
-     *         Returns this connection's proxy if there is one or itself if this is the first one.
+     * @return Returns this connection's proxy if there is one or itself if this is the first one.
      */
     protected JdbcConnection getProxy() {
         return this.topProxyConnection != null ? this.topProxyConnection : this.thisAsConnection;
     }
 
     /**
-     * Get this connection's parent proxy.
-     *
-     * @return
-     *         Returns this connection's proxy if there is one.
-     */
-    protected JdbcConnection getParentProxy() {
-        return this.parentProxyConnection;
-    }
-
-    /**
      * Sets this connection's proxy. This proxy should be the first connection in the multi-host connections chain.
      * After setting the connection proxy locally, propagates it through the dependent connections.
      *
-     * @param proxyConn
-     *            The top level connection in the multi-host connections chain.
+     * @param proxyConn The top level connection in the multi-host connections chain.
      */
     protected final void setProxy(JdbcConnection proxyConn) {
         if (this.parentProxyConnection == null) { // Only set this once.
@@ -207,11 +145,19 @@ public abstract class MultiHostConnectionProxy implements InvocationHandler {
     }
 
     /**
+     * Get this connection's parent proxy.
+     *
+     * @return Returns this connection's proxy if there is one.
+     */
+    protected JdbcConnection getParentProxy() {
+        return this.parentProxyConnection;
+    }
+
+    /**
      * Propagates the connection proxy down through the multi-host connections chain.
      * This method is intended to be overridden in subclasses that manage more than one active connection at same time.
      *
-     * @param proxyConn
-     *            The top level connection in the multi-host connections chain.
+     * @param proxyConn The top level connection in the multi-host connections chain.
      */
     protected void propagateProxyDown(JdbcConnection proxyConn) {
         this.currentConnection.setProxy(proxyConn);
@@ -220,10 +166,8 @@ public abstract class MultiHostConnectionProxy implements InvocationHandler {
     /**
      * Wraps this object with a new multi-host Connection instance.
      *
-     * @return
-     *         The connection object instance that wraps 'this'.
-     * @throws SQLException
-     *             if an error occurs
+     * @return The connection object instance that wraps 'this'.
+     * @throws SQLException if an error occurs
      */
     JdbcConnection getNewWrapperForThisAsConnection() throws SQLException {
         return new MultiHostMySQLConnection(this);
@@ -232,12 +176,9 @@ public abstract class MultiHostConnectionProxy implements InvocationHandler {
     /**
      * If the given return type is or implements a JDBC interface, proxies the given object so that we can catch SQL errors and fire a connection switch.
      *
-     * @param returnType
-     *            The type the object instance to proxy is supposed to be.
-     * @param toProxy
-     *            The object instance to proxy.
-     * @return
-     *         The proxied object or the original one if it does not implement a JDBC interface.
+     * @param returnType The type the object instance to proxy is supposed to be.
+     * @param toProxy    The object instance to proxy.
+     * @return The proxied object or the original one if it does not implement a JDBC interface.
      */
     Object proxyIfReturnTypeIsJdbcInterface(Class<?> returnType, Object toProxy) {
         if (toProxy != null) {
@@ -252,10 +193,8 @@ public abstract class MultiHostConnectionProxy implements InvocationHandler {
     /**
      * Instantiates a new JdbcInterfaceProxy for the given object. Subclasses can override this to return instances of JdbcInterfaceProxy subclasses.
      *
-     * @param toProxy
-     *            The object instance to be proxied.
-     * @return
-     *         The new InvocationHandler instance.
+     * @param toProxy The object instance to be proxied.
+     * @return The new InvocationHandler instance.
      */
     InvocationHandler getNewJdbcInterfaceProxy(Object toProxy) {
         return new JdbcInterfaceProxy(toProxy);
@@ -264,14 +203,10 @@ public abstract class MultiHostConnectionProxy implements InvocationHandler {
     /**
      * Deals with InvocationException from proxied objects.
      *
-     * @param e
-     *            The Exception instance to check.
-     * @throws SQLException
-     *             if an error occurs
-     * @throws Throwable
-     *             if an error occurs
-     * @throws InvocationTargetException
-     *             if an error occurs
+     * @param e The Exception instance to check.
+     * @throws SQLException              if an error occurs
+     * @throws Throwable                 if an error occurs
+     * @throws InvocationTargetException if an error occurs
      */
     void dealWithInvocationException(InvocationTargetException e) throws SQLException, Throwable, InvocationTargetException {
         Throwable t = e.getTargetException();
@@ -290,9 +225,8 @@ public abstract class MultiHostConnectionProxy implements InvocationHandler {
     /**
      * Checks if the given throwable should trigger a connection switch.
      *
+     * @param t The Throwable instance to analyze.
      * @return true if the given throwable should trigger a connection switch
-     * @param t
-     *            The Throwable instance to analyze.
      */
     abstract boolean shouldExceptionTriggerConnectionSwitch(Throwable t);
 
@@ -306,8 +240,7 @@ public abstract class MultiHostConnectionProxy implements InvocationHandler {
     /**
      * Invalidates the current connection.
      *
-     * @throws SQLException
-     *             if an error occurs
+     * @throws SQLException if an error occurs
      */
     void invalidateCurrentConnection() throws SQLException {
         this.lock.lock();
@@ -321,10 +254,8 @@ public abstract class MultiHostConnectionProxy implements InvocationHandler {
     /**
      * Invalidates the specified connection by closing it.
      *
-     * @param conn
-     *            The connection instance to invalidate.
-     * @throws SQLException
-     *             if an error occurs
+     * @param conn The connection instance to invalidate.
+     * @throws SQLException if an error occurs
      */
     void invalidateConnection(JdbcConnection conn) throws SQLException {
         this.lock.lock();
@@ -342,20 +273,16 @@ public abstract class MultiHostConnectionProxy implements InvocationHandler {
     /**
      * Picks the "best" connection to use from now on. Each subclass needs to implement its connection switch strategy on it.
      *
-     * @throws SQLException
-     *             if an error occurs
+     * @throws SQLException if an error occurs
      */
     abstract void pickNewConnection() throws SQLException;
 
     /**
      * Creates a new physical connection for the given {@link HostInfo}.
      *
-     * @param hostInfo
-     *            The host info instance.
-     * @return
-     *         The new Connection instance.
-     * @throws SQLException
-     *             if an error occurs
+     * @param hostInfo The host info instance.
+     * @return The new Connection instance.
+     * @throws SQLException if an error occurs
      */
     ConnectionImpl createConnectionForHost(HostInfo hostInfo) throws SQLException {
         this.lock.lock();
@@ -375,12 +302,9 @@ public abstract class MultiHostConnectionProxy implements InvocationHandler {
     /**
      * Synchronizes session state between two connections.
      *
-     * @param source
-     *            The connection where to get state from.
-     * @param target
-     *            The connection where to set state.
-     * @throws SQLException
-     *             if an error occurs
+     * @param source The connection where to get state from.
+     * @param target The connection where to set state.
+     * @throws SQLException if an error occurs
      */
     void syncSessionState(JdbcConnection source, JdbcConnection target) throws SQLException {
         if (source == null || target == null) {
@@ -399,14 +323,10 @@ public abstract class MultiHostConnectionProxy implements InvocationHandler {
     /**
      * Synchronizes session state between two connections, allowing to override the read-only status.
      *
-     * @param source
-     *            The connection where to get state from.
-     * @param target
-     *            The connection where to set state.
-     * @param readOnly
-     *            The new read-only status.
-     * @throws SQLException
-     *             if an error occurs
+     * @param source   The connection where to get state from.
+     * @param target   The connection where to set state.
+     * @param readOnly The new read-only status.
+     * @throws SQLException if an error occurs
      */
     void syncSessionState(JdbcConnection source, JdbcConnection target, boolean readOnly) throws SQLException {
         if (target != null) {
@@ -435,26 +355,22 @@ public abstract class MultiHostConnectionProxy implements InvocationHandler {
     /**
      * Executes a close() invocation;
      *
-     * @throws SQLException
-     *             if an error occurs
+     * @throws SQLException if an error occurs
      */
     abstract void doClose() throws SQLException;
 
     /**
      * Executes a abortInternal() invocation;
      *
-     * @throws SQLException
-     *             if an error occurs
+     * @throws SQLException if an error occurs
      */
     abstract void doAbortInternal() throws SQLException;
 
     /**
      * Executes a abort() invocation;
      *
-     * @param executor
-     *            executor
-     * @throws SQLException
-     *             if an error occurs
+     * @param executor executor
+     * @throws SQLException if an error occurs
      */
     abstract void doAbort(Executor executor) throws SQLException;
 
@@ -463,15 +379,11 @@ public abstract class MultiHostConnectionProxy implements InvocationHandler {
      * Subclasses have to override this to complete the method invocation process, deal with exceptions and decide when to switch connection.
      * To avoid unnecessary additional exception handling overriders should consult #canDealWith(Method) before chaining here.
      *
-     * @param proxy
-     *            proxy object
-     * @param method
-     *            method to invoke
-     * @param args
-     *            method parameters
+     * @param proxy  proxy object
+     * @param method method to invoke
+     * @param args   method parameters
      * @return method result
-     * @throws Throwable
-     *             if an error occurs
+     * @throws Throwable if an error occurs
      */
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
@@ -542,23 +454,18 @@ public abstract class MultiHostConnectionProxy implements InvocationHandler {
     /**
      * Continuation of the method invocation process, to be implemented within each subclass.
      *
-     * @param proxy
-     *            proxy object
-     * @param method
-     *            method to invoke
-     * @param args
-     *            method parameters
+     * @param proxy  proxy object
+     * @param method method to invoke
+     * @param args   method parameters
      * @return method result
-     * @throws Throwable
-     *             if an error occurs
+     * @throws Throwable if an error occurs
      */
     abstract Object invokeMore(Object proxy, Method method, Object[] args) throws Throwable;
 
     /**
      * Checks if the given method is allowed on closed connections.
      *
-     * @param method
-     *            method
+     * @param method method
      * @return true if the given method is allowed on closed connections
      */
     protected boolean allowedOnClosedConnection(Method method) {
@@ -567,6 +474,43 @@ public abstract class MultiHostConnectionProxy implements InvocationHandler {
         return methodName.equals(METHOD_GET_AUTO_COMMIT) || methodName.equals(METHOD_GET_CATALOG) || methodName.equals(METHOD_GET_SCHEMA)
                 || methodName.equals(METHOD_GET_DATABASE) || methodName.equals(METHOD_GET_TRANSACTION_ISOLATION)
                 || methodName.equals(METHOD_GET_SESSION_MAX_ROWS);
+    }
+
+    /**
+     * Proxy class to intercept and deal with errors that may occur in any object bound to the current connection.
+     */
+    class JdbcInterfaceProxy implements InvocationHandler {
+
+        Object invokeOn = null;
+
+        JdbcInterfaceProxy(Object toInvokeOn) {
+            this.invokeOn = toInvokeOn;
+        }
+
+        @Override
+        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+            if (METHOD_EQUALS.equals(method.getName())) {
+                // Let args[0] "unwrap" to its InvocationHandler if it is a proxy.
+                return args[0].equals(this);
+            }
+
+            getLock().lock();
+            try {
+                Object result = null;
+
+                try {
+                    result = method.invoke(this.invokeOn, args);
+                    result = proxyIfReturnTypeIsJdbcInterface(method.getReturnType(), result);
+                } catch (InvocationTargetException e) {
+                    dealWithInvocationException(e);
+                }
+
+                return result;
+            } finally {
+                getLock().unlock();
+            }
+        }
+
     }
 
 }

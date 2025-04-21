@@ -570,7 +570,7 @@ public class CollectionRemoveTest extends BaseCollectionTestCase {
         assertFalse(docs.hasNext());
 
         /* Array */
-        res = this.collection.remove("CAST($.F5 as SIGNED) > ? and CAST($.F5 as SIGNED) < ?").bind(new Object[] { -1, 3 }).orderBy("CAST($.F5 as SIGNED)")
+        res = this.collection.remove("CAST($.F5 as SIGNED) > ? and CAST($.F5 as SIGNED) < ?").bind(new Object[]{-1, 3}).orderBy("CAST($.F5 as SIGNED)")
                 .execute();
         assertEquals(1, res.getAffectedItemsCount());
         docs = this.collection.find("CAST($.F5 as SIGNED)  <? ").bind(3).fields("$.F5 as F5").execute();

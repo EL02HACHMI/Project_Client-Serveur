@@ -30,8 +30,7 @@ public interface UpdateStatement extends Statement<UpdateStatement, Result> {
     /**
      * Add the given set of updates to the statement.
      *
-     * @param fieldsAndValues
-     *            table name-value pairs
+     * @param fieldsAndValues table name-value pairs
      * @return {@link UpdateStatement}
      */
     UpdateStatement set(Map<String, Object> fieldsAndValues);
@@ -39,10 +38,8 @@ public interface UpdateStatement extends Statement<UpdateStatement, Result> {
     /**
      * Add the given update to the statement setting field to value for all rows matching the search criteria.
      *
-     * @param field
-     *            field name
-     * @param value
-     *            value to set
+     * @param field field name
+     * @param value value to set
      * @return {@link UpdateStatement}
      */
     UpdateStatement set(String field, Object value);
@@ -50,8 +47,7 @@ public interface UpdateStatement extends Statement<UpdateStatement, Result> {
     /**
      * Add/replace the search criteria for this statement.
      *
-     * @param searchCondition
-     *            search condition expression
+     * @param searchCondition search condition expression
      * @return {@link UpdateStatement}
      */
     UpdateStatement where(String searchCondition);
@@ -59,8 +55,7 @@ public interface UpdateStatement extends Statement<UpdateStatement, Result> {
     /**
      * Add/replace the order specification for this statement.
      *
-     * @param sortFields
-     *            sort expression
+     * @param sortFields sort expression
      * @return {@link UpdateStatement}
      */
     UpdateStatement orderBy(String... sortFields);
@@ -68,8 +63,7 @@ public interface UpdateStatement extends Statement<UpdateStatement, Result> {
     /**
      * Add/replace the row limit for this statement.
      *
-     * @param numberOfRows
-     *            limit
+     * @param numberOfRows limit
      * @return {@link UpdateStatement}
      */
     UpdateStatement limit(long numberOfRows);

@@ -38,18 +38,12 @@ public interface SocketConnection {
     /**
      * Connect to the MySQL server and setup a stream connection.
      *
-     * @param host
-     *            the hostname to connect to
-     * @param port
-     *            the port number that the server is listening on
-     * @param propertySet
-     *            the PropertySet with required connection options
-     * @param exceptionInterceptor
-     *            exception interceptor
-     * @param log
-     *            logger
-     * @param loginTimeout
-     *            the driver login time limit in milliseconds
+     * @param host                 the hostname to connect to
+     * @param port                 the port number that the server is listening on
+     * @param propertySet          the PropertySet with required connection options
+     * @param exceptionInterceptor exception interceptor
+     * @param log                  logger
+     * @param loginTimeout         the driver login time limit in milliseconds
      */
     void connect(String host, int port, PropertySet propertySet, ExceptionInterceptor exceptionInterceptor, Log log, int loginTimeout);
 
@@ -58,16 +52,11 @@ public interface SocketConnection {
     /**
      * Start a TLS handshake
      *
-     * @param serverSession
-     *            server session state object
-     * @param log
-     *            logger
-     * @throws SSLParamsException
-     *             in case of failure
-     * @throws FeatureNotAvailableException
-     *             in case of failure
-     * @throws IOException
-     *             in case of failure
+     * @param serverSession server session state object
+     * @param log           logger
+     * @throws SSLParamsException           in case of failure
+     * @throws FeatureNotAvailableException in case of failure
+     * @throws IOException                  in case of failure
      */
     default void performTlsHandshake(ServerSession serverSession, Log log) throws SSLParamsException, FeatureNotAvailableException, IOException {
         performTlsHandshake(serverSession);

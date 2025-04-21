@@ -30,10 +30,8 @@ public class FailoverConnectionUrl extends ConnectionUrl {
     /**
      * Constructs an instance of {@link FailoverConnectionUrl}, performing all the required initializations.
      *
-     * @param connStrParser
-     *            a {@link ConnectionUrlParser} instance containing the parsed version of the original connection string
-     * @param info
-     *            the connection arguments map
+     * @param connStrParser a {@link ConnectionUrlParser} instance containing the parsed version of the original connection string
+     * @param info          the connection arguments map
      */
     public FailoverConnectionUrl(ConnectionUrlParser connStrParser, Properties info) {
         super(connStrParser, info);

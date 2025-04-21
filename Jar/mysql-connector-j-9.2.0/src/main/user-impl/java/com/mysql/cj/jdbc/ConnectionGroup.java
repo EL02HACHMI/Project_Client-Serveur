@@ -36,6 +36,7 @@ import com.mysql.cj.jdbc.ha.LoadBalancedConnectionProxy;
 
 public class ConnectionGroup {
 
+    private final Lock lock = new ReentrantLock();
     private String groupName;
     private long connections = 0;
     private long activeConnections = 0;
@@ -47,7 +48,6 @@ public class ConnectionGroup {
     private long closedProxyTotalTransactions = 0;
     private int activeHosts = 0;
     private Set<String> closedHosts = new HashSet<>();
-    private final Lock lock = new ReentrantLock();
 
     ConnectionGroup(String groupName) {
         this.groupName = groupName;
@@ -153,10 +153,8 @@ public class ConnectionGroup {
     /**
      * Remove the given host (host:port pair) from this Connection Group.
      *
-     * @param hostPortPair
-     *            The host:port pair to remove.
-     * @throws SQLException
-     *             if a database access error occurs
+     * @param hostPortPair The host:port pair to remove.
+     * @throws SQLException if a database access error occurs
      */
     public void removeHost(String hostPortPair) throws SQLException {
         removeHost(hostPortPair, false);
@@ -165,12 +163,9 @@ public class ConnectionGroup {
     /**
      * Remove the given host (host:port pair) from this Connection Group.
      *
-     * @param hostPortPair
-     *            The host:port pair to remove.
-     * @param removeExisting
-     *            Whether affects existing load-balanced connections or only new ones.
-     * @throws SQLException
-     *             if a database access error occurs
+     * @param hostPortPair   The host:port pair to remove.
+     * @param removeExisting Whether affects existing load-balanced connections or only new ones.
+     * @throws SQLException if a database access error occurs
      */
     public void removeHost(String hostPortPair, boolean removeExisting) throws SQLException {
         this.removeHost(hostPortPair, removeExisting, true);
@@ -179,15 +174,11 @@ public class ConnectionGroup {
     /**
      * Remove the given host (host:port pair) from this Connection Group and, consequently, from all the load-balanced connections it holds.
      *
-     * @param hostPortPair
-     *            The host:port pair to remove.
-     * @param removeExisting
-     *            Whether affects existing load-balanced connections or only new ones.
-     * @param waitForGracefulFailover
-     *            If true instructs the load-balanced connections to fail-over the underlying active connection before removing this host, otherwise remove
-     *            immediately.
-     * @throws SQLException
-     *             if a database access error occurs
+     * @param hostPortPair            The host:port pair to remove.
+     * @param removeExisting          Whether affects existing load-balanced connections or only new ones.
+     * @param waitForGracefulFailover If true instructs the load-balanced connections to fail-over the underlying active connection before removing this host, otherwise remove
+     *                                immediately.
+     * @throws SQLException if a database access error occurs
      */
     public void removeHost(String hostPortPair, boolean removeExisting, boolean waitForGracefulFailover) throws SQLException {
         this.lock.lock();
@@ -199,7 +190,7 @@ public class ConnectionGroup {
             if (this.hostList.remove(hostPortPair)) {
                 this.activeHosts--;
             } else {
-                throw SQLError.createSQLException(Messages.getString("ConnectionGroup.1", new Object[] { hostPortPair }), null);
+                throw SQLError.createSQLException(Messages.getString("ConnectionGroup.1", new Object[]{hostPortPair}), null);
             }
 
             if (removeExisting) {
@@ -229,8 +220,7 @@ public class ConnectionGroup {
     /**
      * Add the given host (host:port pair) to this Connection Group.
      *
-     * @param hostPortPair
-     *            The host:port pair to add.
+     * @param hostPortPair The host:port pair to add.
      */
     public void addHost(String hostPortPair) {
         addHost(hostPortPair, false);
@@ -239,10 +229,8 @@ public class ConnectionGroup {
     /**
      * Add the given host (host:port pair) to this Connection Group and, consequently, to all the load-balanced connections it holds.
      *
-     * @param hostPortPair
-     *            The host:port pair to add.
-     * @param forExisting
-     *            Whether affects existing load-balanced connections or only new ones.
+     * @param hostPortPair The host:port pair to add.
+     * @param forExisting  Whether affects existing load-balanced connections or only new ones.
      */
     public void addHost(String hostPortPair, boolean forExisting) {
         this.lock.lock();

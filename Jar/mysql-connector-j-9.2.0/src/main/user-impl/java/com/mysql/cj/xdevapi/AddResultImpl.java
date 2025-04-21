@@ -32,8 +32,7 @@ public class AddResultImpl extends UpdateResult implements AddResult {
     /**
      * Constructor.
      *
-     * @param ok
-     *            the response from the server
+     * @param ok the response from the server
      */
     public AddResultImpl(StatementExecuteOk ok) {
         super(ok);

@@ -38,10 +38,8 @@ public interface RuntimeProperty<T> {
      * <p>
      * If extractFrom does not contain such property then this RuntimeProperty remains unchanged.
      *
-     * @param extractFrom
-     *            {@link Properties} object containing key-value pairs usually passed from connection string.
-     * @param exceptionInterceptor
-     *            exceptionInterceptor
+     * @param extractFrom          {@link Properties} object containing key-value pairs usually passed from connection string.
+     * @param exceptionInterceptor exceptionInterceptor
      */
     void initializeFrom(Properties extractFrom, ExceptionInterceptor exceptionInterceptor);
 
@@ -57,19 +55,11 @@ public interface RuntimeProperty<T> {
     /**
      * Add listener for this property changes.
      *
-     * @param l
-     *            {@link RuntimePropertyListener}
+     * @param l {@link RuntimePropertyListener}
      */
     void addListener(RuntimePropertyListener l);
 
     void removeListener(RuntimePropertyListener l);
-
-    @FunctionalInterface
-    public static interface RuntimePropertyListener {
-
-        void handlePropertyChange(RuntimeProperty<?> prop);
-
-    }
 
     /**
      * Get internal value representation as Object.
@@ -77,6 +67,13 @@ public interface RuntimeProperty<T> {
      * @return value
      */
     T getValue();
+
+    /**
+     * Set the object value of a property directly. Validation against allowable values will be performed.
+     *
+     * @param value value
+     */
+    void setValue(T value);
 
     /**
      * Get initial value (default or defined in connection string/Properties)
@@ -95,19 +92,16 @@ public interface RuntimeProperty<T> {
     /**
      * Set the object value of a property directly. Validation against allowable values will be performed.
      *
-     * @param value
-     *            value
-     */
-    void setValue(T value);
-
-    /**
-     * Set the object value of a property directly. Validation against allowable values will be performed.
-     *
-     * @param value
-     *            value
-     * @param exceptionInterceptor
-     *            exception interceptor
+     * @param value                value
+     * @param exceptionInterceptor exception interceptor
      */
     void setValue(T value, ExceptionInterceptor exceptionInterceptor);
+
+    @FunctionalInterface
+    public static interface RuntimePropertyListener {
+
+        void handlePropertyChange(RuntimeProperty<?> prop);
+
+    }
 
 }

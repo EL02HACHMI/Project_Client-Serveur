@@ -46,10 +46,8 @@ public class XDevApiDnsSrvConnectionUrl extends ConnectionUrl {
     /**
      * Constructs an instance of {@link XDevApiDnsSrvConnectionUrl}, performing all the required initializations.
      *
-     * @param connStrParser
-     *            a {@link ConnectionUrlParser} instance containing the parsed version of the original connection string
-     * @param info
-     *            the connection arguments map
+     * @param connStrParser a {@link ConnectionUrlParser} instance containing the parsed version of the original connection string
+     * @param info          the connection arguments map
      */
     public XDevApiDnsSrvConnectionUrl(ConnectionUrlParser connStrParser, Properties info) {
         super(connStrParser, info);
@@ -76,7 +74,7 @@ public class XDevApiDnsSrvConnectionUrl extends ConnectionUrl {
         if (hostProps.containsKey(PropertyKey.xdevapiDnsSrv.getKeyName())) {
             if (!BooleanPropertyDefinition.booleanFrom(PropertyKey.xdevapiDnsSrv.getKeyName(), hostProps.get(PropertyKey.xdevapiDnsSrv.getKeyName()), null)) {
                 throw ExceptionFactory.createException(InvalidConnectionAttributeException.class,
-                        Messages.getString("ConnectionString.23", new Object[] { PropertyKey.xdevapiDnsSrv.getKeyName() }));
+                        Messages.getString("ConnectionString.23", new Object[]{PropertyKey.xdevapiDnsSrv.getKeyName()}));
             }
         }
     }
@@ -115,11 +113,8 @@ public class XDevApiDnsSrvConnectionUrl extends ConnectionUrl {
     /**
      * Returns a hosts list built from the result of the DNS SRV lookup for the original host name.
      *
-     * @param view
-     *            the type of the view to use in the returned list of hosts. This argument is ignored in this implementation.
-     *
-     * @return
-     *         the hosts list from the result of the DNS SRV lookup, filtered for the given view.
+     * @param view the type of the view to use in the returned list of hosts. This argument is ignored in this implementation.
+     * @return the hosts list from the result of the DNS SRV lookup, filtered for the given view.
      */
     @Override
     public List<HostInfo> getHostsList(HostsListView view) {

@@ -45,14 +45,14 @@ public class SyncMessageSender implements MessageSender<XMessage>, PacketSentTim
      * Header length of X Protocol packet.
      */
     static final int HEADER_LEN = 5;
-
+    /**
+     * Lock to protect async writes from sync ones.
+     */
+    final Lock syncOperationLock = new ReentrantLock();
     private OutputStream outputStream;
     private long lastPacketSentTime = 0;
     private long previousPacketSentTime = 0;
     private int maxAllowedPacket = -1;
-
-    /** Lock to protect async writes from sync ones. */
-    final Lock syncOperationLock = new ReentrantLock();
 
     public SyncMessageSender(OutputStream os) {
         this.outputStream = os;
@@ -67,7 +67,7 @@ public class SyncMessageSender implements MessageSender<XMessage>, PacketSentTim
                 int type = MessageConstants.getTypeForMessageClass(msg.getClass());
                 int size = 1 + msg.getSerializedSize();
                 if (this.maxAllowedPacket > 0 && size > this.maxAllowedPacket) {
-                    throw new CJPacketTooBigException(Messages.getString("PacketTooBigException.1", new Object[] { size, this.maxAllowedPacket }));
+                    throw new CJPacketTooBigException(Messages.getString("PacketTooBigException.1", new Object[]{size, this.maxAllowedPacket}));
                 }
                 // for debugging
                 // System.err.println("Initiating write of message (size=" + size + ", tag=" + ClientMessages.Type.valueOf(type) + ")");

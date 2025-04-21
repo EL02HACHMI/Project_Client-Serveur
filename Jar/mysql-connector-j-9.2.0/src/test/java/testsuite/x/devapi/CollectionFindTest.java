@@ -119,7 +119,7 @@ public class CollectionFindTest extends BaseCollectionTestCase {
         try {
             this.collection.add("{\"_id\": \"1\"}").execute();
             DocResult docs = this.collection.find().fields(expr(
-                    mysqlVersionMeetsMinimum(ServerVersion.parseVersion("8.0.13")) ? "{'X':cast(pow(2,63) as signed)+1}" : "{'X':1-cast(pow(2,63) as signed)}"))
+                            mysqlVersionMeetsMinimum(ServerVersion.parseVersion("8.0.13")) ? "{'X':cast(pow(2,63) as signed)+1}" : "{'X':1-cast(pow(2,63) as signed)}"))
                     .execute();
             docs.next(); // we are getting valid data from xplugin before the error, need this call to force the error
             fail("Statement should raise an error");
@@ -3519,7 +3519,7 @@ public class CollectionFindTest extends BaseCollectionTestCase {
         assertEquals(maxrec, this.collection.count());
 
         /* find all */
-        DocResult docs = this.collection.find("CAST($.F2 as SIGNED) > ? ").bind(new Object[] { 1 }).fields("$._id as _id, $.F1 as f1, $.F2 as f2, $.F3 as f3")
+        DocResult docs = this.collection.find("CAST($.F2 as SIGNED) > ? ").bind(new Object[]{1}).fields("$._id as _id, $.F1 as f1, $.F2 as f2, $.F3 as f3")
                 .execute();
         i = 0;
         while (docs.hasNext()) {
@@ -3532,17 +3532,17 @@ public class CollectionFindTest extends BaseCollectionTestCase {
         }
         assertEquals(maxrec, i);
 
-        docs = this.collection.find("CAST($.F2 as SIGNED) = ?").bind(new Object[] { 32 }).execute();
+        docs = this.collection.find("CAST($.F2 as SIGNED) = ?").bind(new Object[]{32}).execute();
         doc = docs.next();
         assertEquals((long) 32, (long) ((JsonNumber) doc.get("F2")).getInteger());
         assertFalse(docs.hasNext());
 
-        docs = this.collection.find("CAST($.F2 as SIGNED) between ? and ?").bind(new Object[] { 10, 17 }).execute();
+        docs = this.collection.find("CAST($.F2 as SIGNED) between ? and ?").bind(new Object[]{10, 17}).execute();
         doc = docs.next();
         assertEquals((long) 16, (long) ((JsonNumber) doc.get("F2")).getInteger());
         assertFalse(docs.hasNext());
 
-        docs = this.collection.find("CAST($.F2 as SIGNED) in(?,?,?,?,?,?,?,?,?,?,?+1,?-1)").bind(new Object[] { 1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 31, 129 })
+        docs = this.collection.find("CAST($.F2 as SIGNED) in(?,?,?,?,?,?,?,?,?,?,?+1,?-1)").bind(new Object[]{1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 31, 129})
                 .orderBy("CAST($.F2 as SIGNED)").execute();
         doc = docs.next();
         assertEquals((long) 32, (long) ((JsonNumber) doc.get("F2")).getInteger());
@@ -3733,7 +3733,7 @@ public class CollectionFindTest extends BaseCollectionTestCase {
             docs = coll.find().fields("1/$.X as col1,1/$.Y as col2").execute();
             assertEquals(10, docs.getWarningsCount());
             i = 0;
-            for (Iterator<Warning> warn = docs.getWarnings(); warn.hasNext();) {
+            for (Iterator<Warning> warn = docs.getWarnings(); warn.hasNext(); ) {
                 w = warn.next();
                 assertEquals("Division by 0", w.getMessage());
                 assertEquals(2, w.getLevel());
@@ -3757,7 +3757,7 @@ public class CollectionFindTest extends BaseCollectionTestCase {
             docs = coll.find().fields(s).execute();
             assertEquals(5000, docs.getWarningsCount());
             i = 0;
-            for (Iterator<Warning> warn = docs.getWarnings(); warn.hasNext();) {
+            for (Iterator<Warning> warn = docs.getWarnings(); warn.hasNext(); ) {
                 w = warn.next();
                 assertEquals("Division by 0", w.getMessage());
                 assertEquals(2, w.getLevel());
@@ -3892,7 +3892,7 @@ public class CollectionFindTest extends BaseCollectionTestCase {
                     "CREATE FUNCTION abcd (`p1 col1` CHAR(20)) RETURNS ENUM('YES','NO')  COMMENT 'Sample Function abcd'  DETERMINISTIC RETURN  IF(EXISTS(SELECT 1 ), 'YES', 'NO' )");
 
             /* execute Function */
-            asyncDocs = this.collection.find("$.F1 like ? and $.F1  not like ? and $.F1 not like ?").bind(new Object[] { "%Fie%-2", "%Fie%-1", "%Fie%-3" })
+            asyncDocs = this.collection.find("$.F1 like ? and $.F1  not like ? and $.F1 not like ?").bind(new Object[]{"%Fie%-2", "%Fie%-1", "%Fie%-3"})
                     .fields(expr("{'_id':$._id,'F3':$.F3,'X': abcd('S')}")).executeAsync();
             docs = asyncDocs.get();
             doc = docs.next();

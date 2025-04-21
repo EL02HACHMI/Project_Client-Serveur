@@ -66,14 +66,14 @@ public class SyntaxRegressionTest extends BaseTestCase {
 
     /**
      * ALTER TABLE syntax changed in 5.6GA
-     *
+     * <p>
      * ALTER TABLE ... , algorithm, concurrency
-     *
+     * <p>
      * algorithm:
      * | ALGORITHM [=] DEFAULT
      * | ALGORITHM [=] INPLACE
      * | ALGORITHM [=] COPY
-     *
+     * <p>
      * concurrency:
      * | LOCK [=] DEFAULT
      * | LOCK [=] NONE
@@ -95,11 +95,11 @@ public class SyntaxRegressionTest extends BaseTestCase {
         try {
             c = getConnectionWithProps(props);
 
-            String[] algs = { "", ", ALGORITHM DEFAULT", ", ALGORITHM = DEFAULT", ", ALGORITHM INPLACE", ", ALGORITHM = INPLACE", ", ALGORITHM COPY",
-                    ", ALGORITHM = COPY" };
+            String[] algs = {"", ", ALGORITHM DEFAULT", ", ALGORITHM = DEFAULT", ", ALGORITHM INPLACE", ", ALGORITHM = INPLACE", ", ALGORITHM COPY",
+                    ", ALGORITHM = COPY"};
 
-            String[] lcks = { "", ", LOCK DEFAULT", ", LOCK = DEFAULT", ", LOCK NONE", ", LOCK = NONE", ", LOCK SHARED", ", LOCK = SHARED", ", LOCK EXCLUSIVE",
-                    ", LOCK = EXCLUSIVE" };
+            String[] lcks = {"", ", LOCK DEFAULT", ", LOCK = DEFAULT", ", LOCK NONE", ", LOCK = NONE", ", LOCK SHARED", ", LOCK = SHARED", ", LOCK EXCLUSIVE",
+                    ", LOCK = EXCLUSIVE"};
 
             createTable("testAlterTableAlgorithmLock", "(x VARCHAR(10) NOT NULL DEFAULT '') CHARSET=latin2");
 
@@ -133,10 +133,10 @@ public class SyntaxRegressionTest extends BaseTestCase {
 
     /**
      * CREATE TABLE syntax changed in 5.6GA
-     *
+     * <p>
      * InnoDB: Allow the location of file-per-table tablespaces to be chosen
      * CREATE TABLE ... DATA DIRECTORY = 'absolute/path/to/directory/'
-     *
+     * <p>
      * Notes:
      * - DATA DIRECTORY option can't be used with temporary tables.
      * - DATA DIRECTORY and INDEX DIRECTORY can't be used together for InnoDB.
@@ -212,11 +212,11 @@ public class SyntaxRegressionTest extends BaseTestCase {
 
     /**
      * Test case for transportable tablespaces syntax support:
-     *
+     * <p>
      * FLUSH TABLES ... FOR EXPORT
      * ALTER TABLE ... DISCARD TABLESPACE
      * ALTER TABLE ... IMPORT TABLESPACE
-     *
+     * <p>
      * Requires a MySQL server running locally.
      *
      * @throws Exception
@@ -685,7 +685,7 @@ public class SyntaxRegressionTest extends BaseTestCase {
 
     /**
      * WL#5787 - IPv6-capable INET_ATON and INET_NTOA functions
-     *
+     * <p>
      * IPv6 functions added in 5.6GA: INET6_ATON(ip) and INET6_NTOA(ip).
      *
      * @throws Exception
@@ -694,15 +694,15 @@ public class SyntaxRegressionTest extends BaseTestCase {
     public void testIPv6Functions() throws Exception {
         assumeTrue(versionMeetsMinimum(5, 6, 11), "MySQL 5.6.11 includes a bug fix (Bug#68454) that is required to run this test successfully.");
 
-        String[][] dataSamples = new String[][] { { "127.0.0.1", "172.0.0.1" }, { "192.168.1.1", "::ffff:192.168.1.1" }, { "10.1", "::ffff:10.1" },
-                { "172.16.260.4", "172.16.260.4" }, { "::1", "::1" }, { "10AA:10bb:10CC:10dd:10EE:10FF:10aa:10BB", "10aa:10bb:10cc:10dd:10ee:10ff:10aa:10bb" },
-                { "00af:0000:0000:0000:10af:000a:000b:0001", "00af:0000:0000:0000:10af:000a:000b:0001" },
-                { "48:4df1::0010:ad3:1100", "48:4df1::0010:ad3:1100" },
-                { "2000:abcd:1234:0000:efgh:1000:2000:3000", "2000:abcd:1234:0000:efgh:1000:2000:3000" },
-                { "2000:abcd:1234:0000:1000:2000:3000", "2000:abcd:1234:0000:1000:2000:3000" } };
-        String[][] dataExpected = new String[][] { { "127.0.0.1", "172.0.0.1" }, { "192.168.1.1", "::ffff:192.168.1.1" }, { "10.0.0.1", null }, { null, null },
-                { null, "::1" }, { null, "10aa:10bb:10cc:10dd:10ee:10ff:10aa:10bb" }, { null, "af::10af:a:b:1" }, { null, "48:4df1::10:ad3:1100" },
-                { null, null }, { null, null } };
+        String[][] dataSamples = new String[][]{{"127.0.0.1", "172.0.0.1"}, {"192.168.1.1", "::ffff:192.168.1.1"}, {"10.1", "::ffff:10.1"},
+                {"172.16.260.4", "172.16.260.4"}, {"::1", "::1"}, {"10AA:10bb:10CC:10dd:10EE:10FF:10aa:10BB", "10aa:10bb:10cc:10dd:10ee:10ff:10aa:10bb"},
+                {"00af:0000:0000:0000:10af:000a:000b:0001", "00af:0000:0000:0000:10af:000a:000b:0001"},
+                {"48:4df1::0010:ad3:1100", "48:4df1::0010:ad3:1100"},
+                {"2000:abcd:1234:0000:efgh:1000:2000:3000", "2000:abcd:1234:0000:efgh:1000:2000:3000"},
+                {"2000:abcd:1234:0000:1000:2000:3000", "2000:abcd:1234:0000:1000:2000:3000"}};
+        String[][] dataExpected = new String[][]{{"127.0.0.1", "172.0.0.1"}, {"192.168.1.1", "::ffff:192.168.1.1"}, {"10.0.0.1", null}, {null, null},
+                {null, "::1"}, {null, "10aa:10bb:10cc:10dd:10ee:10ff:10aa:10bb"}, {null, "af::10af:a:b:1"}, {null, "48:4df1::10:ad3:1100"},
+                {null, null}, {null, null}};
 
         createTable("testWL5787", "(id INT AUTO_INCREMENT PRIMARY KEY, ipv4 INT UNSIGNED, ipv6 VARBINARY(16))");
 
@@ -745,9 +745,9 @@ public class SyntaxRegressionTest extends BaseTestCase {
 
     /**
      * WL#5538 - InnoDB Full-Text Search Support
-     *
+     * <p>
      * CREATE TABLE syntax changed in 5.6GA
-     *
+     * <p>
      * InnoDB engine accepts FULLTEXT indexes.
      * CREATE TABLE ... FULLTEXT(...) ... ENGINE=InnoDB
      *
@@ -765,14 +765,14 @@ public class SyntaxRegressionTest extends BaseTestCase {
                 + "('1001 MySQL Tricks','1. Never run mysqld as root. 2. ...'), ('MySQL vs. YourSQL','In the following database comparison ...'), "
                 + "('MySQL Security','When configured properly, MySQL ...')");
 
-        String[] querySamples = new String[] { "SELECT * FROM testFULLTEXTSearchInnoDB WHERE MATCH (title, body) AGAINST ('database' IN NATURAL LANGUAGE MODE)",
+        String[] querySamples = new String[]{"SELECT * FROM testFULLTEXTSearchInnoDB WHERE MATCH (title, body) AGAINST ('database' IN NATURAL LANGUAGE MODE)",
                 "SELECT * FROM testFULLTEXTSearchInnoDB WHERE MATCH (title, body) AGAINST ('database' IN NATURAL LANGUAGE MODE WITH QUERY EXPANSION)",
                 "SELECT * FROM testFULLTEXTSearchInnoDB WHERE MATCH (title, body) AGAINST ('<MySQL >YourSQL' IN BOOLEAN MODE)",
                 "SELECT * FROM testFULLTEXTSearchInnoDB WHERE MATCH (title, body) AGAINST ('+MySQL -YourSQL' IN BOOLEAN MODE)",
                 "SELECT MATCH (title, body) AGAINST ('database' IN NATURAL LANGUAGE MODE) FROM testFULLTEXTSearchInnoDB",
                 "SELECT MATCH (title, body) AGAINST ('database' IN NATURAL LANGUAGE MODE WITH QUERY EXPANSION) FROM testFULLTEXTSearchInnoDB",
                 "SELECT MATCH (title, body) AGAINST ('<MySQL >YourSQL' IN BOOLEAN MODE) FROM testFULLTEXTSearchInnoDB",
-                "SELECT MATCH (title, body) AGAINST ('+MySQL -YourSQL' IN BOOLEAN MODE) FROM testFULLTEXTSearchInnoDB" };
+                "SELECT MATCH (title, body) AGAINST ('+MySQL -YourSQL' IN BOOLEAN MODE) FROM testFULLTEXTSearchInnoDB"};
 
         for (String query : querySamples) {
             this.rs = this.stmt.executeQuery(query);
@@ -783,9 +783,9 @@ public class SyntaxRegressionTest extends BaseTestCase {
 
     /**
      * WL#6555 - Online rename index
-     *
+     * <p>
      * ALTER TABLE syntax changed in 5.7.1
-     *
+     * <p>
      * Alter table allows to rename indexes. ALTER TABLE ... RENAME INDEX x TO y
      *
      * @throws Exception
@@ -819,7 +819,7 @@ public class SyntaxRegressionTest extends BaseTestCase {
 
     /**
      * WL#6406 - Stacked diagnostic areas
-     *
+     * <p>
      * "STACKED" in "GET [CURRENT | STACKED] DIAGNOSTICS" syntax was added in 5.7.0. Final behavior was implemented in
      * version 5.7.2, by WL#5928 - Most statements should clear the diagnostic area.
      *
@@ -908,7 +908,7 @@ public class SyntaxRegressionTest extends BaseTestCase {
 
     /**
      * WL#6868 - Support transportable tablespaces for single innodb partition.
-     *
+     * <p>
      * New syntax introduced in MySQL 5.7.4.
      * ALTER TABLE t DISCARD PARTITION {p[[,p1]..]|ALL} TABLESPACE;
      * ALTER TABLE t IMPORT PARTITION {p[[,p1]..]|ALL} TABLESPACE;
@@ -952,9 +952,9 @@ public class SyntaxRegressionTest extends BaseTestCase {
 
     /**
      * WL#7909 - Server side JSON functions
-     *
+     * <p>
      * Test support for data type JSON.
-     *
+     * <p>
      * New JSON functions added in MySQL 5.7.8:
      * - JSON_APPEND(), Append data to JSON document (only in 5.7.8)
      * - JSON_ARRAY_APPEND(), Append data to JSON document (added in 5.7.9+)
@@ -1069,9 +1069,9 @@ public class SyntaxRegressionTest extends BaseTestCase {
 
     /**
      * WL#8016 - Parser for optimizer hints.
-     *
+     * <p>
      * Test syntax for optimizer hints.
-     *
+     * <p>
      * New optimizer hints feature added in MySQL 5.7.7. Hints are permitted in these contexts:
      * At the beginning of DML statements
      * - SELECT /*+ ... *&#47 ...
@@ -1161,7 +1161,7 @@ public class SyntaxRegressionTest extends BaseTestCase {
         /*
          * Test hints in different query types using PreparedStatements.
          */
-        for (String connProps : new String[] { "useServerPrepStmts=false", "useServerPrepStmts=true" }) {
+        for (String connProps : new String[]{"useServerPrepStmts=false", "useServerPrepStmts=true"}) {
             Connection testConn = null;
             testConn = getConnectionWithProps(connProps);
 
@@ -1245,9 +1245,9 @@ public class SyntaxRegressionTest extends BaseTestCase {
 
     /**
      * WL#6205 - InnoDB: Implement CREATE TABLESPACE for general use.
-     *
+     * <p>
      * Tests support for new CREATE TABLESPACE syntax that extends this feature to InnoDB.
-     *
+     * <p>
      * CREATE TABLESPACE tablespace_name ADD DATAFILE 'file_name' [FILE_BLOCK_SIZE = value] [ENGINE [=] engine_name]
      *
      * @throws Exception
@@ -1318,9 +1318,9 @@ public class SyntaxRegressionTest extends BaseTestCase {
 
     /**
      * WL#6747 - InnoDB: make fill factor settable.
-     *
+     * <p>
      * Tests support for new syntax for setting indices MERGE_THRESHOLD on CREATE TABLE.
-     *
+     * <p>
      * index_option:
      * COMMENT 'MERGE_THRESHOLD=n'
      *
@@ -1385,9 +1385,9 @@ public class SyntaxRegressionTest extends BaseTestCase {
 
     /**
      * WL#7696 - InnoDB: Transparent page compression.
-     *
+     * <p>
      * Tests COMPRESSION clause in CREATE|ALTER TABLE syntax.
-     *
+     * <p>
      * table_option: (...) | COMPRESSION [=] {'ZLIB'|'LZ4'|'NONE'}
      *
      * @throws Exception
@@ -1429,7 +1429,7 @@ public class SyntaxRegressionTest extends BaseTestCase {
      * WL#8055 - Consistent naming scheme for GIS functions - Deprecation
      * WL#9435 - Axis order in WKB parsing functions
      * (...)
-     *
+     * <p>
      * Test syntax for all GIS functions.
      *
      * @throws Exception
@@ -1528,7 +1528,7 @@ public class SyntaxRegressionTest extends BaseTestCase {
             List<String> args;
 
             GisFunction(String function, int low_version_maj, int low_version_min, int low_version_sub, int hi_version_maj, int hi_version_min,
-                    int hi_version_sub, String... args) {
+                        int hi_version_sub, String... args) {
                 this.function = function;
                 this.low_version_maj = low_version_maj;
                 this.low_version_min = low_version_min;
@@ -1800,7 +1800,7 @@ public class SyntaxRegressionTest extends BaseTestCase {
 
     /**
      * WL#8252 - GCS Replication: Plugin [SERVER CHANGES]
-     *
+     * <p>
      * Test syntax for GCS Replication commands:
      * - START GROUP_REPLICATION
      * - STOP GROUP_REPLICATION
@@ -1823,7 +1823,7 @@ public class SyntaxRegressionTest extends BaseTestCase {
         });
 
         Connection spsConn = getConnectionWithProps("useServerPrepStmts=true");
-        for (Connection testConn : new Connection[] { this.conn, spsConn }) {
+        for (Connection testConn : new Connection[]{this.conn, spsConn}) {
             final PreparedStatement testPstmt1 = testConn.prepareStatement("START GROUP_REPLICATION");
             assertThrows(SQLException.class, expectedErrMsg, () -> {
                 testPstmt1.execute();
@@ -1840,9 +1840,9 @@ public class SyntaxRegressionTest extends BaseTestCase {
 
     /**
      * WL#6054 - Temporarily disablement of users
-     *
+     * <p>
      * Test user account locking syntax:
-     *
+     * <p>
      * CREATE|ALTER USER (...)
      * - lock_option: { ACCOUNT LOCK | ACCOUNT UNLOCK }
      *
@@ -1858,7 +1858,7 @@ public class SyntaxRegressionTest extends BaseTestCase {
         props.setProperty(PropertyKey.USER.getKeyName(), user);
         props.setProperty(PropertyKey.PASSWORD.getKeyName(), pwd);
 
-        for (String accLock : new String[] { "/* default */", "ACCOUNT UNLOCK", "ACCOUNT LOCK" }) {
+        for (String accLock : new String[]{"/* default */", "ACCOUNT UNLOCK", "ACCOUNT LOCK"}) {
             createUser("'" + user + "'@'%'", "IDENTIFIED BY '" + pwd + "' " + accLock);
             this.stmt.execute("GRANT SELECT ON *.* TO '" + user + "'@'%'");
 
@@ -1898,9 +1898,9 @@ public class SyntaxRegressionTest extends BaseTestCase {
 
     /**
      * WL#7131 - Add timestamp in mysql.user on the last time the password was changed
-     *
+     * <p>
      * Test user account password expiration syntax:
-     *
+     * <p>
      * CREATE|ALTER USER (...)
      * - password_option: { PASSWORD EXPIRE | PASSWORD EXPIRE DEFAULT | PASSWORD EXPIRE NEVER | PASSWORD EXPIRE INTERVAL N DAY }
      *
@@ -1917,8 +1917,8 @@ public class SyntaxRegressionTest extends BaseTestCase {
         props.setProperty(PropertyKey.PASSWORD.getKeyName(), pwd);
 
         // CREATE USER syntax.
-        for (String accPwdExp : new String[] { "/* default */", "PASSWORD EXPIRE", "PASSWORD EXPIRE DEFAULT", "PASSWORD EXPIRE NEVER",
-                "PASSWORD EXPIRE INTERVAL 365 DAY" }) {
+        for (String accPwdExp : new String[]{"/* default */", "PASSWORD EXPIRE", "PASSWORD EXPIRE DEFAULT", "PASSWORD EXPIRE NEVER",
+                "PASSWORD EXPIRE INTERVAL 365 DAY"}) {
             createUser("'" + user + "'@'%'", "IDENTIFIED BY '" + pwd + "' " + accPwdExp);
             this.stmt.execute("GRANT SELECT ON *.* TO '" + user + "'@'%'");
 
@@ -1938,7 +1938,7 @@ public class SyntaxRegressionTest extends BaseTestCase {
         }
 
         // ALTER USER syntax.
-        for (String accPwdExp : new String[] { "PASSWORD EXPIRE", "PASSWORD EXPIRE DEFAULT", "PASSWORD EXPIRE NEVER", "PASSWORD EXPIRE INTERVAL 365 DAY" }) {
+        for (String accPwdExp : new String[]{"PASSWORD EXPIRE", "PASSWORD EXPIRE DEFAULT", "PASSWORD EXPIRE NEVER", "PASSWORD EXPIRE INTERVAL 365 DAY"}) {
             createUser("'" + user + "'@'%'", "IDENTIFIED BY '" + pwd + "'");
             this.stmt.execute("GRANT SELECT ON *.* TO '" + user + "'@'%'");
 
@@ -1967,7 +1967,7 @@ public class SyntaxRegressionTest extends BaseTestCase {
     /**
      * WL#8548 - InnoDB: Transparent data encryption.
      * WL#8821 - Innodb tablespace encryption key rotation SQL commands.
-     *
+     * <p>
      * Test new syntax:
      * - CREATE|ALTER TABLE (...) ENCRYPTION [=] {'Y' | 'N'}
      * - ALTER INSTANCE ROTATE INNODB MASTER KEY

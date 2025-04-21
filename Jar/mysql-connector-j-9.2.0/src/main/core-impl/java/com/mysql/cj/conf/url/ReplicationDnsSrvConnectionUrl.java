@@ -50,10 +50,8 @@ public class ReplicationDnsSrvConnectionUrl extends ConnectionUrl {
     /**
      * Constructs an instance of {@link ReplicationDnsSrvConnectionUrl}, performing all the required initializations.
      *
-     * @param connStrParser
-     *            a {@link ConnectionUrlParser} instance containing the parsed version of the original connection string
-     * @param info
-     *            the connection arguments map
+     * @param connStrParser a {@link ConnectionUrlParser} instance containing the parsed version of the original connection string
+     * @param info          the connection arguments map
      */
     public ReplicationDnsSrvConnectionUrl(ConnectionUrlParser connStrParser, Properties info) {
         super(connStrParser, info);
@@ -108,18 +106,18 @@ public class ReplicationDnsSrvConnectionUrl extends ConnectionUrl {
             if (!BooleanPropertyDefinition.booleanFrom(PropertyKey.dnsSrv.getKeyName(), hostPropsSource.get(PropertyKey.dnsSrv.getKeyName()), null)
                     || !BooleanPropertyDefinition.booleanFrom(PropertyKey.dnsSrv.getKeyName(), hostPropsReplica.get(PropertyKey.dnsSrv.getKeyName()), null)) {
                 throw ExceptionFactory.createException(InvalidConnectionAttributeException.class,
-                        Messages.getString("ConnectionString.23", new Object[] { PropertyKey.dnsSrv.getKeyName() }));
+                        Messages.getString("ConnectionString.23", new Object[]{PropertyKey.dnsSrv.getKeyName()}));
             }
         }
         if (hostPropsSource.containsKey(PropertyKey.PROTOCOL.getKeyName()) && hostPropsSource.get(PropertyKey.PROTOCOL.getKeyName()).equalsIgnoreCase("PIPE")
                 || hostPropsReplica.containsKey(PropertyKey.PROTOCOL.getKeyName())
-                        && hostPropsReplica.get(PropertyKey.PROTOCOL.getKeyName()).equalsIgnoreCase("PIPE")) {
+                && hostPropsReplica.get(PropertyKey.PROTOCOL.getKeyName()).equalsIgnoreCase("PIPE")) {
             throw ExceptionFactory.createException(InvalidConnectionAttributeException.class, Messages.getString("ConnectionString.24"));
         }
         if (hostPropsSource.containsKey(PropertyKey.replicationConnectionGroup.getKeyName())
                 || hostPropsReplica.containsKey(PropertyKey.replicationConnectionGroup.getKeyName())) {
             throw ExceptionFactory.createException(InvalidConnectionAttributeException.class,
-                    Messages.getString("ConnectionString.25", new Object[] { PropertyKey.replicationConnectionGroup.getKeyName() }));
+                    Messages.getString("ConnectionString.25", new Object[]{PropertyKey.replicationConnectionGroup.getKeyName()}));
         }
     }
 
@@ -136,11 +134,8 @@ public class ReplicationDnsSrvConnectionUrl extends ConnectionUrl {
     /**
      * Returns a hosts list built from the result of the DNS SRV lookup for the original host name.
      *
-     * @param view
-     *            the type of the view to use in the returned list of hosts.
-     *
-     * @return
-     *         the hosts list from the result of the DNS SRV lookup, filtered for the given view.
+     * @param view the type of the view to use in the returned list of hosts.
+     * @return the hosts list from the result of the DNS SRV lookup, filtered for the given view.
      */
     @Override
     public List<HostInfo> getHostsList(HostsListView view) {

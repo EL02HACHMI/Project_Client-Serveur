@@ -95,15 +95,11 @@ public class ResultSetFactory implements ProtocolEntityFactory<ResultSetImpl, Na
     /**
      * Build ResultSet from ResultsetRows
      *
-     * @param resultSetType
-     *            scrollability (TYPE_FORWARD_ONLY, TYPE_SCROLL_????)
-     * @param resultSetConcurrency
-     *            the type of result set (CONCUR_UPDATABLE or READ_ONLY)
-     * @param rows
-     *            {@link ResultsetRows}
+     * @param resultSetType        scrollability (TYPE_FORWARD_ONLY, TYPE_SCROLL_????)
+     * @param resultSetConcurrency the type of result set (CONCUR_UPDATABLE or READ_ONLY)
+     * @param rows                 {@link ResultsetRows}
      * @return ResultSetImpl
-     * @throws SQLException
-     *             if an error occurs
+     * @throws SQLException if an error occurs
      */
     public ResultSetImpl createFromResultsetRows(int resultSetConcurrency, int resultSetType, ResultsetRows rows) throws SQLException {
         ResultSetImpl rs;

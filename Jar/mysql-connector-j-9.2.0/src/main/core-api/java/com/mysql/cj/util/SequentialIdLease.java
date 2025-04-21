@@ -45,8 +45,7 @@ public class SequentialIdLease {
     /**
      * Frees the given sequential id so that it can be reused.
      *
-     * @param sequentialId
-     *            the sequential id to release
+     * @param sequentialId the sequential id to release
      */
     public void releaseSequentialId(int sequentialId) {
         this.sequentialIdsLease.remove(sequentialId);

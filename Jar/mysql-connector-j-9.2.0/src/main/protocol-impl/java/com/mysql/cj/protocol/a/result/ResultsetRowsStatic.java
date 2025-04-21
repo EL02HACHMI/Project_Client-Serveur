@@ -36,10 +36,8 @@ public class ResultsetRowsStatic extends AbstractResultsetRows implements Result
     /**
      * Creates a new RowDataStatic object.
      *
-     * @param rows
-     *            list of {@link Row} instances
-     * @param columnDefinition
-     *            {@link ColumnDefinition} for this result set
+     * @param rows             list of {@link Row} instances
+     * @param columnDefinition {@link ColumnDefinition} for this result set
      */
     @SuppressWarnings("unchecked")
     public ResultsetRowsStatic(List<? extends Row> rows, ColumnDefinition columnDefinition) {

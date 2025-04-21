@@ -48,11 +48,25 @@ public class Jdk14Logger implements Log {
     /**
      * Creates a new Jdk14Logger object.
      *
-     * @param name
-     *            logger name as per {@link Logger#getLogger(String)}
+     * @param name logger name as per {@link Logger#getLogger(String)}
      */
     public Jdk14Logger(String name) {
         this.jdkLogger = Logger.getLogger(name);
+    }
+
+    private static final int findCallerStackDepth(StackTraceElement[] stackTrace) {
+        int numFrames = stackTrace.length;
+
+        for (int i = 0; i < numFrames; i++) {
+            String callerClassName = stackTrace[i].getClassName();
+
+            if (!(callerClassName.startsWith("com.mysql.cj") || callerClassName.startsWith("com.mysql.cj.core")
+                    || callerClassName.startsWith("com.mysql.cj.jdbc"))) {
+                return i;
+            }
+        }
+
+        return 0;
     }
 
     @Override
@@ -88,8 +102,7 @@ public class Jdk14Logger implements Log {
     /**
      * Logs the given message instance using the 'debug' level
      *
-     * @param message
-     *            the message to log
+     * @param message the message to log
      */
     @Override
     public void logDebug(Object message) {
@@ -99,10 +112,8 @@ public class Jdk14Logger implements Log {
     /**
      * Logs the given message and Throwable at the 'debug' level.
      *
-     * @param message
-     *            the message to log
-     * @param exception
-     *            the throwable to log (may be null)
+     * @param message   the message to log
+     * @param exception the throwable to log (may be null)
      */
     @Override
     public void logDebug(Object message, Throwable exception) {
@@ -112,8 +123,7 @@ public class Jdk14Logger implements Log {
     /**
      * Logs the given message instance using the 'error' level
      *
-     * @param message
-     *            the message to log
+     * @param message the message to log
      */
     @Override
     public void logError(Object message) {
@@ -123,10 +133,8 @@ public class Jdk14Logger implements Log {
     /**
      * Logs the given message and Throwable at the 'error' level.
      *
-     * @param message
-     *            the message to log
-     * @param exception
-     *            the throwable to log (may be null)
+     * @param message   the message to log
+     * @param exception the throwable to log (may be null)
      */
     @Override
     public void logError(Object message, Throwable exception) {
@@ -136,8 +144,7 @@ public class Jdk14Logger implements Log {
     /**
      * Logs the given message instance using the 'fatal' level
      *
-     * @param message
-     *            the message to log
+     * @param message the message to log
      */
     @Override
     public void logFatal(Object message) {
@@ -147,10 +154,8 @@ public class Jdk14Logger implements Log {
     /**
      * Logs the given message and Throwable at the 'fatal' level.
      *
-     * @param message
-     *            the message to log
-     * @param exception
-     *            the throwable to log (may be null)
+     * @param message   the message to log
+     * @param exception the throwable to log (may be null)
      */
     @Override
     public void logFatal(Object message, Throwable exception) {
@@ -160,8 +165,7 @@ public class Jdk14Logger implements Log {
     /**
      * Logs the given message instance using the 'info' level
      *
-     * @param message
-     *            the message to log
+     * @param message the message to log
      */
     @Override
     public void logInfo(Object message) {
@@ -171,10 +175,8 @@ public class Jdk14Logger implements Log {
     /**
      * Logs the given message and Throwable at the 'info' level.
      *
-     * @param message
-     *            the message to log
-     * @param exception
-     *            the throwable to log (may be null)
+     * @param message   the message to log
+     * @param exception the throwable to log (may be null)
      */
     @Override
     public void logInfo(Object message, Throwable exception) {
@@ -184,8 +186,7 @@ public class Jdk14Logger implements Log {
     /**
      * Logs the given message instance using the 'trace' level
      *
-     * @param message
-     *            the message to log
+     * @param message the message to log
      */
     @Override
     public void logTrace(Object message) {
@@ -195,10 +196,8 @@ public class Jdk14Logger implements Log {
     /**
      * Logs the given message and Throwable at the 'trace' level.
      *
-     * @param message
-     *            the message to log
-     * @param exception
-     *            the throwable to log (may be null)
+     * @param message   the message to log
+     * @param exception the throwable to log (may be null)
      */
     @Override
     public void logTrace(Object message, Throwable exception) {
@@ -208,8 +207,7 @@ public class Jdk14Logger implements Log {
     /**
      * Logs the given message instance using the 'warn' level
      *
-     * @param message
-     *            the message to log
+     * @param message the message to log
      */
     @Override
     public void logWarn(Object message) {
@@ -219,29 +217,12 @@ public class Jdk14Logger implements Log {
     /**
      * Logs the given message and Throwable at the 'warn' level.
      *
-     * @param message
-     *            the message to log
-     * @param exception
-     *            the throwable to log (may be null)
+     * @param message   the message to log
+     * @param exception the throwable to log (may be null)
      */
     @Override
     public void logWarn(Object message, Throwable exception) {
         logInternal(WARN, message, exception);
-    }
-
-    private static final int findCallerStackDepth(StackTraceElement[] stackTrace) {
-        int numFrames = stackTrace.length;
-
-        for (int i = 0; i < numFrames; i++) {
-            String callerClassName = stackTrace[i].getClassName();
-
-            if (!(callerClassName.startsWith("com.mysql.cj") || callerClassName.startsWith("com.mysql.cj.core")
-                    || callerClassName.startsWith("com.mysql.cj.jdbc"))) {
-                return i;
-            }
-        }
-
-        return 0;
     }
 
     private void logInternal(Level level, Object msg, Throwable exception) {

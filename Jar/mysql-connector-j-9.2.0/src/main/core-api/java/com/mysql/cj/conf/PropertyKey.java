@@ -31,25 +31,45 @@ public enum PropertyKey {
     /*
      * Properties individually managed after parsing connection string. These property keys are case insensitive.
      */
-    /** The database user name. */
+    /**
+     * The database user name.
+     */
     USER("user", false),
-    /** The database user password. */
+    /**
+     * The database user password.
+     */
     PASSWORD("password", false),
-    /** The hostname value from the properties instance passed to the driver. */
+    /**
+     * The hostname value from the properties instance passed to the driver.
+     */
     HOST("host", false),
-    /** The port number value from the properties instance passed to the driver. */
+    /**
+     * The port number value from the properties instance passed to the driver.
+     */
     PORT("port", false),
-    /** The communications protocol. Possible values: "tcp" and "pipe". */
+    /**
+     * The communications protocol. Possible values: "tcp" and "pipe".
+     */
     PROTOCOL("protocol", false),
-    /** The name pipes path to use when "protocol=pipe'. */
+    /**
+     * The name pipes path to use when "protocol=pipe'.
+     */
     PATH("path", "namedPipePath", false),
-    /** The server type in a replication setup. Possible values: "source" and "replica". */
+    /**
+     * The server type in a replication setup. Possible values: "source" and "replica".
+     */
     TYPE("type", false),
-    /** The address value ("host:port") from the properties instance passed to the driver. */
+    /**
+     * The address value ("host:port") from the properties instance passed to the driver.
+     */
     ADDRESS("address", false),
-    /** The host priority in a list of hosts. */
+    /**
+     * The host priority in a list of hosts.
+     */
     PRIORITY("priority", false),
-    /** The database value from the properties instance passed to the driver. */
+    /**
+     * The database value from the properties instance passed to the driver.
+     */
     DBNAME("dbname", false), //
 
     allowLoadLocalInfile("allowLoadLocalInfile", true), //
@@ -281,11 +301,8 @@ public enum PropertyKey {
     zeroDateTimeBehavior("zeroDateTimeBehavior", true) //
     ;
 
-    private String keyName;
-    private String ccAlias = null;
-    private boolean isCaseSensitive = false;
-
     private static Map<String, PropertyKey> caseInsensitiveValues = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+
     static {
         for (PropertyKey pk : values()) {
             if (!pk.isCaseSensitive) {
@@ -297,13 +314,15 @@ public enum PropertyKey {
         }
     }
 
+    private String keyName;
+    private String ccAlias = null;
+    private boolean isCaseSensitive = false;
+
     /**
      * Initializes each enum element with the proper key name to be used in the connection string or properties maps.
      *
-     * @param keyName
-     *            the key name for the enum element.
-     * @param isCaseSensitive
-     *            is this name case sensitive
+     * @param keyName         the key name for the enum element.
+     * @param isCaseSensitive is this name case sensitive
      */
     PropertyKey(String keyName, boolean isCaseSensitive) {
         this.keyName = keyName;
@@ -313,50 +332,20 @@ public enum PropertyKey {
     /**
      * Initializes each enum element with the proper key name to be used in the connection string or properties maps.
      *
-     * @param keyName
-     *            the key name for the enum element.
-     * @param alias
-     *            camel-case alias key name
-     * @param isCaseSensitive
-     *            is this name case sensitive
+     * @param keyName         the key name for the enum element.
+     * @param alias           camel-case alias key name
+     * @param isCaseSensitive is this name case sensitive
      */
     PropertyKey(String keyName, String alias, boolean isCaseSensitive) {
         this(keyName, isCaseSensitive);
         this.ccAlias = alias;
     }
 
-    @Override
-    public String toString() {
-        return this.keyName;
-    }
-
-    /**
-     * Gets the key name of this enum element.
-     *
-     * @return
-     *         the key name associated with the enum element.
-     */
-    public String getKeyName() {
-        return this.keyName;
-    }
-
-    /**
-     * Gets the camel-case alias key name of this enum element.
-     *
-     * @return
-     *         the camel-case alias key name associated with the enum element or null.
-     */
-    public String getCcAlias() {
-        return this.ccAlias;
-    }
-
     /**
      * Looks for a {@link PropertyKey} that matches the given value as key name.
      *
-     * @param value
-     *            the key name to look for.
-     * @return
-     *         the {@link PropertyKey} element that matches the given key name value or <code>null</code> if none is found.
+     * @param value the key name to look for.
+     * @return the {@link PropertyKey} element that matches the given key name value or <code>null</code> if none is found.
      */
     public static PropertyKey fromValue(String value) {
         for (PropertyKey k : values()) {
@@ -376,15 +365,36 @@ public enum PropertyKey {
     /**
      * Helper method that normalizes the case of the given key, if it is one of {@link PropertyKey} elements.
      *
-     * @param keyName
-     *            the key name to normalize.
-     * @return
-     *         the normalized key name if it belongs to this enum, otherwise returns the input unchanged.
+     * @param keyName the key name to normalize.
+     * @return the normalized key name if it belongs to this enum, otherwise returns the input unchanged.
      */
     public static String normalizeCase(String keyName) {
         PropertyKey pk = caseInsensitiveValues.get(keyName);
         return pk == null ? keyName : pk.getKeyName();
         //return keyName;
+    }
+
+    @Override
+    public String toString() {
+        return this.keyName;
+    }
+
+    /**
+     * Gets the key name of this enum element.
+     *
+     * @return the key name associated with the enum element.
+     */
+    public String getKeyName() {
+        return this.keyName;
+    }
+
+    /**
+     * Gets the camel-case alias key name of this enum element.
+     *
+     * @return the camel-case alias key name associated with the enum element or null.
+     */
+    public String getCcAlias() {
+        return this.ccAlias;
     }
 
 }

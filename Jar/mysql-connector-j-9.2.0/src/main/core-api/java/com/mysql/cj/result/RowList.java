@@ -48,11 +48,10 @@ public interface RowList extends Iterator<Row> {
 
     /**
      * Optionally retrieve Row at index <i>n</i>.
-     *
+     * <p>
      * Only works on non dynamic row lists.
      *
-     * @param n
-     *            row number
+     * @param n row number
      * @return {@link Row}
      */
     default Row get(int n) {

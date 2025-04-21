@@ -46,7 +46,7 @@ public class DebugBufferingPacketSenderTest extends PacketSenderTestBase {
                 new IntegerProperty(new IntegerPropertyDefinition(PropertyKey.packetDebugBufferSize, 20, PropertyDefinitions.RUNTIME_MODIFIABLE,
                         Messages.getString("ConnectionProperties.packetDebugBufferSize"), "3.1.3", PropertyDefinitions.CATEGORY_DEBUGING_PROFILING, 7, 0,
                         Integer.MAX_VALUE)));
-        byte packet[] = new byte[] { 0, 1, 2, 3, 4, 5, 6, 7 };
+        byte packet[] = new byte[]{0, 1, 2, 3, 4, 5, 6, 7};
         sender.send(packet, 8, (byte) 0);
 
         // check that packet was appended to the debug buffer

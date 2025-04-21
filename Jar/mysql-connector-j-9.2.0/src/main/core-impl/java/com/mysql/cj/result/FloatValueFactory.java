@@ -42,7 +42,7 @@ public class FloatValueFactory extends AbstractNumericValueFactory<Float> {
     public Float createFromBigInteger(BigInteger i) {
         if (this.jdbcCompliantTruncationForReads && (new BigDecimal(i).compareTo(Constants.BIG_DECIMAL_MAX_NEGATIVE_FLOAT_VALUE) < 0
                 || new BigDecimal(i).compareTo(Constants.BIG_DECIMAL_MAX_FLOAT_VALUE) > 0)) {
-            throw new NumberOutOfRange(Messages.getString("ResultSet.NumberOutOfRange", new Object[] { i, getTargetTypeName() }));
+            throw new NumberOutOfRange(Messages.getString("ResultSet.NumberOutOfRange", new Object[]{i, getTargetTypeName()}));
         }
         return (float) i.doubleValue();
     }
@@ -50,7 +50,7 @@ public class FloatValueFactory extends AbstractNumericValueFactory<Float> {
     @Override
     public Float createFromLong(long l) {
         if (this.jdbcCompliantTruncationForReads && (l < -Float.MAX_VALUE || l > Float.MAX_VALUE)) {
-            throw new NumberOutOfRange(Messages.getString("ResultSet.NumberOutOfRange", new Object[] { l, getTargetTypeName() }));
+            throw new NumberOutOfRange(Messages.getString("ResultSet.NumberOutOfRange", new Object[]{l, getTargetTypeName()}));
         }
         return (float) l;
     }
@@ -59,7 +59,7 @@ public class FloatValueFactory extends AbstractNumericValueFactory<Float> {
     public Float createFromBigDecimal(BigDecimal d) {
         if (this.jdbcCompliantTruncationForReads
                 && (d.compareTo(Constants.BIG_DECIMAL_MAX_NEGATIVE_FLOAT_VALUE) < 0 || d.compareTo(Constants.BIG_DECIMAL_MAX_FLOAT_VALUE) > 0)) {
-            throw new NumberOutOfRange(Messages.getString("ResultSet.NumberOutOfRange", new Object[] { d, getTargetTypeName() }));
+            throw new NumberOutOfRange(Messages.getString("ResultSet.NumberOutOfRange", new Object[]{d, getTargetTypeName()}));
         }
         return (float) d.doubleValue();
     }
@@ -67,7 +67,7 @@ public class FloatValueFactory extends AbstractNumericValueFactory<Float> {
     @Override
     public Float createFromDouble(double d) {
         if (this.jdbcCompliantTruncationForReads && (d < -Float.MAX_VALUE || d > Float.MAX_VALUE)) {
-            throw new NumberOutOfRange(Messages.getString("ResultSet.NumberOutOfRange", new Object[] { d, getTargetTypeName() }));
+            throw new NumberOutOfRange(Messages.getString("ResultSet.NumberOutOfRange", new Object[]{d, getTargetTypeName()}));
         }
         return (float) d;
     }

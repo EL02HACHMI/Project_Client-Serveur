@@ -67,16 +67,14 @@ public interface BindValue {
     /**
      * Gets the length of this bind value in the text protocol representation.
      *
-     * @return
-     *         the expected length, in bytes, of this bind value after being encoded.
+     * @return the expected length, in bytes, of this bind value after being encoded.
      */
     long getTextLength();
 
     /**
      * Gets the length of this bind value in the binary protocol representation.
      *
-     * @return
-     *         the expected length, in bytes, of this bind value after being encoded.
+     * @return the expected length, in bytes, of this bind value after being encoded.
      */
     long getBinaryLength();
 
@@ -101,20 +99,18 @@ public interface BindValue {
      * <i>If the value is a part of key for UpdatableResultSet updater, it should keep original milliseconds.</i>
      * </p>
      *
-     * @param value
-     *            the value to set
+     * @param value the value to set
      */
     void setKeepOrigNanos(boolean value);
 
-    void setScaleOrLength(long scaleOrLength);
-
     long getScaleOrLength();
+
+    void setScaleOrLength(long scaleOrLength);
 
     /**
      * Gets the name of this query attribute.
      *
-     * @return
-     *         the name of this query attribute.
+     * @return the name of this query attribute.
      */
     String getName();
 

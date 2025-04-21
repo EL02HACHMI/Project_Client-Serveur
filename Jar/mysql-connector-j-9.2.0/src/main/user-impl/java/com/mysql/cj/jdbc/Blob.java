@@ -52,17 +52,18 @@ public class Blob implements java.sql.Blob, OutputStreamWatcher {
     // This is a real brain-dead implementation of BLOB. Once I add streamability to the I/O for MySQL this will be more efficiently implemented
     // (except for the position() method, ugh).
     //
-    /** The binary data that makes up this BLOB */
+    private final Lock lock = new ReentrantLock();
+    /**
+     * The binary data that makes up this BLOB
+     */
     private byte[] binaryData = null;
     private boolean isClosed = false;
     private ExceptionInterceptor exceptionInterceptor;
-    private final Lock lock = new ReentrantLock();
 
     /**
      * Creates a Blob without data
      *
-     * @param exceptionInterceptor
-     *            exception interceptor
+     * @param exceptionInterceptor exception interceptor
      */
     Blob(ExceptionInterceptor exceptionInterceptor) {
         setBinaryData(Constants.EMPTY_BYTE_ARRAY);
@@ -72,10 +73,8 @@ public class Blob implements java.sql.Blob, OutputStreamWatcher {
     /**
      * Creates a BLOB encapsulating the given binary data
      *
-     * @param data
-     *            data to fill the Blob
-     * @param exceptionInterceptor
-     *            exception interceptor
+     * @param data                 data to fill the Blob
+     * @param exceptionInterceptor exception interceptor
      */
     public Blob(byte[] data, ExceptionInterceptor exceptionInterceptor) {
         setBinaryData(data);
@@ -85,12 +84,9 @@ public class Blob implements java.sql.Blob, OutputStreamWatcher {
     /**
      * Creates an updatable BLOB that can update in-place (not implemented yet).
      *
-     * @param data
-     *            data to fill the Blob
-     * @param creatorResultSetToSet
-     *            result set
-     * @param columnIndexToSet
-     *            column index
+     * @param data                  data to fill the Blob
+     * @param creatorResultSetToSet result set
+     * @param columnIndexToSet      column index
      */
     Blob(byte[] data, ResultSetInternalMethods creatorResultSetToSet, int columnIndexToSet) {
         setBinaryData(data);
@@ -100,6 +96,15 @@ public class Blob implements java.sql.Blob, OutputStreamWatcher {
         this.lock.lock();
         try {
             return this.binaryData;
+        } finally {
+            this.lock.unlock();
+        }
+    }
+
+    private void setBinaryData(byte[] newBinaryData) {
+        this.lock.lock();
+        try {
+            this.binaryData = newBinaryData;
         } finally {
             this.lock.unlock();
         }
@@ -174,15 +179,6 @@ public class Blob implements java.sql.Blob, OutputStreamWatcher {
             checkClosed();
 
             return position(pattern.getBytes(0, (int) pattern.length()), start);
-        } finally {
-            this.lock.unlock();
-        }
-    }
-
-    private void setBinaryData(byte[] newBinaryData) {
-        this.lock.lock();
-        try {
-            this.binaryData = newBinaryData;
         } finally {
             this.lock.unlock();
         }

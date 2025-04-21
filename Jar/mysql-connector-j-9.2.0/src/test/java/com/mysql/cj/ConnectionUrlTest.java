@@ -102,366 +102,6 @@ public class ConnectionUrlTest {
     }
 
     /**
-     * Internal class for generating hundreds of thousands of connection strings.
-     */
-    private static class ConnectionStringGenerator implements Iterator<String>, Iterable<String> {
-
-        enum UrlMode {
-
-            SINGLE_HOST(1), OUTER_HOSTS_LIST(2), INNER_HOSTS_LIST(2);
-
-            private int hostsCount;
-
-            UrlMode(int hostsCount) {
-                this.hostsCount = hostsCount;
-            }
-
-            int getHostsCount() {
-                return this.hostsCount;
-            }
-
-        }
-
-        private static final String[] PROTOCOL = new String[] { "jdbc:mysql:", "mysqlx:" };
-        private static final String[] USER = new String[] { "", "@", "johndoe@", "johndoe:@", "johndoe:secret@", ":secret@", ":@" };
-        private static final String[] STD_HOST = new String[] { "", "myhost", "192.168.0.1", "[1000:abcd::1]",
-                "verylonghostname01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789" };
-        private static final String[] STD_PORT = new String[] { "", ":", ":1234" };
-        private static final String[] KEY_VALUE_HOST = new String[] { "", "()", "(host=[::1],port=1234,prio=1)",
-                "(protocol=tcp,host=myhost,port=1234,key=value%28%29)", "(address=myhost:1234,prio=2)",
-                "(protocol=tcp,host=verylonghostname01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789,port=1234,key=value%28%29)",
-                "(address=verylonghostname01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789:1234,prio=2)" };
-        private static final String[] ADDRESS_EQUALS_HOST = new String[] { "address=", "address=()", "address=(flag)",
-                "address=(protocol=tcp)(host=myhost)(port=1234)", "address=(protocol=tcp)(host=myhost)(port=1234)(key=value%28%29)",
-                "address=(protocol=tcp)(host=verylonghostname01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789)(port=1234)",
-                "address=(protocol=tcp)(host=verylonghostname01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789)(port=1234)(key=value%28%29)" };
-        private static final String[] HOST; // Initialized below.
-        private static final String[] DB = new String[] { "", "/", "/mysql", "/mysql%2Fcj" };
-        private static final String[] PARAMS = new String[] { "", "?", "?key=value&flag", "?key=value%26&flag&26", "?file=%2Fpath%2Fto%2Ffile&flag&key=value",
-                "?file=(/path/to/file)&flag&key=value" };
-
-        static {
-            int i = 0;
-            String[] hosts = new String[STD_HOST.length * STD_PORT.length + KEY_VALUE_HOST.length + ADDRESS_EQUALS_HOST.length];
-            for (String h : STD_HOST) {
-                for (String p : STD_PORT) {
-                    hosts[i++] = h + p;
-                }
-            }
-            for (String h : KEY_VALUE_HOST) {
-                hosts[i++] = h;
-            }
-            for (String h : ADDRESS_EQUALS_HOST) {
-                hosts[i++] = h;
-            }
-            HOST = hosts;
-        }
-
-        UrlMode urlMode;
-        private int numberOfHosts;
-        private int[] current;
-        private int[] next;
-        private int[] ceiling;
-        boolean hasNext = true;
-
-        /**
-         * Create an instance of {@link ConnectionStringGenerator} and initializes internal data for the iterator.
-         *
-         * @param urlMode
-         */
-        public ConnectionStringGenerator(UrlMode urlMode) {
-            this.urlMode = urlMode;
-            this.numberOfHosts = this.urlMode.getHostsCount();
-
-            int counterLen = 0;
-            switch (this.urlMode) {
-                case SINGLE_HOST:
-                    counterLen = 5; // protocol + user + host + db + params
-                    break;
-                case OUTER_HOSTS_LIST:
-                    counterLen = 3 + 2 * this.numberOfHosts; // protocol + (user + host) * num_of_hosts + db + params
-                    break;
-                case INNER_HOSTS_LIST:
-                    counterLen = 4 + this.numberOfHosts; // protocol + user + host * num_of_hosts + db + params
-                    break;
-            }
-            this.current = new int[counterLen];
-            this.next = new int[counterLen];
-            this.ceiling = new int[counterLen];
-
-            int counterIndex = 0;
-            this.ceiling[counterIndex++] = PROTOCOL.length;
-            switch (this.urlMode) {
-                case SINGLE_HOST:
-                    this.ceiling[counterIndex++] = USER.length;
-                    this.ceiling[counterIndex++] = HOST.length;
-                    break;
-                case OUTER_HOSTS_LIST:
-                    for (int i = 0; i < this.numberOfHosts; i++) {
-                        this.ceiling[counterIndex++] = USER.length;
-                        this.ceiling[counterIndex++] = HOST.length;
-                    }
-                    break;
-                case INNER_HOSTS_LIST:
-                    this.ceiling[counterIndex++] = USER.length;
-                    for (int i = 0; i < this.numberOfHosts; i++) {
-                        this.ceiling[counterIndex++] = HOST.length;
-                    }
-                    break;
-            }
-            this.ceiling[counterIndex++] = DB.length;
-            this.ceiling[counterIndex++] = PARAMS.length;
-        }
-
-        /**
-         * Increments the counter recursively for each connection string part.
-         *
-         * @param i
-         *            the part where to increment the counter
-         * @return false if the counter reaches the end, true otherwise
-         */
-        private boolean incrementCounter(int i) {
-            if (i >= this.next.length) {
-                return false;
-            }
-            this.current[i] = this.next[i];
-            this.next[i] = (this.next[i] + 1) % this.ceiling[i];
-            if (this.next[i] == 0) {
-                return incrementCounter(i + 1);
-            }
-            return true;
-        }
-
-        /**
-         * Builds a connection string with the parts corresponding to the current counter position.
-         *
-         * @return the connection string built from the current counter position
-         */
-        private String buildConnectionString() {
-            StringBuilder sb = new StringBuilder();
-            int counterIndex = 0;
-            sb.append(PROTOCOL[this.current[counterIndex++]]).append("//");
-            if (this.urlMode == UrlMode.SINGLE_HOST || this.urlMode == UrlMode.OUTER_HOSTS_LIST) {
-                for (int i = 0; i < this.numberOfHosts; i++) {
-                    if (i != 0) {
-                        sb.append(",");
-                    }
-                    sb.append(USER[this.current[counterIndex++]]);
-                    sb.append(HOST[this.current[counterIndex++]]);
-                }
-            } else if (this.urlMode == UrlMode.INNER_HOSTS_LIST) {
-                sb.append(USER[this.current[counterIndex++]]).append("[");
-                for (int i = 0; i < this.numberOfHosts; i++) {
-                    if (i != 0) {
-                        sb.append(",");
-                    }
-                    sb.append(HOST[this.current[counterIndex++]]);
-                }
-                sb.append("]");
-
-            }
-            sb.append(DB[this.current[counterIndex++]]);
-            sb.append(PARAMS[this.current[counterIndex++]]);
-            return sb.toString();
-        }
-
-        @Override
-        public boolean hasNext() {
-            return this.hasNext;
-        }
-
-        @Override
-        public String next() {
-            if (!this.hasNext) {
-                throw new NoSuchElementException();
-            }
-            this.hasNext = incrementCounter(0);
-            return buildConnectionString();
-        }
-
-        /**
-         * Returns the protocol part (scheme) for the current position.
-         *
-         * @return the protocol part
-         */
-        public String getProtocol() {
-            int counterIndex = 0; // protocol
-            return PROTOCOL[this.current[counterIndex]];
-        }
-
-        /**
-         * Returns the user info part for the current position and the given host.
-         *
-         * @param fromHostIndex
-         *            the host from where to get user info
-         * @return the user info part
-         */
-        public String getUserInfo(int fromHostIndex) {
-            if (fromHostIndex < 0 || fromHostIndex >= this.numberOfHosts) {
-                throw new IllegalArgumentException("Argument \"fromHostIndex\" out of bounds.");
-            }
-
-            int counterIndex = 1; // user (single host or inner hosts list)
-            if (this.urlMode == UrlMode.OUTER_HOSTS_LIST) {
-                counterIndex += fromHostIndex * 2; // increments of two per additional host
-            }
-            fromHostIndex--;
-            return USER[this.current[counterIndex]];
-        }
-
-        /**
-         * Returns the host info part for the current position and the given host.
-         *
-         * @param fromHostIndex
-         *            the host from where to get host info
-         * @return the host info part
-         */
-        public String getHostInfo(int fromHostIndex) {
-            if (fromHostIndex < 0 || fromHostIndex >= this.numberOfHosts) {
-                throw new IllegalArgumentException("Argument \"fromHostIndex\" out of bounds.");
-            }
-
-            int counterIndex = 2; // host (single host)
-            if (this.urlMode == UrlMode.INNER_HOSTS_LIST) {
-                counterIndex += fromHostIndex; // increments of one per additional host
-            } else if (this.urlMode == UrlMode.OUTER_HOSTS_LIST) {
-                counterIndex += fromHostIndex * 2; // increments of two per additional host
-            }
-            fromHostIndex--;
-            return HOST[this.current[counterIndex]];
-        }
-
-        /**
-         * Returns the database part for the current position.
-         *
-         * @return the database part
-         */
-        public String getDatabase() {
-            int counterIndex = 3; // db (single host)
-            if (this.urlMode == UrlMode.INNER_HOSTS_LIST) {
-                counterIndex += this.numberOfHosts - 1; // increments of one per additional host
-            } else if (this.urlMode == UrlMode.OUTER_HOSTS_LIST) {
-                counterIndex += (this.numberOfHosts - 1) * 2; // increments of two per additional host
-            }
-            return decode(DB[this.current[counterIndex]]);
-        }
-
-        /**
-         * Returns the connection parameters part for the current position.
-         *
-         * @return the connection parameter part
-         */
-        public String getParams() {
-            int counterIndex = 4; // params (single host)
-            if (this.urlMode == UrlMode.INNER_HOSTS_LIST) {
-                counterIndex += this.numberOfHosts - 1; // increments of one per additional host
-            } else if (this.urlMode == UrlMode.OUTER_HOSTS_LIST) {
-                counterIndex += (this.numberOfHosts - 1) * 2; // increments of two per additional host
-            }
-            return PARAMS[this.current[counterIndex]];
-        }
-
-        /**
-         * Checks if current host info contains the given key & value parameter.
-         *
-         * @param hostIndex
-         *            the host from where the given information will be checked against
-         * @param key
-         *            the key to check
-         * @param value
-         *            the value to check
-         * @return true if the key/value pair exists, false otherwise
-         */
-        public boolean hasHostParam(int hostIndex, String key, String value) {
-            StringBuilder sbKv = new StringBuilder(key);
-            if (value != null) {
-                sbKv.append("=").append(value);
-            }
-            return getHostInfo(hostIndex).contains(sbKv.toString()) || decode(getHostInfo(hostIndex)).contains(sbKv.toString());
-        }
-
-        /**
-         * Returns the number of host specific parameters existing in the current position and the given host.
-         *
-         * @param hostIndex
-         *            the host from where to get the count
-         * @return the number of host specific parameters
-         */
-        public int getHostParamsCount(int hostIndex) {
-            String hi = getHostInfo(hostIndex);
-            if (hi.startsWith("(") && hi.lastIndexOf(")") != 1) {
-                return hi.length() - hi.replace(",", "").length() + 1;
-            } else if (hi.startsWith("address=") && hi.length() > 10) { // len("address=()") == 10.
-                return hi.length() - hi.replace(")(", "|").length() + 1;
-            }
-            return 0;
-        }
-
-        /**
-         * Checks if the current connection properties contain the given key & value.
-         *
-         * @param key
-         *            the key to check
-         * @param value
-         *            the value to check
-         * @return true if the key/value pair exists, false otherwise
-         */
-        public boolean hasParam(String key, String value) {
-            StringBuilder sbKv = new StringBuilder(key);
-            if (value != null) {
-                sbKv.append("=").append(value);
-            }
-            return getParams().indexOf(sbKv.toString()) != -1 || decode(getParams()).indexOf(sbKv.toString()) != -1;
-        }
-
-        /**
-         * Returns the number of connection parameters existing the the current position.
-         *
-         * @return the number of connection parameters
-         */
-        public int getParamsCount() {
-            String params = getParams();
-            if (params.startsWith("?")) {
-                params = params.substring(1);
-            }
-            return params.isEmpty() ? 0 : params.split("&").length;
-        }
-
-        /**
-         * Utility method to URL decode the given string.
-         *
-         * @param text
-         *            the text to decode
-         * @return the decoded text
-         */
-        private String decode(String text) {
-            if (text == null || text.isEmpty()) {
-                return text;
-            }
-            try {
-                return URLDecoder.decode(text, StandardCharsets.UTF_8.name());
-            } catch (UnsupportedEncodingException e) {
-                // Won't happen.
-            }
-            return "";
-        }
-
-        @Override
-        public Iterator<String> iterator() {
-            return this;
-        }
-
-        @Override
-        public String toString() {
-            StringBuilder sb = new StringBuilder("{counter: ");
-            sb.append(Arrays.toString(this.next));
-            sb.append(", connectionString: \"").append(buildConnectionString()).append("\"}");
-            return sb.toString();
-        }
-
-    }
-
-    /**
      * Checks if the values returned from {@link Type#fromValue(String, int)} are correct.
      */
     @Test
@@ -989,18 +629,6 @@ public class ConnectionUrlTest {
         }
     }
 
-    public static class ConnectionPropertiesTest implements ConnectionPropertiesTransform {
-
-        @Override
-        public Properties transformProperties(Properties props) {
-            if (props.containsKey("stars")) {
-                props.setProperty("stars", props.getProperty("stars") + props.getProperty("stars"));
-            }
-            return props;
-        }
-
-    }
-
     /**
      * Tests specifics for the X Plugin connection strings.
      */
@@ -1009,9 +637,9 @@ public class ConnectionUrlTest {
         ConnectionUrl connUrl;
         int hostIdx;
 
-        String[] hostNames = new String[] { "host",
+        String[] hostNames = new String[]{"host",
                 "verylonghostname0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789"
-                        + "0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789" };
+                        + "0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789"};
 
         for (String hostName : hostNames) {
             // Hosts sub list with "address" splitting (host3:3333) and priority value.
@@ -1102,7 +730,7 @@ public class ConnectionUrlTest {
                 } catch (Exception e) {
                     assertTrue(WrongArgumentException.class.isAssignableFrom(e.getClass()),
                             cs + ": expected to throw a " + WrongArgumentException.class.getName());
-                    assertEquals(Messages.getString("ConnectionString.14", new Object[] { ConnectionUrl.Type.XDEVAPI_SESSION.getScheme() }), e.getMessage(),
+                    assertEquals(Messages.getString("ConnectionString.14", new Object[]{ConnectionUrl.Type.XDEVAPI_SESSION.getScheme()}), e.getMessage(),
                             cs);
                 }
             }
@@ -1123,7 +751,7 @@ public class ConnectionUrlTest {
                 } catch (Exception e) {
                     assertTrue(WrongArgumentException.class.isAssignableFrom(e.getClass()),
                             cs + ": expected to throw a " + WrongArgumentException.class.getName());
-                    assertEquals(Messages.getString("ConnectionString.15", new Object[] { ConnectionUrl.Type.XDEVAPI_SESSION.getScheme() }), e.getMessage(),
+                    assertEquals(Messages.getString("ConnectionString.15", new Object[]{ConnectionUrl.Type.XDEVAPI_SESSION.getScheme()}), e.getMessage(),
                             cs);
                 }
             }
@@ -1140,7 +768,7 @@ public class ConnectionUrlTest {
                 } catch (Exception e) {
                     assertTrue(WrongArgumentException.class.isAssignableFrom(e.getClass()),
                             cs + ": expected to throw a " + WrongArgumentException.class.getName());
-                    assertEquals(Messages.getString("ConnectionString.16", new Object[] { ConnectionUrl.Type.XDEVAPI_SESSION.getScheme() }), e.getMessage(),
+                    assertEquals(Messages.getString("ConnectionString.16", new Object[]{ConnectionUrl.Type.XDEVAPI_SESSION.getScheme()}), e.getMessage(),
                             cs);
                 }
             }
@@ -1619,6 +1247,367 @@ public class ConnectionUrlTest {
             assertEquals("user1", hi.getUser());
             assertEquals("sql_mode='IGNORE_SPACE,ANSI',FOREIGN_KEY_CHECKS=0", hi.getHostProperties().get("sessionVariables"));
         }
+    }
+
+    /**
+     * Internal class for generating hundreds of thousands of connection strings.
+     */
+    private static class ConnectionStringGenerator implements Iterator<String>, Iterable<String> {
+
+        private static final String[] PROTOCOL = new String[]{"jdbc:mysql:", "mysqlx:"};
+        private static final String[] USER = new String[]{"", "@", "johndoe@", "johndoe:@", "johndoe:secret@", ":secret@", ":@"};
+        private static final String[] STD_HOST = new String[]{"", "myhost", "192.168.0.1", "[1000:abcd::1]",
+                "verylonghostname01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789"};
+        private static final String[] STD_PORT = new String[]{"", ":", ":1234"};
+        private static final String[] KEY_VALUE_HOST = new String[]{"", "()", "(host=[::1],port=1234,prio=1)",
+                "(protocol=tcp,host=myhost,port=1234,key=value%28%29)", "(address=myhost:1234,prio=2)",
+                "(protocol=tcp,host=verylonghostname01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789,port=1234,key=value%28%29)",
+                "(address=verylonghostname01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789:1234,prio=2)"};
+        private static final String[] ADDRESS_EQUALS_HOST = new String[]{"address=", "address=()", "address=(flag)",
+                "address=(protocol=tcp)(host=myhost)(port=1234)", "address=(protocol=tcp)(host=myhost)(port=1234)(key=value%28%29)",
+                "address=(protocol=tcp)(host=verylonghostname01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789)(port=1234)",
+                "address=(protocol=tcp)(host=verylonghostname01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789)(port=1234)(key=value%28%29)"};
+        private static final String[] HOST; // Initialized below.
+        private static final String[] DB = new String[]{"", "/", "/mysql", "/mysql%2Fcj"};
+        private static final String[] PARAMS = new String[]{"", "?", "?key=value&flag", "?key=value%26&flag&26", "?file=%2Fpath%2Fto%2Ffile&flag&key=value",
+                "?file=(/path/to/file)&flag&key=value"};
+
+        static {
+            int i = 0;
+            String[] hosts = new String[STD_HOST.length * STD_PORT.length + KEY_VALUE_HOST.length + ADDRESS_EQUALS_HOST.length];
+            for (String h : STD_HOST) {
+                for (String p : STD_PORT) {
+                    hosts[i++] = h + p;
+                }
+            }
+            for (String h : KEY_VALUE_HOST) {
+                hosts[i++] = h;
+            }
+            for (String h : ADDRESS_EQUALS_HOST) {
+                hosts[i++] = h;
+            }
+            HOST = hosts;
+        }
+
+        UrlMode urlMode;
+        boolean hasNext = true;
+        private int numberOfHosts;
+        private int[] current;
+        private int[] next;
+        private int[] ceiling;
+        /**
+         * Create an instance of {@link ConnectionStringGenerator} and initializes internal data for the iterator.
+         *
+         * @param urlMode
+         */
+        public ConnectionStringGenerator(UrlMode urlMode) {
+            this.urlMode = urlMode;
+            this.numberOfHosts = this.urlMode.getHostsCount();
+
+            int counterLen = 0;
+            switch (this.urlMode) {
+                case SINGLE_HOST:
+                    counterLen = 5; // protocol + user + host + db + params
+                    break;
+                case OUTER_HOSTS_LIST:
+                    counterLen = 3 + 2 * this.numberOfHosts; // protocol + (user + host) * num_of_hosts + db + params
+                    break;
+                case INNER_HOSTS_LIST:
+                    counterLen = 4 + this.numberOfHosts; // protocol + user + host * num_of_hosts + db + params
+                    break;
+            }
+            this.current = new int[counterLen];
+            this.next = new int[counterLen];
+            this.ceiling = new int[counterLen];
+
+            int counterIndex = 0;
+            this.ceiling[counterIndex++] = PROTOCOL.length;
+            switch (this.urlMode) {
+                case SINGLE_HOST:
+                    this.ceiling[counterIndex++] = USER.length;
+                    this.ceiling[counterIndex++] = HOST.length;
+                    break;
+                case OUTER_HOSTS_LIST:
+                    for (int i = 0; i < this.numberOfHosts; i++) {
+                        this.ceiling[counterIndex++] = USER.length;
+                        this.ceiling[counterIndex++] = HOST.length;
+                    }
+                    break;
+                case INNER_HOSTS_LIST:
+                    this.ceiling[counterIndex++] = USER.length;
+                    for (int i = 0; i < this.numberOfHosts; i++) {
+                        this.ceiling[counterIndex++] = HOST.length;
+                    }
+                    break;
+            }
+            this.ceiling[counterIndex++] = DB.length;
+            this.ceiling[counterIndex++] = PARAMS.length;
+        }
+
+        /**
+         * Increments the counter recursively for each connection string part.
+         *
+         * @param i the part where to increment the counter
+         * @return false if the counter reaches the end, true otherwise
+         */
+        private boolean incrementCounter(int i) {
+            if (i >= this.next.length) {
+                return false;
+            }
+            this.current[i] = this.next[i];
+            this.next[i] = (this.next[i] + 1) % this.ceiling[i];
+            if (this.next[i] == 0) {
+                return incrementCounter(i + 1);
+            }
+            return true;
+        }
+
+        /**
+         * Builds a connection string with the parts corresponding to the current counter position.
+         *
+         * @return the connection string built from the current counter position
+         */
+        private String buildConnectionString() {
+            StringBuilder sb = new StringBuilder();
+            int counterIndex = 0;
+            sb.append(PROTOCOL[this.current[counterIndex++]]).append("//");
+            if (this.urlMode == UrlMode.SINGLE_HOST || this.urlMode == UrlMode.OUTER_HOSTS_LIST) {
+                for (int i = 0; i < this.numberOfHosts; i++) {
+                    if (i != 0) {
+                        sb.append(",");
+                    }
+                    sb.append(USER[this.current[counterIndex++]]);
+                    sb.append(HOST[this.current[counterIndex++]]);
+                }
+            } else if (this.urlMode == UrlMode.INNER_HOSTS_LIST) {
+                sb.append(USER[this.current[counterIndex++]]).append("[");
+                for (int i = 0; i < this.numberOfHosts; i++) {
+                    if (i != 0) {
+                        sb.append(",");
+                    }
+                    sb.append(HOST[this.current[counterIndex++]]);
+                }
+                sb.append("]");
+
+            }
+            sb.append(DB[this.current[counterIndex++]]);
+            sb.append(PARAMS[this.current[counterIndex++]]);
+            return sb.toString();
+        }
+
+        @Override
+        public boolean hasNext() {
+            return this.hasNext;
+        }
+
+        @Override
+        public String next() {
+            if (!this.hasNext) {
+                throw new NoSuchElementException();
+            }
+            this.hasNext = incrementCounter(0);
+            return buildConnectionString();
+        }
+
+        /**
+         * Returns the protocol part (scheme) for the current position.
+         *
+         * @return the protocol part
+         */
+        public String getProtocol() {
+            int counterIndex = 0; // protocol
+            return PROTOCOL[this.current[counterIndex]];
+        }
+
+        /**
+         * Returns the user info part for the current position and the given host.
+         *
+         * @param fromHostIndex the host from where to get user info
+         * @return the user info part
+         */
+        public String getUserInfo(int fromHostIndex) {
+            if (fromHostIndex < 0 || fromHostIndex >= this.numberOfHosts) {
+                throw new IllegalArgumentException("Argument \"fromHostIndex\" out of bounds.");
+            }
+
+            int counterIndex = 1; // user (single host or inner hosts list)
+            if (this.urlMode == UrlMode.OUTER_HOSTS_LIST) {
+                counterIndex += fromHostIndex * 2; // increments of two per additional host
+            }
+            fromHostIndex--;
+            return USER[this.current[counterIndex]];
+        }
+
+        /**
+         * Returns the host info part for the current position and the given host.
+         *
+         * @param fromHostIndex the host from where to get host info
+         * @return the host info part
+         */
+        public String getHostInfo(int fromHostIndex) {
+            if (fromHostIndex < 0 || fromHostIndex >= this.numberOfHosts) {
+                throw new IllegalArgumentException("Argument \"fromHostIndex\" out of bounds.");
+            }
+
+            int counterIndex = 2; // host (single host)
+            if (this.urlMode == UrlMode.INNER_HOSTS_LIST) {
+                counterIndex += fromHostIndex; // increments of one per additional host
+            } else if (this.urlMode == UrlMode.OUTER_HOSTS_LIST) {
+                counterIndex += fromHostIndex * 2; // increments of two per additional host
+            }
+            fromHostIndex--;
+            return HOST[this.current[counterIndex]];
+        }
+
+        /**
+         * Returns the database part for the current position.
+         *
+         * @return the database part
+         */
+        public String getDatabase() {
+            int counterIndex = 3; // db (single host)
+            if (this.urlMode == UrlMode.INNER_HOSTS_LIST) {
+                counterIndex += this.numberOfHosts - 1; // increments of one per additional host
+            } else if (this.urlMode == UrlMode.OUTER_HOSTS_LIST) {
+                counterIndex += (this.numberOfHosts - 1) * 2; // increments of two per additional host
+            }
+            return decode(DB[this.current[counterIndex]]);
+        }
+
+        /**
+         * Returns the connection parameters part for the current position.
+         *
+         * @return the connection parameter part
+         */
+        public String getParams() {
+            int counterIndex = 4; // params (single host)
+            if (this.urlMode == UrlMode.INNER_HOSTS_LIST) {
+                counterIndex += this.numberOfHosts - 1; // increments of one per additional host
+            } else if (this.urlMode == UrlMode.OUTER_HOSTS_LIST) {
+                counterIndex += (this.numberOfHosts - 1) * 2; // increments of two per additional host
+            }
+            return PARAMS[this.current[counterIndex]];
+        }
+
+        /**
+         * Checks if current host info contains the given key & value parameter.
+         *
+         * @param hostIndex the host from where the given information will be checked against
+         * @param key       the key to check
+         * @param value     the value to check
+         * @return true if the key/value pair exists, false otherwise
+         */
+        public boolean hasHostParam(int hostIndex, String key, String value) {
+            StringBuilder sbKv = new StringBuilder(key);
+            if (value != null) {
+                sbKv.append("=").append(value);
+            }
+            return getHostInfo(hostIndex).contains(sbKv.toString()) || decode(getHostInfo(hostIndex)).contains(sbKv.toString());
+        }
+
+        /**
+         * Returns the number of host specific parameters existing in the current position and the given host.
+         *
+         * @param hostIndex the host from where to get the count
+         * @return the number of host specific parameters
+         */
+        public int getHostParamsCount(int hostIndex) {
+            String hi = getHostInfo(hostIndex);
+            if (hi.startsWith("(") && hi.lastIndexOf(")") != 1) {
+                return hi.length() - hi.replace(",", "").length() + 1;
+            } else if (hi.startsWith("address=") && hi.length() > 10) { // len("address=()") == 10.
+                return hi.length() - hi.replace(")(", "|").length() + 1;
+            }
+            return 0;
+        }
+
+        /**
+         * Checks if the current connection properties contain the given key & value.
+         *
+         * @param key   the key to check
+         * @param value the value to check
+         * @return true if the key/value pair exists, false otherwise
+         */
+        public boolean hasParam(String key, String value) {
+            StringBuilder sbKv = new StringBuilder(key);
+            if (value != null) {
+                sbKv.append("=").append(value);
+            }
+            return getParams().indexOf(sbKv.toString()) != -1 || decode(getParams()).indexOf(sbKv.toString()) != -1;
+        }
+
+        /**
+         * Returns the number of connection parameters existing the the current position.
+         *
+         * @return the number of connection parameters
+         */
+        public int getParamsCount() {
+            String params = getParams();
+            if (params.startsWith("?")) {
+                params = params.substring(1);
+            }
+            return params.isEmpty() ? 0 : params.split("&").length;
+        }
+
+        /**
+         * Utility method to URL decode the given string.
+         *
+         * @param text the text to decode
+         * @return the decoded text
+         */
+        private String decode(String text) {
+            if (text == null || text.isEmpty()) {
+                return text;
+            }
+            try {
+                return URLDecoder.decode(text, StandardCharsets.UTF_8.name());
+            } catch (UnsupportedEncodingException e) {
+                // Won't happen.
+            }
+            return "";
+        }
+
+        @Override
+        public Iterator<String> iterator() {
+            return this;
+        }
+
+        @Override
+        public String toString() {
+            StringBuilder sb = new StringBuilder("{counter: ");
+            sb.append(Arrays.toString(this.next));
+            sb.append(", connectionString: \"").append(buildConnectionString()).append("\"}");
+            return sb.toString();
+        }
+
+        enum UrlMode {
+
+            SINGLE_HOST(1), OUTER_HOSTS_LIST(2), INNER_HOSTS_LIST(2);
+
+            private int hostsCount;
+
+            UrlMode(int hostsCount) {
+                this.hostsCount = hostsCount;
+            }
+
+            int getHostsCount() {
+                return this.hostsCount;
+            }
+
+        }
+
+    }
+
+    public static class ConnectionPropertiesTest implements ConnectionPropertiesTransform {
+
+        @Override
+        public Properties transformProperties(Properties props) {
+            if (props.containsKey("stars")) {
+                props.setProperty("stars", props.getProperty("stars") + props.getProperty("stars"));
+            }
+            return props;
+        }
+
     }
 
 }

@@ -50,7 +50,7 @@ public class CJCommunicationsException extends CJException {
     }
 
     public void init(PropertySet propertySet, ServerSession serverSession, PacketSentTimeHolder packetSentTimeHolder,
-            PacketReceivedTimeHolder packetReceivedTimeHolder) {
+                     PacketReceivedTimeHolder packetReceivedTimeHolder) {
         this.exceptionMessage = ExceptionFactory.createLinkFailureMessageBasedOnHeuristics(propertySet, serverSession, packetSentTimeHolder,
                 packetReceivedTimeHolder, getCause());
     }

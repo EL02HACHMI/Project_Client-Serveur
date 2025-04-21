@@ -62,55 +62,27 @@ import com.mysql.cj.telemetry.TelemetrySpanName;
  */
 public class ServerPreparedStatement extends ClientPreparedStatement {
 
-    private boolean hasOnDuplicateKeyUpdate = false;
-
-    /** Has this prepared statement been marked invalid? */
-    private boolean invalid = false;
-
-    /** If this statement has been marked invalid, what was the reason? */
-    private CJException invalidationException;
-
     protected boolean isCacheable = false;
     protected boolean isCached = false;
-
+    private boolean hasOnDuplicateKeyUpdate = false;
     /**
-     * Creates a prepared statement instance
-     *
-     * @param conn
-     *            the connection creating us.
-     * @param sql
-     *            the SQL containing the statement to prepare.
-     * @param db
-     *            the database in use when we were created.
-     * @param resultSetType
-     *            ResultSet type
-     * @param resultSetConcurrency
-     *            ResultSet concurrency
-     * @return new ServerPreparedStatement
-     * @throws SQLException
-     *             If an error occurs
+     * Has this prepared statement been marked invalid?
      */
-    protected static ServerPreparedStatement getInstance(JdbcConnection conn, String sql, String db, int resultSetType, int resultSetConcurrency)
-            throws SQLException {
-        return new ServerPreparedStatement(conn, sql, db, resultSetType, resultSetConcurrency);
-    }
+    private boolean invalid = false;
+    /**
+     * If this statement has been marked invalid, what was the reason?
+     */
+    private CJException invalidationException;
 
     /**
      * Creates a new ServerPreparedStatement object.
      *
-     * @param conn
-     *            the connection creating us.
-     * @param sql
-     *            the SQL containing the statement to prepare.
-     * @param db
-     *            the database in use when we were created.
-     * @param resultSetType
-     *            ResultSet type
-     * @param resultSetConcurrency
-     *            ResultSet concurrency
-     *
-     * @throws SQLException
-     *             If an error occurs
+     * @param conn                 the connection creating us.
+     * @param sql                  the SQL containing the statement to prepare.
+     * @param db                   the database in use when we were created.
+     * @param resultSetType        ResultSet type
+     * @param resultSetConcurrency ResultSet concurrency
+     * @throws SQLException If an error occurs
      */
     protected ServerPreparedStatement(JdbcConnection conn, String sql, String db, int resultSetType, int resultSetConcurrency) throws SQLException {
         super(conn, db);
@@ -132,6 +104,32 @@ public class ServerPreparedStatement extends ClientPreparedStatement {
 
         setResultSetType(resultSetType);
         setResultSetConcurrency(resultSetConcurrency);
+    }
+
+    /**
+     * Creates a prepared statement instance
+     *
+     * @param conn                 the connection creating us.
+     * @param sql                  the SQL containing the statement to prepare.
+     * @param db                   the database in use when we were created.
+     * @param resultSetType        ResultSet type
+     * @param resultSetConcurrency ResultSet concurrency
+     * @return new ServerPreparedStatement
+     * @throws SQLException If an error occurs
+     */
+    protected static ServerPreparedStatement getInstance(JdbcConnection conn, String sql, String db, int resultSetType, int resultSetConcurrency)
+            throws SQLException {
+        return new ServerPreparedStatement(conn, sql, db, resultSetType, resultSetConcurrency);
+    }
+
+    private static SQLException appendMessageToException(SQLException sqlEx, String messageToAppend, ExceptionInterceptor interceptor) {
+        String sqlState = sqlEx.getSQLState();
+        int vendorErrorCode = sqlEx.getErrorCode();
+
+        SQLException sqlExceptionWithNewMessage = SQLError.createSQLException(sqlEx.getMessage() + messageToAppend, sqlState, vendorErrorCode, interceptor);
+        sqlExceptionWithNewMessage.setStackTrace(sqlEx.getStackTrace());
+
+        return sqlExceptionWithNewMessage;
     }
 
     @Override
@@ -297,19 +295,9 @@ public class ServerPreparedStatement extends ClientPreparedStatement {
         }
     }
 
-    private static SQLException appendMessageToException(SQLException sqlEx, String messageToAppend, ExceptionInterceptor interceptor) {
-        String sqlState = sqlEx.getSQLState();
-        int vendorErrorCode = sqlEx.getErrorCode();
-
-        SQLException sqlExceptionWithNewMessage = SQLError.createSQLException(sqlEx.getMessage() + messageToAppend, sqlState, vendorErrorCode, interceptor);
-        sqlExceptionWithNewMessage.setStackTrace(sqlEx.getStackTrace());
-
-        return sqlExceptionWithNewMessage;
-    }
-
     @Override
     protected <M extends Message> com.mysql.cj.jdbc.result.ResultSetInternalMethods executeInternal(int maxRowsToRetrieve, M sendPacket,
-            boolean createStreamingResultSet, boolean queryIsSelectOnly, ColumnDefinition metadata, boolean isBatch) throws SQLException {
+                                                                                                    boolean createStreamingResultSet, boolean queryIsSelectOnly, ColumnDefinition metadata, boolean isBatch) throws SQLException {
         Lock connectionLock = checkClosed().getConnectionLock();
         connectionLock.lock();
         try {
@@ -363,13 +351,10 @@ public class ServerPreparedStatement extends ClientPreparedStatement {
      * Returns the structure representing the value that (can be)/(is)
      * bound at the given parameter index.
      *
-     * @param parameterIndex
-     *            1-based
-     * @param forLongData
-     *            is this for a stream?
+     * @param parameterIndex 1-based
+     * @param forLongData    is this for a stream?
      * @return {@link BindValue}
-     * @throws SQLException
-     *             if a database access error occurs or this method is called on a closed PreparedStatement
+     * @throws SQLException if a database access error occurs or this method is called on a closed PreparedStatement
      */
     protected BindValue getBinding(int parameterIndex, boolean forLongData) throws SQLException {
         Lock connectionLock = checkClosed().getConnectionLock();
@@ -391,8 +376,8 @@ public class ServerPreparedStatement extends ClientPreparedStatement {
 
             return resultFields == null || resultFields.getFields() == null ? null
                     : new ResultSetMetaData(this.session, resultFields.getFields(),
-                            this.session.getPropertySet().getBooleanProperty(PropertyKey.useOldAliasMetadataBehavior).getValue(),
-                            this.session.getPropertySet().getBooleanProperty(PropertyKey.yearIsDateType).getValue(), this.exceptionInterceptor);
+                    this.session.getPropertySet().getBooleanProperty(PropertyKey.useOldAliasMetadataBehavior).getValue(),
+                    this.session.getPropertySet().getBooleanProperty(PropertyKey.yearIsDateType).getValue(), this.exceptionInterceptor);
         } finally {
             connectionLock.unlock();
         }
@@ -505,8 +490,7 @@ public class ServerPreparedStatement extends ClientPreparedStatement {
      * Used by Connection when auto-reconnecting to retrieve 'lost' prepared
      * statements.
      *
-     * @throws CJException
-     *             if an error occurs.
+     * @throws CJException if an error occurs.
      */
     protected void rePrepare() {
         Lock connectionLock = checkClosed().getConnectionLock();
@@ -591,15 +575,11 @@ public class ServerPreparedStatement extends ClientPreparedStatement {
      *  supplied with length field)
      * </pre>
      *
-     * @param maxRowsToRetrieve
-     *            rows limit
-     * @param createStreamingResultSet
-     *            should c/J create a streaming result?
-     * @param metadata
-     *            use this metadata instead of the one provided on wire
+     * @param maxRowsToRetrieve        rows limit
+     * @param createStreamingResultSet should c/J create a streaming result?
+     * @param metadata                 use this metadata instead of the one provided on wire
      * @return result set
-     * @throws SQLException
-     *             if a database access error occurs or this method is called on a closed PreparedStatement
+     * @throws SQLException if a database access error occurs or this method is called on a closed PreparedStatement
      */
     protected ResultSetInternalMethods serverExecute(int maxRowsToRetrieve, boolean createStreamingResultSet, ColumnDefinition metadata) throws SQLException {
         Lock connectionLock = checkClosed().getConnectionLock();

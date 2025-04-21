@@ -56,8 +56,7 @@ public class XProtocolError extends CJException {
     /**
      * Format the error message's contents into a complete error description for the exception.
      *
-     * @param msg
-     *            {@link Error}
+     * @param msg {@link Error}
      * @return string error message
      */
     private static String getFullErrorDescription(Error msg) {

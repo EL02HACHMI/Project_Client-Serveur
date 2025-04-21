@@ -43,8 +43,8 @@ public class StringInspectorTest extends BaseTestCase {
 
         // Invalid matches.
         assertEquals(-1, si.matchesIgnoreCase(""));
-        assertEquals(-1, si.matchesIgnoreCase(new String[] {}));
-        assertEquals(-1, si.matchesIgnoreCase(new String[] { "", "" }));
+        assertEquals(-1, si.matchesIgnoreCase(new String[]{}));
+        assertEquals(-1, si.matchesIgnoreCase(new String[]{"", ""}));
         assertEquals(-1, si.matchesIgnoreCase((String) null));
         assertEquals(-1, si.matchesIgnoreCase((String[]) null));
         si.restart();
@@ -83,7 +83,7 @@ public class StringInspectorTest extends BaseTestCase {
         si.restart();
 
         // Single word matches, using multi word mathing method.
-        String[] toMatchMulti1 = new String[] { toMatch };
+        String[] toMatchMulti1 = new String[]{toMatch};
         assertEquals(-1, si.matchesIgnoreCase(toMatchMulti1));
         assertEquals(2, si.indexOfIgnoreCase(toMatchMulti1));
         assertEquals(7, si.matchesIgnoreCase(toMatchMulti1));
@@ -116,7 +116,7 @@ public class StringInspectorTest extends BaseTestCase {
         si.restart();
 
         // Two words matches.
-        String[] toMatchMulti2 = new String[] { "o", "MATch" };
+        String[] toMatchMulti2 = new String[]{"o", "MATch"};
         assertEquals(-1, si.matchesIgnoreCase(toMatchMulti2));
         assertEquals(29, si.indexOfIgnoreCase(toMatchMulti2));
         assertEquals(39, si.matchesIgnoreCase(toMatchMulti2));
@@ -143,7 +143,7 @@ public class StringInspectorTest extends BaseTestCase {
         si.restart();
 
         // Multiple words matches.
-        String[] toMatchMultiN = new String[] { "NO", "matches", "TO", "light" };
+        String[] toMatchMultiN = new String[]{"NO", "matches", "TO", "light"};
         assertEquals(-1, si.matchesIgnoreCase(toMatchMultiN));
         assertEquals(77, si.indexOfIgnoreCase(toMatchMultiN));
         assertEquals(99, si.matchesIgnoreCase(toMatchMultiN));
@@ -174,7 +174,7 @@ public class StringInspectorTest extends BaseTestCase {
         final String overrideMarkers = "";
 
         final char firstChar = 'o';
-        final String[] find1 = new String[] { "ON", "DUPLICATE", "KEY", "UPDATE" };
+        final String[] find1 = new String[]{"ON", "DUPLICATE", "KEY", "UPDATE"};
         final String find2 = "AND";
 
         StringInspector si = new StringInspector(str, 0, markerStart, markerEnd, overrideMarkers, SearchMode.__BSE_MRK_COM_MYM_HNT_WS);

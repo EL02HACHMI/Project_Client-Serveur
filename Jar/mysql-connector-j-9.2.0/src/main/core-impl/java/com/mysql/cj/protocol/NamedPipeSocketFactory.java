@@ -45,16 +45,65 @@ import com.mysql.cj.log.Log;
 public class NamedPipeSocketFactory implements SocketFactory {
 
     private static final int DEFAULT_TIMEOUT = 100;
+    private Socket namedPipeSocket;
+
+    /**
+     * Constructor for NamedPipeSocketFactory.
+     */
+    public NamedPipeSocketFactory() {
+        super();
+    }
+
+    @Override
+    public <T extends Closeable> T performTlsHandshake(SocketConnection socketConnection, ServerSession serverSession) throws IOException {
+        return performTlsHandshake(socketConnection, serverSession, null);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T extends Closeable> T performTlsHandshake(SocketConnection socketConnection, ServerSession serverSession, Log log) throws IOException {
+        return (T) this.namedPipeSocket;
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T extends Closeable> T connect(String host, int portNumber /* ignored */, PropertySet props, int loginTimeout) throws IOException {
+        String namedPipePath = null;
+
+        RuntimeProperty<String> path = props.getStringProperty(PropertyKey.PATH);
+        if (path != null) {
+            namedPipePath = path.getValue();
+        }
+
+        if (namedPipePath == null) {
+            namedPipePath = "\\\\.\\pipe\\MySQL";
+        } else if (namedPipePath.length() == 0) {
+            throw new SocketException(
+                    Messages.getString("NamedPipeSocketFactory.2") + PropertyKey.PATH.getCcAlias() + Messages.getString("NamedPipeSocketFactory.3"));
+        }
+
+        int connectTimeout = props.getIntegerProperty(PropertyKey.connectTimeout.getKeyName()).getValue();
+        int timeout = connectTimeout > 0 && loginTimeout > 0 ? Math.min(connectTimeout, loginTimeout) : connectTimeout + loginTimeout;
+
+        this.namedPipeSocket = new NamedPipeSocket(namedPipePath, timeout);
+
+        return (T) this.namedPipeSocket;
+    }
+
+    @Override
+    public boolean isLocallyConnected(Session sess) {
+        // Until I learn otherwise (or learn how to detect it), I assume that we are
+        return true;
+    }
 
     /**
      * A socket that encapsulates named pipes on Windows
      */
     class NamedPipeSocket extends Socket {
 
-        private boolean isClosed = false;
-
-        private RandomAccessFile namedPipeFile;
         private final Lock lock = new ReentrantLock();
+        private boolean isClosed = false;
+        private RandomAccessFile namedPipeFile;
 
         NamedPipeSocket(String filePath, int timeout) throws IOException {
             if (filePath == null || filePath.length() == 0) {
@@ -63,7 +112,7 @@ public class NamedPipeSocketFactory implements SocketFactory {
 
             int timeoutCountdown = timeout == 0 ? DEFAULT_TIMEOUT : timeout;
             long startTime = System.currentTimeMillis();
-            for (;;) {
+            for (; ; ) {
                 try {
                     this.namedPipeFile = new RandomAccessFile(filePath, "rw");
                     break;
@@ -224,57 +273,6 @@ public class NamedPipeSocketFactory implements SocketFactory {
         public void write(int b) throws IOException {
         }
 
-    }
-
-    private Socket namedPipeSocket;
-
-    /**
-     * Constructor for NamedPipeSocketFactory.
-     */
-    public NamedPipeSocketFactory() {
-        super();
-    }
-
-    @Override
-    public <T extends Closeable> T performTlsHandshake(SocketConnection socketConnection, ServerSession serverSession) throws IOException {
-        return performTlsHandshake(socketConnection, serverSession, null);
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public <T extends Closeable> T performTlsHandshake(SocketConnection socketConnection, ServerSession serverSession, Log log) throws IOException {
-        return (T) this.namedPipeSocket;
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public <T extends Closeable> T connect(String host, int portNumber /* ignored */, PropertySet props, int loginTimeout) throws IOException {
-        String namedPipePath = null;
-
-        RuntimeProperty<String> path = props.getStringProperty(PropertyKey.PATH);
-        if (path != null) {
-            namedPipePath = path.getValue();
-        }
-
-        if (namedPipePath == null) {
-            namedPipePath = "\\\\.\\pipe\\MySQL";
-        } else if (namedPipePath.length() == 0) {
-            throw new SocketException(
-                    Messages.getString("NamedPipeSocketFactory.2") + PropertyKey.PATH.getCcAlias() + Messages.getString("NamedPipeSocketFactory.3"));
-        }
-
-        int connectTimeout = props.getIntegerProperty(PropertyKey.connectTimeout.getKeyName()).getValue();
-        int timeout = connectTimeout > 0 && loginTimeout > 0 ? Math.min(connectTimeout, loginTimeout) : connectTimeout + loginTimeout;
-
-        this.namedPipeSocket = new NamedPipeSocket(namedPipePath, timeout);
-
-        return (T) this.namedPipeSocket;
-    }
-
-    @Override
-    public boolean isLocallyConnected(Session sess) {
-        // Until I learn otherwise (or learn how to detect it), I assume that we are
-        return true;
     }
 
 }

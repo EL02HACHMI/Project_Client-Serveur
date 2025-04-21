@@ -76,7 +76,7 @@ public class BlobRegressionTest extends BaseTestCase {
         //
         // Test mid-point insertion
         //
-        blob.setBytes(4, new byte[] { 2, 2, 2, 2 });
+        blob.setBytes(4, new byte[]{2, 2, 2, 2});
 
         byte[] newBlobData = blob.getBytes(1L, (int) blob.length());
 
@@ -87,7 +87,7 @@ public class BlobRegressionTest extends BaseTestCase {
         //
         // Test end-point insertion
         //
-        blob.setBytes(32, new byte[] { 2, 2, 2, 2 });
+        blob.setBytes(32, new byte[]{2, 2, 2, 2});
 
         assertTrue(blob.length() == blobData.length + 3, "Blob length should be 3 larger");
     }

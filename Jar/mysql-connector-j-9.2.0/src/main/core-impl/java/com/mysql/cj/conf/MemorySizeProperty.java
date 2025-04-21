@@ -29,10 +29,8 @@ import com.mysql.cj.exceptions.ExceptionInterceptor;
 public class MemorySizeProperty extends IntegerProperty {
 
     private static final long serialVersionUID = 4200558564320133284L;
-
-    private String initialValueAsString;
-
     protected String valueAsString;
+    private String initialValueAsString;
 
     protected MemorySizeProperty(PropertyDefinition<Integer> propertyDefinition) {
         super(propertyDefinition);

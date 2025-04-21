@@ -330,7 +330,7 @@ public class XProtocolTest extends InternalXBaseTestCase {
             String collName = createTempTestCollection(this.protocol);
 
             String json = "{'_id': '85983efc2a9a11e5b345feff819cdc9f', 'testVal': 1, 'insertedBy': 'Jess'}".replaceAll("'", "\"");
-            this.protocol.send(this.messageBuilder.buildDocInsert(getTestDatabase(), collName, Arrays.asList(new String[] { json }), false), 0);
+            this.protocol.send(this.messageBuilder.buildDocInsert(getTestDatabase(), collName, Arrays.asList(new String[]{json}), false), 0);
             this.protocol.readQueryResult(new StatementExecuteOkBuilder());
 
             FilterParams filterParams = new DocFilterParams(getTestDatabase(), collName);
@@ -388,7 +388,7 @@ public class XProtocolTest extends InternalXBaseTestCase {
             String collName = createTempTestCollection(this.protocol);
 
             String json = "{'_id': '85983efc2a9a11e5b345feff819cdc9f', 'testVal': '1', 'insertedBy': 'Jess'}".replaceAll("'", "\"");
-            this.protocol.send(this.messageBuilder.buildDocInsert(getTestDatabase(), collName, Arrays.asList(new String[] { json }), false), 0);
+            this.protocol.send(this.messageBuilder.buildDocInsert(getTestDatabase(), collName, Arrays.asList(new String[]{json}), false), 0);
             this.protocol.readQueryResult(new StatementExecuteOkBuilder());
 
             List<UpdateSpec> updates = new ArrayList<>();
@@ -419,7 +419,7 @@ public class XProtocolTest extends InternalXBaseTestCase {
         this.protocol.send(this.messageBuilder.buildSqlStatement("create table tableInsert (x int, y varchar(20), z decimal(10, 2))"), 0);
         this.protocol.readQueryResult(new StatementExecuteOkBuilder());
         InsertParams insertParams = new InsertParams();
-        insertParams.setProjection(new String[] { "z", "x", "y" });
+        insertParams.setProjection(new String[]{"z", "x", "y"});
         insertParams.addRow(Arrays.asList("10.2", 40, "some string value"));
         insertParams.addRow(Arrays.asList("10.3", 50, "another string value"));
         this.protocol.send(this.messageBuilder.buildRowInsert(getTestDatabase(), "tableInsert", insertParams), 0);

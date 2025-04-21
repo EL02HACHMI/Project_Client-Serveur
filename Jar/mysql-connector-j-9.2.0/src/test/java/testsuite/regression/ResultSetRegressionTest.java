@@ -1284,7 +1284,7 @@ public class ResultSetRegressionTest extends BaseTestCase {
         createTable("testBug9098", "(pkfield INT PRIMARY KEY NOT NULL AUTO_INCREMENT, \n"
                 + "tsfield TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, tsfield2 TIMESTAMP NOT NULL DEFAULT '2005-12-25 12:20:52', charfield VARCHAR(4) NOT NULL DEFAULT 'abcd')");
 
-        for (boolean populateWithDefaults : new boolean[] { false, true }) {
+        for (boolean populateWithDefaults : new boolean[]{false, true}) {
             try {
                 ((JdbcConnection) this.conn).getPropertySet().getBooleanProperty(PropertyKey.populateInsertRowWithDefaultValues).setValue(populateWithDefaults);
                 updatableStmt = this.conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
@@ -2673,9 +2673,9 @@ public class ResultSetRegressionTest extends BaseTestCase {
         this.pstmt.setDouble(9, 0);
         this.pstmt.setBigDecimal(10, new BigDecimal("0"));
         this.pstmt.setString(11, "false");
-        this.pstmt.setBytes(12, new byte[] { 0 });
-        this.pstmt.setBytes(13, new byte[] { 0 });
-        this.pstmt.setBytes(14, new byte[] { 0 });
+        this.pstmt.setBytes(12, new byte[]{0});
+        this.pstmt.setBytes(13, new byte[]{0});
+        this.pstmt.setBytes(14, new byte[]{0});
 
         this.pstmt.executeUpdate();
 
@@ -2690,9 +2690,9 @@ public class ResultSetRegressionTest extends BaseTestCase {
         this.pstmt.setDouble(9, 1);
         this.pstmt.setBigDecimal(10, new BigDecimal("1"));
         this.pstmt.setString(11, "true");
-        this.pstmt.setBytes(12, new byte[] { 1 });
-        this.pstmt.setBytes(13, new byte[] { 1 });
-        this.pstmt.setBytes(14, new byte[] { 1 });
+        this.pstmt.setBytes(12, new byte[]{1});
+        this.pstmt.setBytes(13, new byte[]{1});
+        this.pstmt.setBytes(14, new byte[]{1});
         this.pstmt.executeUpdate();
 
         this.pstmt.setInt(1, 3);
@@ -2706,9 +2706,9 @@ public class ResultSetRegressionTest extends BaseTestCase {
         this.pstmt.setDouble(9, 1);
         this.pstmt.setBigDecimal(10, new BigDecimal("1"));
         this.pstmt.setString(11, "true");
-        this.pstmt.setBytes(12, new byte[] { 2 });
-        this.pstmt.setBytes(13, new byte[] { 2 });
-        this.pstmt.setBytes(14, new byte[] { 2 });
+        this.pstmt.setBytes(12, new byte[]{2});
+        this.pstmt.setBytes(13, new byte[]{2});
+        this.pstmt.setBytes(14, new byte[]{2});
         this.pstmt.executeUpdate();
 
         this.pstmt.setInt(1, 4);
@@ -2722,9 +2722,9 @@ public class ResultSetRegressionTest extends BaseTestCase {
         this.pstmt.setDouble(9, 1);
         this.pstmt.setBigDecimal(10, new BigDecimal("1"));
         this.pstmt.setString(11, "true");
-        this.pstmt.setBytes(12, new byte[] { -1 });
-        this.pstmt.setBytes(13, new byte[] { -1 });
-        this.pstmt.setBytes(14, new byte[] { -1 });
+        this.pstmt.setBytes(12, new byte[]{-1});
+        this.pstmt.setBytes(13, new byte[]{-1});
+        this.pstmt.setBytes(14, new byte[]{-1});
         this.pstmt.executeUpdate();
 
         this.pstmt.setInt(1, 5);
@@ -2738,9 +2738,9 @@ public class ResultSetRegressionTest extends BaseTestCase {
         this.pstmt.setDouble(9, 0);
         this.pstmt.setBigDecimal(10, new BigDecimal("0"));
         this.pstmt.setString(11, "false");
-        this.pstmt.setBytes(12, new byte[] { 0, 0 });
-        this.pstmt.setBytes(13, new byte[] { 0, 0 });
-        this.pstmt.setBytes(14, new byte[] { 0, 0 });
+        this.pstmt.setBytes(12, new byte[]{0, 0});
+        this.pstmt.setBytes(13, new byte[]{0, 0});
+        this.pstmt.setBytes(14, new byte[]{0, 0});
         this.pstmt.executeUpdate();
 
         this.pstmt.setInt(1, 6);
@@ -2754,9 +2754,9 @@ public class ResultSetRegressionTest extends BaseTestCase {
         this.pstmt.setDouble(9, 1);
         this.pstmt.setBigDecimal(10, new BigDecimal("1"));
         this.pstmt.setString(11, "true");
-        this.pstmt.setBytes(12, new byte[] { 1, 0 });
-        this.pstmt.setBytes(13, new byte[] { 1, 0 });
-        this.pstmt.setBytes(14, new byte[] { 1, 0 });
+        this.pstmt.setBytes(12, new byte[]{1, 0});
+        this.pstmt.setBytes(13, new byte[]{1, 0});
+        this.pstmt.setBytes(14, new byte[]{1, 0});
         this.pstmt.executeUpdate();
 
         this.pstmt.setInt(1, 7);
@@ -2770,15 +2770,15 @@ public class ResultSetRegressionTest extends BaseTestCase {
         this.pstmt.setDouble(9, 0);
         this.pstmt.setBigDecimal(10, new BigDecimal("0"));
         this.pstmt.setString(11, "");
-        this.pstmt.setBytes(12, new byte[] {});
-        this.pstmt.setBytes(13, new byte[] {});
-        this.pstmt.setBytes(14, new byte[] {});
+        this.pstmt.setBytes(12, new byte[]{});
+        this.pstmt.setBytes(13, new byte[]{});
+        this.pstmt.setBytes(14, new byte[]{});
         this.pstmt.executeUpdate();
 
         this.rs = this.stmt.executeQuery(
                 "SELECT field1, field2, field3, field4, field5, field6, field7, field8, field9, field10, field11, field12, field13 FROM testBooleans ORDER BY ob");
 
-        boolean[] testVals = new boolean[] { false, true, true, true, false, true, false };
+        boolean[] testVals = new boolean[]{false, true, true, true, false, true, false};
 
         int i = 0;
 
@@ -2947,7 +2947,7 @@ public class ResultSetRegressionTest extends BaseTestCase {
             fetchStmt = fetchConn.createStatement();
 
             // int[] maxRows = new int[] {1, 4, 5, 11, 12, 13, 16, 50, 51, 52, 100};
-            int[] fetchSizes = new int[] { 1, 4, 10, 25, 100 };
+            int[] fetchSizes = new int[]{1, 4, 10, 25, 100};
             List<Integer> maxRows = new ArrayList<>();
             maxRows.add(new Integer(1));
 
@@ -3018,7 +3018,7 @@ public class ResultSetRegressionTest extends BaseTestCase {
 
     /**
      * Tests fix for BUG#25787 - java.util.Date should be serialized for PreparedStatement.setObject().
-     *
+     * <p>
      * We add a new configuration option "treatUtilDateAsTimestamp", which is false by default, as (1) We already had specific behavior to treat
      * java.util.Date as a java.sql.Timestamp because it's useful to many folks, and (2) that behavior will very likely be in JDBC-post-4.0 as a requirement.
      *
@@ -3264,7 +3264,7 @@ public class ResultSetRegressionTest extends BaseTestCase {
                 }
 
                 try {
-                    getterMethods[i].invoke(this.rs, new Object[] { zeroIndex });
+                    getterMethods[i].invoke(this.rs, new Object[]{zeroIndex});
                 } catch (InvocationTargetException invokeEx) {
                     Throwable ex = invokeEx.getTargetException();
 
@@ -3282,7 +3282,7 @@ public class ResultSetRegressionTest extends BaseTestCase {
                 String messageHighBound = null;
 
                 try {
-                    getterMethods[i].invoke(this.rs, new Object[] { twoIndex });
+                    getterMethods[i].invoke(this.rs, new Object[]{twoIndex});
                 } catch (InvocationTargetException invokeEx) {
                     Throwable ex = invokeEx.getTargetException();
 
@@ -4085,7 +4085,7 @@ public class ResultSetRegressionTest extends BaseTestCase {
 
     /**
      * Tests fix for BUG#65503 - ResultSets created by PreparedStatement.getGeneratedKeys() are not close()d.
-     *
+     * <p>
      * To get results quicker add option -Xmx10M, with this option I got an out of memory failure after about 6500 passes.
      *
      * @throws Exception
@@ -4323,32 +4323,6 @@ public class ResultSetRegressionTest extends BaseTestCase {
         }
     }
 
-    public static class TestBug67318ExceptionInterceptor implements ExceptionInterceptor {
-
-        public int alreadyClosedCounter = 0;
-
-        @Override
-        public ExceptionInterceptor init(Properties props, Log log) {
-            return this;
-        }
-
-        @Override
-        public void destroy() {
-        }
-
-        @Override
-        public SQLException interceptException(Exception sqlEx) {
-            sqlEx.printStackTrace();
-
-            if ("Operation not allowed after ResultSet closed".equals(sqlEx.getMessage())
-                    || "No operations allowed after statement closed.".equals(sqlEx.getMessage())) {
-                this.alreadyClosedCounter++;
-            }
-            return (SQLException) sqlEx;
-        }
-
-    }
-
     /**
      * Tests fix for BUG#72000 - java.lang.ArrayIndexOutOfBoundsException on java.sql.ResultSet.getInt(String).
      *
@@ -4417,11 +4391,11 @@ public class ResultSetRegressionTest extends BaseTestCase {
         // null bitmask contains 2 reserved bits plus 1 bit per field
         //
         // boundary cases at 8n - 2 / 8n - 1 field count; e.g. 6/7, 14/15
-        String[] selectList = new String[] { "NULL", "1", "NULL,NULL,NULL,NULL,NULL,NULL", "1,NULL,NULL,1,1,NULL", "1,1,1,1,1,1",
+        String[] selectList = new String[]{"NULL", "1", "NULL,NULL,NULL,NULL,NULL,NULL", "1,NULL,NULL,1,1,NULL", "1,1,1,1,1,1",
                 "NULL,NULL,NULL,NULL,NULL,NULL,NULL", "1,1,1,NULL,1,NULL,NULL", "1,1,1,1,1,1,1",
                 "NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL", "NULL,NULL,NULL,1,NULL,1,NULL,NULL,1,NULL,1,1,NULL,NULL",
                 "1,1,1,1,1,1,1,1,1,1,1,1,1,1", "NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL",
-                "NULL,1,NULL,1,NULL,NULL,1,NULL,1,NULL,NULL,NULL,NULL,1,1", "1,1,1,1,1,1,1,1,1,1,1,1,1,1,1" };
+                "NULL,1,NULL,1,NULL,NULL,1,NULL,1,NULL,NULL,NULL,NULL,1,1", "1,1,1,1,1,1,1,1,1,1,1,1,1,1,1"};
 
         Properties props = new Properties();
         props.setProperty(PropertyKey.sslMode.getKeyName(), SslMode.DISABLED.name());
@@ -4598,7 +4572,7 @@ public class ResultSetRegressionTest extends BaseTestCase {
     }
 
     private void testBug19536760CheckStates(ResultSet rset, boolean expectedIsBeforeFirst, boolean expectedIsFirst, boolean expectedIsLast,
-            boolean expectedIsAfterLast) throws Exception {
+                                            boolean expectedIsAfterLast) throws Exception {
         assertEquals(expectedIsBeforeFirst, rset.isBeforeFirst());
         assertEquals(expectedIsFirst, rset.isFirst());
         assertEquals(expectedIsLast, rset.isLast());
@@ -4701,7 +4675,7 @@ public class ResultSetRegressionTest extends BaseTestCase {
 
     /**
      * Tests fix for Bug#56479 - getTimestamp throws exception.
-     *
+     * <p>
      * This bug occurs exclusively on UpdatableResultSets when retrieving previously set timestamp values.
      *
      * @throws Exception
@@ -4828,8 +4802,8 @@ public class ResultSetRegressionTest extends BaseTestCase {
         props.setProperty(PropertyKey.allowPublicKeyRetrieval.getKeyName(), "true");
         props.setProperty(PropertyKey.jdbcCompliantTruncation.getKeyName(), "false"); // TODO fails with jdbcCompliantTruncation=true
 
-        for (String useSSPS : new String[] { "false", "true" }) {
-            for (String cacheResultSetMetadata : new String[] { "false", "true" }) {
+        for (String useSSPS : new String[]{"false", "true"}) {
+            for (String cacheResultSetMetadata : new String[]{"false", "true"}) {
                 props.setProperty(PropertyKey.useServerPrepStmts.getKeyName(), useSSPS);
                 props.setProperty(PropertyKey.cacheResultSetMetadata.getKeyName(), cacheResultSetMetadata);
 
@@ -5070,7 +5044,7 @@ public class ResultSetRegressionTest extends BaseTestCase {
             assertEquals(expectedNum, this.rs.getBigDecimal(1).intValue(), testCase);
             assertEquals(String.valueOf(expectedNum), this.rs.getString(1), testCase);
             assertTrue(this.rs.getObject(1) instanceof byte[]);
-            assertByteArrayEquals(testCase, new byte[] { (byte) expectedNumBase }, (byte[]) this.rs.getObject(1));
+            assertByteArrayEquals(testCase, new byte[]{(byte) expectedNumBase}, (byte[]) this.rs.getObject(1));
 
             assertEquals(expectedNum, this.rs.getShort(2), testCase);
             assertEquals(expectedNum, this.rs.getInt(2), testCase);
@@ -5099,7 +5073,7 @@ public class ResultSetRegressionTest extends BaseTestCase {
             assertEquals(expectedNum, this.rs.getBigDecimal(4).intValue(), testCase);
             assertEquals(String.valueOf(expectedNum), this.rs.getString(4), testCase);
             assertTrue(this.rs.getObject(4) instanceof byte[]);
-            assertByteArrayEquals(testCase, new byte[] { (byte) expectedNumBase, (byte) expectedNumBase }, (byte[]) this.rs.getObject(4));
+            assertByteArrayEquals(testCase, new byte[]{(byte) expectedNumBase, (byte) expectedNumBase}, (byte[]) this.rs.getObject(4));
 
             assertEquals(expectedNum, this.rs.getShort(5), testCase);
             assertEquals(expectedNum, this.rs.getInt(5), testCase);
@@ -5131,7 +5105,7 @@ public class ResultSetRegressionTest extends BaseTestCase {
             assertEquals(expectedNum, this.rs.getBigDecimal(7).intValue(), testCase);
             assertEquals(String.valueOf(expectedNum), this.rs.getString(7), testCase);
             assertTrue(this.rs.getObject(7) instanceof byte[]);
-            assertByteArrayEquals(testCase, new byte[] { 0, (byte) expectedNumBase, (byte) expectedNumBase }, (byte[]) this.rs.getObject(7));
+            assertByteArrayEquals(testCase, new byte[]{0, (byte) expectedNumBase, (byte) expectedNumBase}, (byte[]) this.rs.getObject(7));
 
             assertEquals(expectedNum, this.rs.getShort(8), testCase);
             assertEquals(expectedNum, this.rs.getInt(8), testCase);
@@ -5174,7 +5148,7 @@ public class ResultSetRegressionTest extends BaseTestCase {
          * \uD83D\uDC2C (Emoji): "Dolphin"
          * \u263A (Symbols): "White Smiling Face"
          */
-        String[] data = new String[] { "\u4E2D\u56FD", "\u65E5\u672C", "\uD83D\uDC2C", "\u263A" };
+        String[] data = new String[]{"\u4E2D\u56FD", "\u65E5\u672C", "\uD83D\uDC2C", "\u263A"};
         String jsonTmpl = "{\"data\": \"%s\"}";
 
         createTable("testBug80631", "(data JSON)");
@@ -5252,7 +5226,7 @@ public class ResultSetRegressionTest extends BaseTestCase {
 
         createTable("testBug23197238", "(id INT AUTO_INCREMENT PRIMARY KEY, doc JSON DEFAULT NULL, field3 int DEFAULT 10)");
 
-        String[] docs = new String[] { "{\"key10\": \"value10\"}", "{\"key2\": \"value2\"}", "{\"key3\": \"value3\"}" };
+        String[] docs = new String[]{"{\"key10\": \"value10\"}", "{\"key2\": \"value2\"}", "{\"key3\": \"value3\"}"};
         Properties props = new Properties();
         props.setProperty(PropertyKey.sslMode.getKeyName(), SslMode.DISABLED.name());
         props.setProperty(PropertyKey.allowPublicKeyRetrieval.getKeyName(), "true");
@@ -5263,7 +5237,7 @@ public class ResultSetRegressionTest extends BaseTestCase {
         testStmt.execute("INSERT INTO testBug23197238 (doc) VALUES ('" + docs[2] + "')");
         testStmt.close();
 
-        testBug23197238AssertDoc(new String[] { docs[2] });
+        testBug23197238AssertDoc(new String[]{docs[2]});
 
         testStmt = testConn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_UPDATABLE);
         this.rs = testStmt.executeQuery("SELECT * FROM testBug23197238");
@@ -5275,8 +5249,8 @@ public class ResultSetRegressionTest extends BaseTestCase {
         this.rs.insertRow();
         testStmt.close();
 
-        testBug23197238AssertDoc(new String[] { docs[1], docs[1] });
-        testBug23197238AssertId(new int[] { 1, 2 });
+        testBug23197238AssertDoc(new String[]{docs[1], docs[1]});
+        testBug23197238AssertId(new int[]{1, 2});
 
         PreparedStatement testPstmt = testConn.prepareStatement("SELECT * FROM testBug23197238 WHERE id = ?", ResultSet.TYPE_FORWARD_ONLY,
                 ResultSet.CONCUR_UPDATABLE);
@@ -5293,7 +5267,7 @@ public class ResultSetRegressionTest extends BaseTestCase {
         testPstmt.close();
 
         testBug23197238AssertDoc(docs);
-        testBug23197238AssertId(new int[] { 1, 2, 3 });
+        testBug23197238AssertId(new int[]{1, 2, 3});
 
         testConn.close();
     }
@@ -5520,20 +5494,20 @@ public class ResultSetRegressionTest extends BaseTestCase {
         rs1.updateTimestamp(14, new Timestamp(cal.getTimeInMillis())); // f13 DATETIME
         rs1.updateInt(15, 2002); // f14 YEAR
         rs1.updateNString(16, "bbb");
-        rs1.updateBytes(17, new byte[] { 50 }); // f16 VARBINARY(30)
+        rs1.updateBytes(17, new byte[]{50}); // f16 VARBINARY(30)
         rs1.updateByte(18, (byte) 0); // f17 BIT
         rs1.updateString(19, "y");
         rs1.updateString(20, "b");
         rs1.updateBlob(21, new com.mysql.cj.jdbc.Blob("2".getBytes(), null));
         rs1.updateClob(22, new com.mysql.cj.jdbc.Clob("2", null));
-        rs1.updateBlob(23, new ByteArrayInputStream(new byte[] { 50 }));
+        rs1.updateBlob(23, new ByteArrayInputStream(new byte[]{50}));
         rs1.updateClob(24, new StringReader("2"));
-        rs1.updateBlob(25, new ByteArrayInputStream(new byte[] { 50, 51, 52 }), 1);
+        rs1.updateBlob(25, new ByteArrayInputStream(new byte[]{50, 51, 52}), 1);
         rs1.updateClob(26, new StringReader("2222"), 1);
         rs1.updateObject(27, "2", MysqlType.BLOB);
         rs1.updateNClob(28, new com.mysql.cj.jdbc.NClob("2", null));
         rs1.updateString(29, "2");
-        rs1.updateBytes(30, new byte[] { 50 });
+        rs1.updateBytes(30, new byte[]{50});
 
         Object p1 = rs1.getObject(31);
         Object p2 = rs1.getObject(32);
@@ -5544,8 +5518,8 @@ public class ResultSetRegressionTest extends BaseTestCase {
         rs1.updateNClob(34, new StringReader("bbbbbb"), 3);
         rs1.updateAsciiStream(35, new ByteArrayInputStream("bbb".getBytes()));
         rs1.updateAsciiStream(36, new ByteArrayInputStream("bbbbbb".getBytes()), 3);
-        rs1.updateBinaryStream(37, new ByteArrayInputStream(new byte[] { 50 }));
-        rs1.updateBinaryStream(38, new ByteArrayInputStream(new byte[] { 50, 51, 52 }), 1);
+        rs1.updateBinaryStream(37, new ByteArrayInputStream(new byte[]{50}));
+        rs1.updateBinaryStream(38, new ByteArrayInputStream(new byte[]{50, 51, 52}), 1);
         rs1.updateCharacterStream(39, new StringReader("bbb"));
         rs1.updateCharacterStream(40, new StringReader("bbbbbb"), 3);
         rs1.updateCharacterStream(41, new StringReader("bbbbbb"), 3L);
@@ -5598,33 +5572,33 @@ public class ResultSetRegressionTest extends BaseTestCase {
         assertEquals("2000-01-01", rs2.getDate(15).toString());
         assertEquals("aaa", rs2.getString(16));
         Blob blob = rs2.getBlob(17);
-        assertTrue(Arrays.equals(new byte[] { 49 }, blob.getBytes(1, (int) blob.length())));
+        assertTrue(Arrays.equals(new byte[]{49}, blob.getBytes(1, (int) blob.length())));
         assertEquals(1, rs2.getInt(18));
         assertEquals("x", rs2.getString(19));
         assertEquals("a", rs2.getString(20));
         blob = rs2.getBlob(21);
-        assertTrue(Arrays.equals(new byte[] { 49 }, blob.getBytes(1, (int) blob.length())));
+        assertTrue(Arrays.equals(new byte[]{49}, blob.getBytes(1, (int) blob.length())));
         assertEquals("1", rs2.getString(22));
         blob = rs2.getBlob(23);
-        assertTrue(Arrays.equals(new byte[] { 49 }, blob.getBytes(1, (int) blob.length())));
+        assertTrue(Arrays.equals(new byte[]{49}, blob.getBytes(1, (int) blob.length())));
         assertEquals("1", rs2.getString(24));
         blob = rs2.getBlob(25);
-        assertTrue(Arrays.equals(new byte[] { 49 }, blob.getBytes(1, (int) blob.length())));
+        assertTrue(Arrays.equals(new byte[]{49}, blob.getBytes(1, (int) blob.length())));
         assertEquals("1", rs2.getString(26));
         blob = rs2.getBlob(27);
-        assertTrue(Arrays.equals(new byte[] { 49 }, blob.getBytes(1, (int) blob.length())));
+        assertTrue(Arrays.equals(new byte[]{49}, blob.getBytes(1, (int) blob.length())));
         assertEquals("1", rs2.getString(28));
         assertEquals("1", rs2.getString(29));
         blob = rs2.getBlob(30);
-        assertTrue(Arrays.equals(new byte[] { 49 }, blob.getBytes(1, (int) blob.length())));
+        assertTrue(Arrays.equals(new byte[]{49}, blob.getBytes(1, (int) blob.length())));
         assertEquals("aaa", rs2.getString(33));
         assertEquals("aaa", rs2.getString(34));
         assertEquals("aaa", rs2.getString(35));
         assertEquals("aaa", rs2.getString(36));
         blob = rs2.getBlob(37);
-        assertTrue(Arrays.equals(new byte[] { 49 }, blob.getBytes(1, (int) blob.length())));
+        assertTrue(Arrays.equals(new byte[]{49}, blob.getBytes(1, (int) blob.length())));
         blob = rs2.getBlob(38);
-        assertTrue(Arrays.equals(new byte[] { 49 }, blob.getBytes(1, (int) blob.length())));
+        assertTrue(Arrays.equals(new byte[]{49}, blob.getBytes(1, (int) blob.length())));
         assertEquals("aaa", rs2.getString(39));
         assertEquals("aaa", rs2.getString(40));
         assertEquals("aaa", rs2.getString(41));
@@ -5679,33 +5653,33 @@ public class ResultSetRegressionTest extends BaseTestCase {
         assertEquals("2002-01-01", rs2.getDate(15).toString());
         assertEquals("bbb", rs2.getString(16));
         Blob blob = rs2.getBlob(17);
-        assertTrue(Arrays.equals(new byte[] { 50 }, blob.getBytes(1, (int) blob.length())));
+        assertTrue(Arrays.equals(new byte[]{50}, blob.getBytes(1, (int) blob.length())));
         assertEquals(0, rs2.getInt(18));
         assertEquals("y", rs2.getString(19));
         assertEquals("b", rs2.getString(20));
         blob = rs2.getBlob(21);
-        assertTrue(Arrays.equals(new byte[] { 50 }, blob.getBytes(1, (int) blob.length())));
+        assertTrue(Arrays.equals(new byte[]{50}, blob.getBytes(1, (int) blob.length())));
         assertEquals("2", rs2.getString(22));
         blob = rs2.getBlob(23);
-        assertTrue(Arrays.equals(new byte[] { 50 }, blob.getBytes(1, (int) blob.length())));
+        assertTrue(Arrays.equals(new byte[]{50}, blob.getBytes(1, (int) blob.length())));
         assertEquals("2", rs2.getString(24));
         blob = rs2.getBlob(25);
-        assertTrue(Arrays.equals(new byte[] { 50 }, blob.getBytes(1, (int) blob.length())));
+        assertTrue(Arrays.equals(new byte[]{50}, blob.getBytes(1, (int) blob.length())));
         assertEquals("2", rs2.getString(26));
         blob = rs2.getBlob(27);
-        assertTrue(Arrays.equals(new byte[] { 50 }, blob.getBytes(1, (int) blob.length())));
+        assertTrue(Arrays.equals(new byte[]{50}, blob.getBytes(1, (int) blob.length())));
         assertEquals("2", rs2.getString(28));
         assertEquals("2", rs2.getString(29));
         blob = rs2.getBlob(30);
-        assertTrue(Arrays.equals(new byte[] { 50 }, blob.getBytes(1, (int) blob.length())));
+        assertTrue(Arrays.equals(new byte[]{50}, blob.getBytes(1, (int) blob.length())));
         assertEquals("bbb", rs2.getString(33));
         assertEquals("bbb", rs2.getString(34));
         assertEquals("bbb", rs2.getString(35));
         assertEquals("bbb", rs2.getString(36));
         blob = rs2.getBlob(37);
-        assertTrue(Arrays.equals(new byte[] { 50 }, blob.getBytes(1, (int) blob.length())));
+        assertTrue(Arrays.equals(new byte[]{50}, blob.getBytes(1, (int) blob.length())));
         blob = rs2.getBlob(38);
-        assertTrue(Arrays.equals(new byte[] { 50 }, blob.getBytes(1, (int) blob.length())));
+        assertTrue(Arrays.equals(new byte[]{50}, blob.getBytes(1, (int) blob.length())));
         assertEquals("bbb", rs2.getString(39));
         assertEquals("bbb", rs2.getString(40));
         assertEquals("bbb", rs2.getString(41));
@@ -6014,7 +5988,7 @@ public class ResultSetRegressionTest extends BaseTestCase {
 
     /**
      * Tests fix for Bug#83662 - NullPointerException while reading NULL boolean value from DB.
-     *
+     * <p>
      * This fix was actually done in the patch for Bug#83368, as both are fixed in the same way.
      *
      * @throws Exception
@@ -6036,11 +6010,11 @@ public class ResultSetRegressionTest extends BaseTestCase {
 
     /**
      * Tests fix for Bug#70704 - Deadlock using UpdatableResultSet.
-     *
+     * <p>
      * Doesn't actually test the buggy behavior since it is not verifiable since the fix for Bug#59462 (revision 385a151). However, the patch for this fix is
      * needed because the synchronization in UpdatableResultSet was dated.
      * This test makes sure there is no regression.
-     *
+     * <p>
      * WARNING! If this test fails there is no guarantee that the JVM will remain stable and won't affect any other tests. It is imperative that this test
      * passes to ensure other tests results.
      *
@@ -6159,7 +6133,7 @@ public class ResultSetRegressionTest extends BaseTestCase {
         assertNotNull(w);
 
         int cnt = 2;
-        String expectedWarning = Messages.getString("ResultSet.ImplicitDatePartWarning", new Object[] { "java.sql.Date" });
+        String expectedWarning = Messages.getString("ResultSet.ImplicitDatePartWarning", new Object[]{"java.sql.Date"});
         while (w != null) {
             if (expectedWarning.equals(w.getMessage())) {
                 cnt--;
@@ -6241,7 +6215,7 @@ public class ResultSetRegressionTest extends BaseTestCase {
         props.setProperty(PropertyKey.allowPublicKeyRetrieval.getKeyName(), "true");
         props.setProperty(PropertyKey.sendFractionalSeconds.getKeyName(), "false");
 
-        for (String connectionTimeZone : new String[] { null, "GMT", "Asia/Calcutta" }) {
+        for (String connectionTimeZone : new String[]{null, "GMT", "Asia/Calcutta"}) {
             System.out.println("connectionTimeZone=" + connectionTimeZone);
             if (connectionTimeZone != null) {
                 props.setProperty(PropertyKey.connectionTimeZone.getKeyName(), connectionTimeZone);
@@ -6279,7 +6253,7 @@ public class ResultSetRegressionTest extends BaseTestCase {
         /* Unified test */
 
         // Original values we insert
-        Timestamp[] ts_ins = new Timestamp[] { //
+        Timestamp[] ts_ins = new Timestamp[]{ //
                 Timestamp.valueOf("2018-07-09 13:14:15"), //
                 Timestamp.valueOf("2018-07-09 13:14:15.1"), //
                 Timestamp.valueOf("2018-07-09 13:14:15.12"), //
@@ -6289,8 +6263,8 @@ public class ResultSetRegressionTest extends BaseTestCase {
                 Timestamp.valueOf("2018-07-09 13:14:15.123456"), //
                 Timestamp.valueOf("2018-07-09 13:14:15.1234567"), //
                 Timestamp.valueOf("2018-07-09 13:14:15.12345678"), //
-                Timestamp.valueOf("2018-07-09 13:14:15.999999999") };
-        Time[] t_ins = new Time[] { //
+                Timestamp.valueOf("2018-07-09 13:14:15.999999999")};
+        Time[] t_ins = new Time[]{ //
                 new Time(Timestamp.valueOf("2018-07-09 13:14:15.987654321").getTime()), //
                 new Time(Timestamp.valueOf("2018-07-09 13:14:15.987654321").getTime()), //
                 new Time(Timestamp.valueOf("2018-07-09 13:14:15.987654321").getTime()), //
@@ -6300,10 +6274,10 @@ public class ResultSetRegressionTest extends BaseTestCase {
                 new Time(Timestamp.valueOf("2018-07-09 13:14:15.987654321").getTime()), //
                 new Time(Timestamp.valueOf("2018-07-09 13:14:15.987654321").getTime()), //
                 new Time(Timestamp.valueOf("2018-07-09 13:14:15.987654321").getTime()), //
-                new Time(Timestamp.valueOf("2018-07-09 13:14:15.987654321").getTime()) };
+                new Time(Timestamp.valueOf("2018-07-09 13:14:15.987654321").getTime())};
 
         // Values we expect in DB after insert operation if TIME_TRUNCATE_FRACTIONAL sql_mode is unset
-        Timestamp[] ts_ins_expected_round = new Timestamp[] { //
+        Timestamp[] ts_ins_expected_round = new Timestamp[]{ //
                 Timestamp.valueOf("2018-07-09 13:14:15"), //
                 Timestamp.valueOf("2018-07-09 13:14:15.1"), //
                 Timestamp.valueOf("2018-07-09 13:14:15.12"), //
@@ -6313,8 +6287,8 @@ public class ResultSetRegressionTest extends BaseTestCase {
                 Timestamp.valueOf("2018-07-09 13:14:15.123456"), //
                 Timestamp.valueOf("2018-07-09 13:14:15.123457"), //
                 Timestamp.valueOf("2018-07-09 13:14:15.123457"), //
-                Timestamp.valueOf("2018-07-09 13:14:16.0") };
-        Time[] t_ins_expected_round = new Time[] { //
+                Timestamp.valueOf("2018-07-09 13:14:16.0")};
+        Time[] t_ins_expected_round = new Time[]{ //
                 new Time(Timestamp.valueOf("2018-07-09 13:14:16").getTime()), //
                 new Time(Timestamp.valueOf("2018-07-09 13:14:16.0").getTime()), //
                 new Time(Timestamp.valueOf("2018-07-09 13:14:15.99").getTime()), //
@@ -6324,10 +6298,10 @@ public class ResultSetRegressionTest extends BaseTestCase {
                 new Time(Timestamp.valueOf("2018-07-09 13:14:15.987000").getTime()), //
                 new Time(Timestamp.valueOf("2018-07-09 13:14:15.9870000").getTime()), //
                 new Time(Timestamp.valueOf("2018-07-09 13:14:15.98700000").getTime()), //
-                new Time(Timestamp.valueOf("2018-07-09 13:14:15.987000000").getTime()) };
+                new Time(Timestamp.valueOf("2018-07-09 13:14:15.987000000").getTime())};
 
         // Values we expect in DB after insert operation if TIME_TRUNCATE_FRACTIONAL sql_mode is set
-        Timestamp[] ts_ins_expected_truncate = new Timestamp[] { //
+        Timestamp[] ts_ins_expected_truncate = new Timestamp[]{ //
                 Timestamp.valueOf("2018-07-09 13:14:15"), //
                 Timestamp.valueOf("2018-07-09 13:14:15.1"), //
                 Timestamp.valueOf("2018-07-09 13:14:15.12"), //
@@ -6337,8 +6311,8 @@ public class ResultSetRegressionTest extends BaseTestCase {
                 Timestamp.valueOf("2018-07-09 13:14:15.123456"), //
                 Timestamp.valueOf("2018-07-09 13:14:15.123456"), //
                 Timestamp.valueOf("2018-07-09 13:14:15.123456"), //
-                Timestamp.valueOf("2018-07-09 13:14:15.999999") };
-        Time[] t_ins_expected_truncate = new Time[] { //
+                Timestamp.valueOf("2018-07-09 13:14:15.999999")};
+        Time[] t_ins_expected_truncate = new Time[]{ //
                 new Time(Timestamp.valueOf("2018-07-09 13:14:15").getTime()), //
                 new Time(Timestamp.valueOf("2018-07-09 13:14:15.9").getTime()), //
                 new Time(Timestamp.valueOf("2018-07-09 13:14:15.98").getTime()), //
@@ -6348,10 +6322,10 @@ public class ResultSetRegressionTest extends BaseTestCase {
                 new Time(Timestamp.valueOf("2018-07-09 13:14:15.987000").getTime()), //
                 new Time(Timestamp.valueOf("2018-07-09 13:14:15.9870000").getTime()), //
                 new Time(Timestamp.valueOf("2018-07-09 13:14:15.98700000").getTime()), //
-                new Time(Timestamp.valueOf("2018-07-09 13:14:15.987000000").getTime()) };
+                new Time(Timestamp.valueOf("2018-07-09 13:14:15.987000000").getTime())};
 
         // Values we expect in DB after insert operation if sendFractionalSeconds=false
-        Timestamp[] ts_ins_expected_not_sendFractionalSeconds = new Timestamp[] { //
+        Timestamp[] ts_ins_expected_not_sendFractionalSeconds = new Timestamp[]{ //
                 Timestamp.valueOf("2018-07-09 13:14:15"), //
                 Timestamp.valueOf("2018-07-09 13:14:15.0"), //
                 Timestamp.valueOf("2018-07-09 13:14:15.0"), //
@@ -6361,8 +6335,8 @@ public class ResultSetRegressionTest extends BaseTestCase {
                 Timestamp.valueOf("2018-07-09 13:14:15.0"), //
                 Timestamp.valueOf("2018-07-09 13:14:15.0"), //
                 Timestamp.valueOf("2018-07-09 13:14:15.0"), //
-                Timestamp.valueOf("2018-07-09 13:14:15.0") };
-        Time[] t_ins_expected_not_sendFractionalSeconds = new Time[] { //
+                Timestamp.valueOf("2018-07-09 13:14:15.0")};
+        Time[] t_ins_expected_not_sendFractionalSeconds = new Time[]{ //
                 new Time(Timestamp.valueOf("2018-07-09 13:14:15").getTime()), //
                 new Time(Timestamp.valueOf("2018-07-09 13:14:15.0").getTime()), //
                 new Time(Timestamp.valueOf("2018-07-09 13:14:15.0").getTime()), //
@@ -6372,10 +6346,10 @@ public class ResultSetRegressionTest extends BaseTestCase {
                 new Time(Timestamp.valueOf("2018-07-09 13:14:15.0").getTime()), //
                 new Time(Timestamp.valueOf("2018-07-09 13:14:15.0").getTime()), //
                 new Time(Timestamp.valueOf("2018-07-09 13:14:15.0").getTime()), //
-                new Time(Timestamp.valueOf("2018-07-09 13:14:15.0").getTime()) };
+                new Time(Timestamp.valueOf("2018-07-09 13:14:15.0").getTime())};
 
         // Original values we pass to update operation
-        Timestamp[] ts_upd = new Timestamp[] { //
+        Timestamp[] ts_upd = new Timestamp[]{ //
                 Timestamp.valueOf("2018-07-09 03:14:15"), //
                 Timestamp.valueOf("2018-07-09 03:14:15.1"), //
                 Timestamp.valueOf("2018-07-09 03:14:15.12"), //
@@ -6385,8 +6359,8 @@ public class ResultSetRegressionTest extends BaseTestCase {
                 Timestamp.valueOf("2018-07-09 03:14:15.123456"), //
                 Timestamp.valueOf("2018-07-09 03:14:15.1234567"), //
                 Timestamp.valueOf("2018-07-09 03:14:15.12345678"), //
-                Timestamp.valueOf("2018-07-09 03:14:15.999999999") };
-        Time[] t_upd = new Time[] { //
+                Timestamp.valueOf("2018-07-09 03:14:15.999999999")};
+        Time[] t_upd = new Time[]{ //
                 new Time(Timestamp.valueOf("2018-07-09 03:14:15.987654321").getTime()), //
                 new Time(Timestamp.valueOf("2018-07-09 03:14:15.987654321").getTime()), //
                 new Time(Timestamp.valueOf("2018-07-09 03:14:15.987654321").getTime()), //
@@ -6396,10 +6370,10 @@ public class ResultSetRegressionTest extends BaseTestCase {
                 new Time(Timestamp.valueOf("2018-07-09 03:14:15.987654321").getTime()), //
                 new Time(Timestamp.valueOf("2018-07-09 03:14:15.987654321").getTime()), //
                 new Time(Timestamp.valueOf("2018-07-09 03:14:15.987654321").getTime()), //
-                new Time(Timestamp.valueOf("2018-07-09 03:14:15.987654321").getTime()) };
+                new Time(Timestamp.valueOf("2018-07-09 03:14:15.987654321").getTime())};
 
         // Values we expect in DB after update operation if TIME_TRUNCATE_FRACTIONAL sql_mode is unset
-        Timestamp[] ts_upd_expected_round = new Timestamp[] { //
+        Timestamp[] ts_upd_expected_round = new Timestamp[]{ //
                 Timestamp.valueOf("2018-07-09 03:14:15"), //
                 Timestamp.valueOf("2018-07-09 03:14:15.1"), //
                 Timestamp.valueOf("2018-07-09 03:14:15.12"), //
@@ -6409,8 +6383,8 @@ public class ResultSetRegressionTest extends BaseTestCase {
                 Timestamp.valueOf("2018-07-09 03:14:15.123456"), //
                 Timestamp.valueOf("2018-07-09 03:14:15.123457"), //
                 Timestamp.valueOf("2018-07-09 03:14:15.123457"), //
-                Timestamp.valueOf("2018-07-09 03:14:16.0") };
-        Time[] t_upd_expected_round = new Time[] { //
+                Timestamp.valueOf("2018-07-09 03:14:16.0")};
+        Time[] t_upd_expected_round = new Time[]{ //
                 new Time(Timestamp.valueOf("2018-07-09 03:14:16").getTime()), //
                 new Time(Timestamp.valueOf("2018-07-09 03:14:16.0").getTime()), //
                 new Time(Timestamp.valueOf("2018-07-09 03:14:15.99").getTime()), //
@@ -6420,10 +6394,10 @@ public class ResultSetRegressionTest extends BaseTestCase {
                 new Time(Timestamp.valueOf("2018-07-09 03:14:15.987000").getTime()), //
                 new Time(Timestamp.valueOf("2018-07-09 03:14:15.9870000").getTime()), //
                 new Time(Timestamp.valueOf("2018-07-09 03:14:15.98700000").getTime()), //
-                new Time(Timestamp.valueOf("2018-07-09 03:14:15.987000000").getTime()) };
+                new Time(Timestamp.valueOf("2018-07-09 03:14:15.987000000").getTime())};
 
         // Values we expect in DB after update operation if TIME_TRUNCATE_FRACTIONAL sql_mode is set
-        Timestamp[] ts_upd_expected_truncate = new Timestamp[] { //
+        Timestamp[] ts_upd_expected_truncate = new Timestamp[]{ //
                 Timestamp.valueOf("2018-07-09 03:14:15"), //
                 Timestamp.valueOf("2018-07-09 03:14:15.1"), //
                 Timestamp.valueOf("2018-07-09 03:14:15.12"), //
@@ -6433,8 +6407,8 @@ public class ResultSetRegressionTest extends BaseTestCase {
                 Timestamp.valueOf("2018-07-09 03:14:15.123456"), //
                 Timestamp.valueOf("2018-07-09 03:14:15.123457"), //
                 Timestamp.valueOf("2018-07-09 03:14:15.123457"), //
-                Timestamp.valueOf("2018-07-09 03:14:15.999999") };
-        Time[] t_upd_expected_truncate = new Time[] { //
+                Timestamp.valueOf("2018-07-09 03:14:15.999999")};
+        Time[] t_upd_expected_truncate = new Time[]{ //
                 new Time(Timestamp.valueOf("2018-07-09 03:14:15").getTime()), //
                 new Time(Timestamp.valueOf("2018-07-09 03:14:15.9").getTime()), //
                 new Time(Timestamp.valueOf("2018-07-09 03:14:15.98").getTime()), //
@@ -6444,10 +6418,10 @@ public class ResultSetRegressionTest extends BaseTestCase {
                 new Time(Timestamp.valueOf("2018-07-09 03:14:15.987000").getTime()), //
                 new Time(Timestamp.valueOf("2018-07-09 03:14:15.9870000").getTime()), //
                 new Time(Timestamp.valueOf("2018-07-09 03:14:15.98700000").getTime()), //
-                new Time(Timestamp.valueOf("2018-07-09 03:14:15.987000000").getTime()) };
+                new Time(Timestamp.valueOf("2018-07-09 03:14:15.987000000").getTime())};
 
         // Values we expect in DB after update operation if sendFractionalSeconds=false
-        Timestamp[] ts_upd_expected_not_sendFractionalSeconds = new Timestamp[] { //
+        Timestamp[] ts_upd_expected_not_sendFractionalSeconds = new Timestamp[]{ //
                 Timestamp.valueOf("2018-07-09 03:14:15"), //
                 Timestamp.valueOf("2018-07-09 03:14:15.0"), //
                 Timestamp.valueOf("2018-07-09 03:14:15.0"), //
@@ -6457,8 +6431,8 @@ public class ResultSetRegressionTest extends BaseTestCase {
                 Timestamp.valueOf("2018-07-09 03:14:15.0"), //
                 Timestamp.valueOf("2018-07-09 03:14:15.0"), //
                 Timestamp.valueOf("2018-07-09 03:14:15.0"), //
-                Timestamp.valueOf("2018-07-09 03:14:15.0") };
-        Time[] t_upd_expected_not_sendFractionalSeconds = new Time[] { //
+                Timestamp.valueOf("2018-07-09 03:14:15.0")};
+        Time[] t_upd_expected_not_sendFractionalSeconds = new Time[]{ //
                 new Time(Timestamp.valueOf("2018-07-09 03:14:15").getTime()), //
                 new Time(Timestamp.valueOf("2018-07-09 03:14:15.0").getTime()), //
                 new Time(Timestamp.valueOf("2018-07-09 03:14:15.0").getTime()), //
@@ -6468,7 +6442,7 @@ public class ResultSetRegressionTest extends BaseTestCase {
                 new Time(Timestamp.valueOf("2018-07-09 03:14:15.0").getTime()), //
                 new Time(Timestamp.valueOf("2018-07-09 03:14:15.0").getTime()), //
                 new Time(Timestamp.valueOf("2018-07-09 03:14:15.0").getTime()), //
-                new Time(Timestamp.valueOf("2018-07-09 03:14:15.0").getTime()) };
+                new Time(Timestamp.valueOf("2018-07-09 03:14:15.0").getTime())};
 
         Connection testConn;
 
@@ -6482,7 +6456,7 @@ public class ResultSetRegressionTest extends BaseTestCase {
             if (sqlModeTimeTruncateFractional && !versionMeetsMinimum(8, 0)) {
                 continue;
             }
-            for (String connectionTimeZone : new String[] { null, "GMT", "Asia/Calcutta" }) {
+            for (String connectionTimeZone : new String[]{null, "GMT", "Asia/Calcutta"}) {
                 System.out.println("connectionTimeZone=" + connectionTimeZone);
                 if (connectionTimeZone != null) {
                     props.setProperty(PropertyKey.connectionTimeZone.getKeyName(), connectionTimeZone);
@@ -6594,8 +6568,8 @@ public class ResultSetRegressionTest extends BaseTestCase {
         props.setProperty(PropertyKey.sslMode.getKeyName(), SslMode.DISABLED.name());
         props.setProperty(PropertyKey.allowPublicKeyRetrieval.getKeyName(), "true");
 
-        for (String enc : new String[] { "ISO8859_1", "UTF-8" }) {
-            for (String useSSPS : new String[] { "false", "true" }) {
+        for (String enc : new String[]{"ISO8859_1", "UTF-8"}) {
+            for (String useSSPS : new String[]{"false", "true"}) {
                 final String testCase = String.format("Case: [characterEncoding=%s, useServerPrepStmts=%s]", enc, useSSPS);
                 System.out.println(testCase);
 
@@ -6789,7 +6763,7 @@ public class ResultSetRegressionTest extends BaseTestCase {
         Properties props = new Properties();
         props.setProperty(PropertyKey.sslMode.getKeyName(), SslMode.DISABLED.name());
         props.setProperty(PropertyKey.allowPublicKeyRetrieval.getKeyName(), "true");
-        for (String useSSPS : new String[] { "false", "true" }) {
+        for (String useSSPS : new String[]{"false", "true"}) {
             props.setProperty(PropertyKey.useServerPrepStmts.getKeyName(), useSSPS);
             Connection c1 = getConnectionWithProps(props);
             try (PreparedStatement stmt1 = c1.prepareStatement("SELECT `key`, `value` FROM `testBug92536` WHERE `key`=? FOR UPDATE",
@@ -6828,7 +6802,7 @@ public class ResultSetRegressionTest extends BaseTestCase {
         props.setProperty(PropertyKey.sslMode.getKeyName(), SslMode.DISABLED.name());
         props.setProperty(PropertyKey.allowPublicKeyRetrieval.getKeyName(), "true");
 
-        for (String useSSPS : new String[] { "false", "true" }) {
+        for (String useSSPS : new String[]{"false", "true"}) {
             props.setProperty(PropertyKey.useServerPrepStmts.getKeyName(), useSSPS);
             Connection c1 = getConnectionWithProps(props);
             try (PreparedStatement ps1 = c1.prepareStatement("SELECT * FROM `testBug25650482` order by c1 asc", ResultSet.TYPE_SCROLL_SENSITIVE,
@@ -6867,7 +6841,7 @@ public class ResultSetRegressionTest extends BaseTestCase {
         props.setProperty(PropertyKey.sslMode.getKeyName(), SslMode.DISABLED.name());
         props.setProperty(PropertyKey.allowPublicKeyRetrieval.getKeyName(), "true");
 
-        for (String useSSPS : new String[] { "false", "true" }) {
+        for (String useSSPS : new String[]{"false", "true"}) {
             props.setProperty(PropertyKey.useServerPrepStmts.getKeyName(), useSSPS);
             Connection c1 = getConnectionWithProps(props);
             try (PreparedStatement ps1 = c1.prepareStatement("SELECT * FROM `testBug25650514` order by c1 asc", ResultSet.TYPE_SCROLL_SENSITIVE,
@@ -6910,8 +6884,8 @@ public class ResultSetRegressionTest extends BaseTestCase {
         Properties props = new Properties();
         props.setProperty(PropertyKey.sslMode.getKeyName(), SslMode.DISABLED.name());
         props.setProperty(PropertyKey.allowPublicKeyRetrieval.getKeyName(), "true");
-        for (boolean useSSPS : new boolean[] { false, true }) {
-            for (boolean jdbcCompliantTruncation : new boolean[] { false, true }) {
+        for (boolean useSSPS : new boolean[]{false, true}) {
+            for (boolean jdbcCompliantTruncation : new boolean[]{false, true}) {
                 props.setProperty(PropertyKey.useServerPrepStmts.getKeyName(), "" + useSSPS);
                 props.setProperty(PropertyKey.jdbcCompliantTruncation.getKeyName(), "" + jdbcCompliantTruncation);
                 Connection c1 = getConnectionWithProps(props);
@@ -7106,7 +7080,7 @@ public class ResultSetRegressionTest extends BaseTestCase {
         Properties props = new Properties();
         props.setProperty(PropertyKey.sslMode.getKeyName(), SslMode.DISABLED.name());
         props.setProperty(PropertyKey.allowPublicKeyRetrieval.getKeyName(), "true");
-        for (boolean useSSPS : new boolean[] { false, true }) {
+        for (boolean useSSPS : new boolean[]{false, true}) {
             props.setProperty(PropertyKey.useServerPrepStmts.getKeyName(), "" + useSSPS);
             Connection con = getConnectionWithProps(props);
             this.pstmt = con.prepareStatement("select count(*) from testBug94585");
@@ -7131,8 +7105,8 @@ public class ResultSetRegressionTest extends BaseTestCase {
         props.setProperty(PropertyKey.sslMode.getKeyName(), SslMode.DISABLED.name());
         props.setProperty(PropertyKey.allowPublicKeyRetrieval.getKeyName(), "true");
         Connection con = null;
-        for (String sessVars : new String[] { null, "sql_mode='NO_BACKSLASH_ESCAPES'" }) {
-            for (boolean useSSPS : new boolean[] { false, true }) {
+        for (String sessVars : new String[]{null, "sql_mode='NO_BACKSLASH_ESCAPES'"}) {
+            for (boolean useSSPS : new boolean[]{false, true}) {
                 props.setProperty(PropertyKey.useServerPrepStmts.getKeyName(), "" + useSSPS);
                 if (sessVars != null) {
                     props.setProperty(PropertyKey.sessionVariables.getKeyName(), sessVars);
@@ -7182,8 +7156,8 @@ public class ResultSetRegressionTest extends BaseTestCase {
         props.setProperty(PropertyKey.sslMode.getKeyName(), SslMode.DISABLED.name());
         props.setProperty(PropertyKey.allowPublicKeyRetrieval.getKeyName(), "true");
         Connection con = null;
-        for (String sessVars : new String[] { null, "sql_mode='NO_BACKSLASH_ESCAPES'" }) {
-            for (boolean useSSPS : new boolean[] { false, true }) {
+        for (String sessVars : new String[]{null, "sql_mode='NO_BACKSLASH_ESCAPES'"}) {
+            for (boolean useSSPS : new boolean[]{false, true}) {
                 props.setProperty(PropertyKey.useServerPrepStmts.getKeyName(), "" + useSSPS);
                 if (sessVars != null) {
                     props.setProperty(PropertyKey.sessionVariables.getKeyName(), sessVars);
@@ -7246,7 +7220,7 @@ public class ResultSetRegressionTest extends BaseTestCase {
         props.setProperty(PropertyKey.allowPublicKeyRetrieval.getKeyName(), "true");
         props.setProperty(PropertyKey.allowMultiQueries.getKeyName(), "true");
 
-        for (boolean useSSPS : new boolean[] { false, true }) {
+        for (boolean useSSPS : new boolean[]{false, true}) {
             props.setProperty(PropertyKey.useServerPrepStmts.getKeyName(), "" + useSSPS);
             try {
 
@@ -7305,8 +7279,8 @@ public class ResultSetRegressionTest extends BaseTestCase {
         Properties props = new Properties();
         props.setProperty(PropertyKey.sslMode.getKeyName(), SslMode.DISABLED.name());
         props.setProperty(PropertyKey.allowPublicKeyRetrieval.getKeyName(), "true");
-        for (boolean useSSPS : new boolean[] { false, true }) {
-            for (boolean useCursorFetch : new boolean[] { false, true }) {
+        for (boolean useSSPS : new boolean[]{false, true}) {
+            for (boolean useCursorFetch : new boolean[]{false, true}) {
                 props.setProperty(PropertyKey.useServerPrepStmts.getKeyName(), "" + useSSPS);
                 props.setProperty(PropertyKey.useCursorFetch.getKeyName(), "" + useCursorFetch);
                 props.setProperty(PropertyKey.defaultFetchSize.getKeyName(), useCursorFetch ? "1" : "0");
@@ -7338,7 +7312,7 @@ public class ResultSetRegressionTest extends BaseTestCase {
         Properties props = new Properties();
         props.setProperty(PropertyKey.sslMode.getKeyName(), SslMode.DISABLED.name());
         props.setProperty(PropertyKey.allowPublicKeyRetrieval.getKeyName(), "true");
-        for (boolean cacheResultSetMetadata : new boolean[] { false, true }) {
+        for (boolean cacheResultSetMetadata : new boolean[]{false, true}) {
             props.setProperty(PropertyKey.cacheResultSetMetadata.getKeyName(), "" + cacheResultSetMetadata);
             Connection con = getConnectionWithProps(props);
 
@@ -7393,7 +7367,7 @@ public class ResultSetRegressionTest extends BaseTestCase {
             return null;
         });
 
-        for (int t : new int[] { ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.TYPE_SCROLL_SENSITIVE }) {
+        for (int t : new int[]{ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.TYPE_SCROLL_SENSITIVE}) {
             this.stmt = this.conn.createStatement(t, ResultSet.CONCUR_READ_ONLY);
             this.rs = this.stmt.executeQuery("SELECT 'testBug30474158'");
             this.rs.next();
@@ -7464,7 +7438,7 @@ public class ResultSetRegressionTest extends BaseTestCase {
         props.setProperty(PropertyKey.allowPublicKeyRetrieval.getKeyName(), "true");
         props.setProperty(PropertyKey.cacheDefaultTimeZone.getKeyName(), "false");
 
-        for (boolean preserveInstants : new boolean[] { false, true }) {
+        for (boolean preserveInstants : new boolean[]{false, true}) {
             props.setProperty(PropertyKey.connectionTimeZone.getKeyName(), "SERVER");
             props.setProperty(PropertyKey.preserveInstants.getKeyName(), "" + preserveInstants);
             Connection c1 = getConnectionWithProps(props);
@@ -7613,10 +7587,10 @@ public class ResultSetRegressionTest extends BaseTestCase {
          * 3. cursor-based;
          * 4. cursor-based & scroll-tolerant.
          */
-        String[] connOpts = new String[] { "useSSL=false,allowPublicKeyRetrieval=true", "useSSL=false,allowPublicKeyRetrieval=true",
+        String[] connOpts = new String[]{"useSSL=false,allowPublicKeyRetrieval=true", "useSSL=false,allowPublicKeyRetrieval=true",
                 "useSSL=false,allowPublicKeyRetrieval=true,scrollTolerantForwardOnly=true", "useSSL=false,allowPublicKeyRetrieval=true,useCursorFetch=true",
-                "useSSL=false,allowPublicKeyRetrieval=true,useCursorFetch=true,scrollTolerantForwardOnly=true" };
-        int[] fetchSize = new int[] { 0, Integer.MIN_VALUE, Integer.MIN_VALUE, 2, 2 };
+                "useSSL=false,allowPublicKeyRetrieval=true,useCursorFetch=true,scrollTolerantForwardOnly=true"};
+        int[] fetchSize = new int[]{0, Integer.MIN_VALUE, Integer.MIN_VALUE, 2, 2};
         for (int i = 0; i < connOpts.length; i++) {
             for (int j = 0; j < 3; j++) { // Statement; PreparedStatement and ServerPreparedStatement.
                 Connection testConn = null;
@@ -7937,10 +7911,10 @@ public class ResultSetRegressionTest extends BaseTestCase {
      */
     @Test
     public void testBug33185116() throws Exception {
-        String[] strValues = new String[] { null, "N", "n", "Y", "y", "0", "1", "T", "t", "F", "f", "yes", "Yes", "no", "No", "true", "TrUe", "false",
-                "FalsE" };
-        boolean[] boolValues = new boolean[] { false, false, false, true, true, false, true, true, true, false, false, true, true, false, false, true, true,
-                false, false };
+        String[] strValues = new String[]{null, "N", "n", "Y", "y", "0", "1", "T", "t", "F", "f", "yes", "Yes", "no", "No", "true", "TrUe", "false",
+                "FalsE"};
+        boolean[] boolValues = new boolean[]{false, false, false, true, true, false, true, true, true, false, false, true, true, false, false, true, true,
+                false, false};
 
         createTable("testBug33185116", "(id int not null, f varchar(5), key(id))");
         for (int i = 0; i < strValues.length; i++) {
@@ -8104,7 +8078,7 @@ public class ResultSetRegressionTest extends BaseTestCase {
 
     /**
      * Tests fix for Bug#107215 (Bug#34139593), ClassCastException: java.time.LocalDateTime cannot be cast to java.sql.Timestamp.
-     *
+     * <p>
      * Was failing in CachedRowSet.getDate() and CachedRowSet.getTimestamp() because ResultSet.getObject() returns java.time.LocalDateTime while the code in
      * CachedRowSetImpl tries to cast the value to java.sql.Timestamp.
      * See also: http://hg.openjdk.java.net/jdk8/jdk8/jdk/file/687fd7c7986d/src/share/classes/com/sun/rowset/CachedRowSetImpl.java#l2140
@@ -8368,15 +8342,15 @@ public class ResultSetRegressionTest extends BaseTestCase {
         this.rs.updateAsciiStream(3, new ByteArrayInputStream("b".getBytes()), 1); //c2 TINYTEXT
         this.rs.updateAsciiStream(4, new ByteArrayInputStream("b".getBytes()), 1L);  //c3 TINYTEXT
         this.rs.updateBigDecimal(5, BigDecimal.valueOf(2));  //c4 DECIMAL
-        this.rs.updateBinaryStream(6, new ByteArrayInputStream(new byte[] { 98 })); //c5 TINYBLOB
-        this.rs.updateBinaryStream(7, new ByteArrayInputStream(new byte[] { 98 }), 1); //c6 TINYBLOB
-        this.rs.updateBinaryStream(8, new ByteArrayInputStream(new byte[] { 98 }), 1L);  //c7 TINYBLOB
+        this.rs.updateBinaryStream(6, new ByteArrayInputStream(new byte[]{98})); //c5 TINYBLOB
+        this.rs.updateBinaryStream(7, new ByteArrayInputStream(new byte[]{98}), 1); //c6 TINYBLOB
+        this.rs.updateBinaryStream(8, new ByteArrayInputStream(new byte[]{98}), 1L);  //c7 TINYBLOB
         this.rs.updateBlob(9, new com.mysql.cj.jdbc.Blob("b".getBytes(), null)); //c8 TINYBLOB
-        this.rs.updateBlob(10, new ByteArrayInputStream(new byte[] { 98 })); //c9 TINYBLOB
-        this.rs.updateBlob(11, new ByteArrayInputStream(new byte[] { 98 }), 1); //c10 TINYBLOB
+        this.rs.updateBlob(10, new ByteArrayInputStream(new byte[]{98})); //c9 TINYBLOB
+        this.rs.updateBlob(11, new ByteArrayInputStream(new byte[]{98}), 1); //c10 TINYBLOB
         this.rs.updateBoolean(12, false); //c11 BOOLEAN
         this.rs.updateByte(13, (byte) 0); //c12 BIT
-        this.rs.updateBytes(14, new byte[] { 98 }); //c13 VARBINARY(5)
+        this.rs.updateBytes(14, new byte[]{98}); //c13 VARBINARY(5)
         this.rs.updateCharacterStream(15, new StringReader("b")); //c14 MEDIUMTEXT
         this.rs.updateCharacterStream(16, new StringReader("b"), 1); //c15 MEDIUMTEXT
         this.rs.updateCharacterStream(17, new StringReader("b"), 1L); //c16 MEDIUMTEXT
@@ -8418,21 +8392,21 @@ public class ResultSetRegressionTest extends BaseTestCase {
         assertEquals("b", this.rs.getString(4));
         assertEquals(BigDecimal.valueOf(2), this.rs.getBigDecimal(5));
         Blob blob = this.rs.getBlob(6);
-        assertTrue(Arrays.equals(new byte[] { 98 }, blob.getBytes(1, (int) blob.length())));
+        assertTrue(Arrays.equals(new byte[]{98}, blob.getBytes(1, (int) blob.length())));
         blob = this.rs.getBlob(7);
-        assertTrue(Arrays.equals(new byte[] { 98 }, blob.getBytes(1, (int) blob.length())));
+        assertTrue(Arrays.equals(new byte[]{98}, blob.getBytes(1, (int) blob.length())));
         blob = this.rs.getBlob(8);
-        assertTrue(Arrays.equals(new byte[] { 98 }, blob.getBytes(1, (int) blob.length())));
+        assertTrue(Arrays.equals(new byte[]{98}, blob.getBytes(1, (int) blob.length())));
         blob = this.rs.getBlob(9);
-        assertTrue(Arrays.equals(new byte[] { 98 }, blob.getBytes(1, (int) blob.length())));
+        assertTrue(Arrays.equals(new byte[]{98}, blob.getBytes(1, (int) blob.length())));
         blob = this.rs.getBlob(10);
-        assertTrue(Arrays.equals(new byte[] { 98 }, blob.getBytes(1, (int) blob.length())));
+        assertTrue(Arrays.equals(new byte[]{98}, blob.getBytes(1, (int) blob.length())));
         blob = this.rs.getBlob(11);
-        assertTrue(Arrays.equals(new byte[] { 98 }, blob.getBytes(1, (int) blob.length())));
+        assertTrue(Arrays.equals(new byte[]{98}, blob.getBytes(1, (int) blob.length())));
         assertEquals(false, this.rs.getBoolean(12));
         assertEquals(0, this.rs.getByte(13));
         blob = this.rs.getBlob(14);
-        assertTrue(Arrays.equals(new byte[] { 98 }, blob.getBytes(1, (int) blob.length())));
+        assertTrue(Arrays.equals(new byte[]{98}, blob.getBytes(1, (int) blob.length())));
         assertEquals("b", this.rs.getString(15));
         assertEquals("b", this.rs.getString(16));
         assertEquals("b", this.rs.getString(17));
@@ -8474,6 +8448,32 @@ public class ResultSetRegressionTest extends BaseTestCase {
         this.rs.updateRow();
     }
 
+    public static class TestBug67318ExceptionInterceptor implements ExceptionInterceptor {
+
+        public int alreadyClosedCounter = 0;
+
+        @Override
+        public ExceptionInterceptor init(Properties props, Log log) {
+            return this;
+        }
+
+        @Override
+        public void destroy() {
+        }
+
+        @Override
+        public SQLException interceptException(Exception sqlEx) {
+            sqlEx.printStackTrace();
+
+            if ("Operation not allowed after ResultSet closed".equals(sqlEx.getMessage())
+                    || "No operations allowed after statement closed.".equals(sqlEx.getMessage())) {
+                this.alreadyClosedCounter++;
+            }
+            return (SQLException) sqlEx;
+        }
+
+    }
+
     public static class Bug71143QueryInterceptor extends BaseQueryInterceptor {
 
         public static boolean errorOnSetTrue = false;
@@ -8482,7 +8482,7 @@ public class ResultSetRegressionTest extends BaseTestCase {
         public <T extends Resultset> T preProcess(Supplier<String> str, Query interceptedQuery) {
             String sql = str.get();
             if (sql.startsWith("UPDATE")) {
-                String[] expectedColumns = { "c11", "c23", "c38", "id" };
+                String[] expectedColumns = {"c11", "c23", "c38", "id"};
                 for (String expectedColumn : expectedColumns) {
                     assertTrue(sql.contains(expectedColumn));
                 }

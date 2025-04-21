@@ -32,9 +32,7 @@ public interface JdbcPropertySet extends PropertySet {
      * Exposes all ConnectionPropertyInfo instances as DriverPropertyInfo
      *
      * @return a {@link List} of all ConnectionPropertyInfo instances, as DriverPropertyInfo
-     *
-     * @throws SQLException
-     *             if an error occurs
+     * @throws SQLException if an error occurs
      */
     List<DriverPropertyInfo> exposeAsDriverPropertyInfo() throws SQLException;
 

@@ -51,20 +51,17 @@ import com.mysql.cj.jdbc.exceptions.SQLError;
  */
 public class CallableStatementWrapper extends PreparedStatementWrapper implements CallableStatement {
 
-    protected static CallableStatementWrapper getInstance(ConnectionWrapper c, MysqlPooledConnection conn, CallableStatement toWrap) throws SQLException {
-        return new CallableStatementWrapper(c, conn, toWrap);
-    }
-
     /**
-     * @param c
-     *            ConnectionWrapper
-     * @param conn
-     *            MysqlPooledConnection
-     * @param toWrap
-     *            CallableStatement
+     * @param c      ConnectionWrapper
+     * @param conn   MysqlPooledConnection
+     * @param toWrap CallableStatement
      */
     public CallableStatementWrapper(ConnectionWrapper c, MysqlPooledConnection conn, CallableStatement toWrap) {
         super(c, conn, toWrap);
+    }
+
+    protected static CallableStatementWrapper getInstance(ConnectionWrapper c, MysqlPooledConnection conn, CallableStatement toWrap) throws SQLException {
+        return new CallableStatementWrapper(c, conn, toWrap);
     }
 
     @Override
@@ -1772,14 +1769,14 @@ public class CallableStatementWrapper extends PreparedStatementWrapper implement
             Object cachedUnwrapped = this.unwrappedInterfaces.get(iface);
 
             if (cachedUnwrapped == null) {
-                cachedUnwrapped = Proxy.newProxyInstance(this.wrappedStmt.getClass().getClassLoader(), new Class<?>[] { iface },
+                cachedUnwrapped = Proxy.newProxyInstance(this.wrappedStmt.getClass().getClassLoader(), new Class<?>[]{iface},
                         new ConnectionErrorFiringInvocationHandler(this.wrappedStmt));
                 this.unwrappedInterfaces.put(iface, cachedUnwrapped);
             }
 
             return iface.cast(cachedUnwrapped);
         } catch (ClassCastException cce) {
-            throw SQLError.createSQLException(Messages.getString("Common.UnableToUnwrap", new Object[] { iface.toString() }),
+            throw SQLError.createSQLException(Messages.getString("Common.UnableToUnwrap", new Object[]{iface.toString()}),
                     MysqlErrorNumbers.SQLSTATE_CONNJ_ILLEGAL_ARGUMENT, this.exceptionInterceptor);
         } finally {
             this.lock.unlock();

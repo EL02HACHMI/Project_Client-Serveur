@@ -56,12 +56,12 @@ import com.mysql.cj.jdbc.exceptions.SQLError;
  */
 public class PreparedStatementWrapper extends StatementWrapper implements PreparedStatement {
 
-    protected static PreparedStatementWrapper getInstance(ConnectionWrapper c, MysqlPooledConnection conn, PreparedStatement toWrap) throws SQLException {
-        return new PreparedStatementWrapper(c, conn, toWrap);
-    }
-
     PreparedStatementWrapper(ConnectionWrapper c, MysqlPooledConnection conn, PreparedStatement toWrap) {
         super(c, conn, toWrap);
+    }
+
+    protected static PreparedStatementWrapper getInstance(ConnectionWrapper c, MysqlPooledConnection conn, PreparedStatement toWrap) throws SQLException {
+        return new PreparedStatementWrapper(c, conn, toWrap);
     }
 
     @Override
@@ -888,14 +888,14 @@ public class PreparedStatementWrapper extends StatementWrapper implements Prepar
             Object cachedUnwrapped = this.unwrappedInterfaces.get(iface);
 
             if (cachedUnwrapped == null) {
-                cachedUnwrapped = Proxy.newProxyInstance(this.wrappedStmt.getClass().getClassLoader(), new Class<?>[] { iface },
+                cachedUnwrapped = Proxy.newProxyInstance(this.wrappedStmt.getClass().getClassLoader(), new Class<?>[]{iface},
                         new ConnectionErrorFiringInvocationHandler(this.wrappedStmt));
                 this.unwrappedInterfaces.put(iface, cachedUnwrapped);
             }
 
             return iface.cast(cachedUnwrapped);
         } catch (ClassCastException cce) {
-            throw SQLError.createSQLException(Messages.getString("Common.UnableToUnwrap", new Object[] { iface.toString() }),
+            throw SQLError.createSQLException(Messages.getString("Common.UnableToUnwrap", new Object[]{iface.toString()}),
                     MysqlErrorNumbers.SQLSTATE_CONNJ_ILLEGAL_ARGUMENT, this.exceptionInterceptor);
         } finally {
             this.lock.unlock();

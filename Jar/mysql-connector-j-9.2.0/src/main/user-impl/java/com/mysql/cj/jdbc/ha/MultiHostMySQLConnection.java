@@ -58,34 +58,34 @@ import com.mysql.cj.protocol.ServerSessionStateController;
 
 /**
  * Each instance of MultiHostMySQLConnection is coupled with a MultiHostConnectionProxy instance.
- *
+ * <p>
  * While this class implements MySQLConnection directly, MultiHostConnectionProxy does the same but via a dynamic proxy.
- *
+ * <p>
  * Most of the methods in this class refer directly to the active connection from its MultiHostConnectionProxy pair, providing a non-proxied access to the
  * current active connection managed by this multi-host structure. The remaining methods either implement some local behavior or refer to the proxy itself
  * instead of the sub-connection.
- *
+ * <p>
  * Referring to the higher level proxy connection is needed when some operation needs to be extended to all open sub-connections existing in this multi-host
  * structure as opposed to just refer to the active current connection, such as with close() which is most likely required to close all sub-connections as
  * well.
  */
 public class MultiHostMySQLConnection implements JdbcConnection {
 
+    private final Lock lock = new ReentrantLock();
     /**
      * thisAsProxy holds the proxy (MultiHostConnectionProxy or one of its subclasses) this connection is associated with.
      * It is used as a gateway to the current active sub-connection managed by this multi-host structure or as a target to where some of the methods implemented
      * here in this class refer to.
      */
     protected MultiHostConnectionProxy thisAsProxy;
-    private final Lock lock = new ReentrantLock();
+
+    public MultiHostMySQLConnection(MultiHostConnectionProxy proxy) {
+        this.thisAsProxy = proxy;
+    }
 
     @Override
     public Lock getLock() {
         return this.lock;
-    }
-
-    public MultiHostMySQLConnection(MultiHostConnectionProxy proxy) {
-        this.thisAsProxy = proxy;
     }
 
     public MultiHostConnectionProxy getThisAsProxy() {
@@ -193,6 +193,11 @@ public class MultiHostMySQLConnection implements JdbcConnection {
     }
 
     @Override
+    public void setAutoCommit(boolean autoCommitFlag) throws SQLException {
+        getActiveMySQLConnection().setAutoCommit(autoCommitFlag);
+    }
+
+    @Override
     public int getAutoIncrementIncrement() {
         return getActiveMySQLConnection().getAutoIncrementIncrement();
     }
@@ -208,6 +213,11 @@ public class MultiHostMySQLConnection implements JdbcConnection {
     }
 
     @Override
+    public void setCatalog(String catalog) throws SQLException {
+        getActiveMySQLConnection().setCatalog(catalog);
+    }
+
+    @Override
     public String getCharacterSetMetadata() {
         return getActiveMySQLConnection().getCharacterSetMetadata();
     }
@@ -220,6 +230,11 @@ public class MultiHostMySQLConnection implements JdbcConnection {
     @Override
     public int getHoldability() throws SQLException {
         return getActiveMySQLConnection().getHoldability();
+    }
+
+    @Override
+    public void setHoldability(int arg0) throws SQLException {
+        getActiveMySQLConnection().setHoldability(arg0);
     }
 
     @Override
@@ -278,6 +293,11 @@ public class MultiHostMySQLConnection implements JdbcConnection {
     }
 
     @Override
+    public void setStatementComment(String comment) {
+        getActiveMySQLConnection().setStatementComment(comment);
+    }
+
+    @Override
     public List<QueryInterceptor> getQueryInterceptorsInstances() {
         return getActiveMySQLConnection().getQueryInterceptorsInstances();
     }
@@ -288,8 +308,18 @@ public class MultiHostMySQLConnection implements JdbcConnection {
     }
 
     @Override
+    public void setTransactionIsolation(int level) throws SQLException {
+        getActiveMySQLConnection().setTransactionIsolation(level);
+    }
+
+    @Override
     public Map<String, Class<?>> getTypeMap() throws SQLException {
         return getActiveMySQLConnection().getTypeMap();
+    }
+
+    @Override
+    public void setTypeMap(Map<String, Class<?>> map) throws SQLException {
+        getActiveMySQLConnection().setTypeMap(map);
     }
 
     @Override
@@ -328,6 +358,11 @@ public class MultiHostMySQLConnection implements JdbcConnection {
     }
 
     @Override
+    public void setInGlobalTx(boolean flag) {
+        getActiveMySQLConnection().setInGlobalTx(flag);
+    }
+
+    @Override
     public boolean isSourceConnection() {
         return getThisAsProxy().isSourceConnection();
     }
@@ -335,6 +370,11 @@ public class MultiHostMySQLConnection implements JdbcConnection {
     @Override
     public boolean isReadOnly() throws SQLException {
         return getActiveMySQLConnection().isReadOnly();
+    }
+
+    @Override
+    public void setReadOnly(boolean readOnlyFlag) throws SQLException {
+        getActiveMySQLConnection().setReadOnly(readOnlyFlag);
     }
 
     @Override
@@ -483,8 +523,8 @@ public class MultiHostMySQLConnection implements JdbcConnection {
     }
 
     @Override
-    public void setAutoCommit(boolean autoCommitFlag) throws SQLException {
-        getActiveMySQLConnection().setAutoCommit(autoCommitFlag);
+    public String getDatabase() {
+        return getActiveMySQLConnection().getDatabase();
     }
 
     @Override
@@ -493,38 +533,13 @@ public class MultiHostMySQLConnection implements JdbcConnection {
     }
 
     @Override
-    public String getDatabase() {
-        return getActiveMySQLConnection().getDatabase();
-    }
-
-    @Override
-    public void setCatalog(String catalog) throws SQLException {
-        getActiveMySQLConnection().setCatalog(catalog);
-    }
-
-    @Override
     public void setFailedOver(boolean flag) {
         getActiveMySQLConnection().setFailedOver(flag);
     }
 
     @Override
-    public void setHoldability(int arg0) throws SQLException {
-        getActiveMySQLConnection().setHoldability(arg0);
-    }
-
-    @Override
-    public void setInGlobalTx(boolean flag) {
-        getActiveMySQLConnection().setInGlobalTx(flag);
-    }
-
-    @Override
     public void setProxy(JdbcConnection proxy) {
         getThisAsProxy().setProxy(proxy);
-    }
-
-    @Override
-    public void setReadOnly(boolean readOnlyFlag) throws SQLException {
-        getActiveMySQLConnection().setReadOnly(readOnlyFlag);
     }
 
     @Override
@@ -540,16 +555,6 @@ public class MultiHostMySQLConnection implements JdbcConnection {
     @Override
     public Savepoint setSavepoint(String name) throws SQLException {
         return getActiveMySQLConnection().setSavepoint(name);
-    }
-
-    @Override
-    public void setStatementComment(String comment) {
-        getActiveMySQLConnection().setStatementComment(comment);
-    }
-
-    @Override
-    public void setTransactionIsolation(int level) throws SQLException {
-        getActiveMySQLConnection().setTransactionIsolation(level);
     }
 
     @Override
@@ -598,23 +603,18 @@ public class MultiHostMySQLConnection implements JdbcConnection {
     }
 
     @Override
-    public void setTypeMap(Map<String, Class<?>> map) throws SQLException {
-        getActiveMySQLConnection().setTypeMap(map);
-    }
-
-    @Override
     public boolean isServerLocal() throws SQLException {
         return getActiveMySQLConnection().isServerLocal();
     }
 
     @Override
-    public void setSchema(String schema) throws SQLException {
-        getActiveMySQLConnection().setSchema(schema);
+    public String getSchema() throws SQLException {
+        return getActiveMySQLConnection().getSchema();
     }
 
     @Override
-    public String getSchema() throws SQLException {
-        return getActiveMySQLConnection().getSchema();
+    public void setSchema(String schema) throws SQLException {
+        getActiveMySQLConnection().setSchema(schema);
     }
 
     @Override
@@ -668,6 +668,11 @@ public class MultiHostMySQLConnection implements JdbcConnection {
     }
 
     @Override
+    public void setClientInfo(Properties properties) throws SQLClientInfoException {
+        getActiveMySQLConnection().setClientInfo(properties);
+    }
+
+    @Override
     public String getClientInfo(String name) throws SQLException {
         return getActiveMySQLConnection().getClientInfo(name);
     }
@@ -675,11 +680,6 @@ public class MultiHostMySQLConnection implements JdbcConnection {
     @Override
     public boolean isValid(int timeout) throws SQLException {
         return getActiveMySQLConnection().isValid(timeout);
-    }
-
-    @Override
-    public void setClientInfo(Properties properties) throws SQLClientInfoException {
-        getActiveMySQLConnection().setClientInfo(properties);
     }
 
     @Override
@@ -699,7 +699,7 @@ public class MultiHostMySQLConnection implements JdbcConnection {
             // This works for classes that aren't actually wrapping anything
             return iface.cast(this);
         } catch (ClassCastException cce) {
-            throw SQLError.createSQLException(Messages.getString("Common.UnableToUnwrap", new Object[] { iface.toString() }),
+            throw SQLError.createSQLException(Messages.getString("Common.UnableToUnwrap", new Object[]{iface.toString()}),
                     MysqlErrorNumbers.SQLSTATE_CONNJ_ILLEGAL_ARGUMENT, getExceptionInterceptor());
         }
     }

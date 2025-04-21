@@ -47,41 +47,34 @@ import com.mysql.cj.telemetry.TelemetrySpanName;
  */
 public class ResultsetRowsCursor extends AbstractResultsetRows implements ResultsetRows {
 
+    protected NativeMessageBuilder commandBuilder = null;
     /**
      * The cache of rows we have retrieved from the server.
      */
     private List<Row> fetchedRows;
-
     /**
      * Where we are positionaly in the entire result set, used mostly to
      * facilitate easy 'isBeforeFirst()' and 'isFirst()' methods.
      */
     private int currentPositionInEntireResult = BEFORE_START_OF_ROWS;
-
     /**
      * Have we been told from the server that we have seen the last row?
      */
     private boolean lastRowFetched = false;
-
     /**
      * Communications channel to the server
      */
     private NativeProtocol protocol;
-
     /**
      * Have we attempted to fetch any rows yet?
      */
     private boolean firstFetchCompleted = false;
 
-    protected NativeMessageBuilder commandBuilder = null;
-
     /**
      * Creates a new cursor-backed row provider.
      *
-     * @param ioChannel
-     *            connection to the server.
-     * @param columnDefinition
-     *            field-level metadata for the results that this cursor covers.
+     * @param ioChannel        connection to the server.
+     * @param columnDefinition field-level metadata for the results that this cursor covers.
      */
     public ResultsetRowsCursor(NativeProtocol ioChannel, ColumnDefinition columnDefinition) {
         this.currentPositionInEntireResult = BEFORE_START_OF_ROWS;

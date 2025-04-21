@@ -40,10 +40,10 @@ public enum MysqlType implements SQLType {
      * after the decimal point (the scale). The decimal point and (for negative numbers) the "-" sign are not counted in M.
      * If D is 0, values have no decimal point or fractional part. The maximum number of digits (M) for DECIMAL is 65.
      * The maximum number of supported decimals (D) is 30. If D is omitted, the default is 0. If M is omitted, the default is 10.
-     *
+     * <p>
      * Protocol: FIELD_TYPE_DECIMAL = 0
      * Protocol: FIELD_TYPE_NEWDECIMAL = 246
-     *
+     * <p>
      * These types are synonyms for DECIMAL:
      * DEC[(M[,D])] [UNSIGNED] [ZEROFILL],
      * NUMERIC[(M[,D])] [UNSIGNED] [ZEROFILL],
@@ -60,7 +60,7 @@ public enum MysqlType implements SQLType {
     /**
      * TINYINT[(M)] [UNSIGNED] [ZEROFILL]
      * A very small integer. The signed range is -128 to 127. The unsigned range is 0 to 255.
-     *
+     * <p>
      * Protocol: FIELD_TYPE_TINY = 1
      */
     TINYINT("TINYINT", Types.TINYINT, Integer.class, MysqlType.FIELD_FLAG_ZEROFILL, MysqlType.IS_DECIMAL, 3L, "[(M)] [UNSIGNED] [ZEROFILL]"),
@@ -74,17 +74,17 @@ public enum MysqlType implements SQLType {
     /**
      * BOOL, BOOLEAN
      * These types are synonyms for TINYINT(1). A value of zero is considered false. Nonzero values are considered true
-     *
+     * <p>
      * BOOLEAN is converted to TINYINT(1) during DDL execution i.e. it has the same precision=3. Thus we have to
      * look at full data type name and convert TINYINT to BOOLEAN (or BIT) if it has "(1)" length specification.
-     *
+     * <p>
      * Protocol: FIELD_TYPE_TINY = 1
      */
     BOOLEAN("BOOLEAN", Types.BOOLEAN, Boolean.class, 0, MysqlType.IS_NOT_DECIMAL, 3L, ""),
     /**
      * SMALLINT[(M)] [UNSIGNED] [ZEROFILL]
      * A small integer. The signed range is -32768 to 32767. The unsigned range is 0 to 65535.
-     *
+     * <p>
      * Protocol: FIELD_TYPE_SHORT = 2
      */
     SMALLINT("SMALLINT", Types.SMALLINT, Integer.class, MysqlType.FIELD_FLAG_ZEROFILL, MysqlType.IS_DECIMAL, 5L, "[(M)] [UNSIGNED] [ZEROFILL]"),
@@ -98,9 +98,9 @@ public enum MysqlType implements SQLType {
     /**
      * INT[(M)] [UNSIGNED] [ZEROFILL]
      * A normal-size integer. The signed range is -2147483648 to 2147483647. The unsigned range is 0 to 4294967295.
-     *
+     * <p>
      * Protocol: FIELD_TYPE_LONG = 3
-     *
+     * <p>
      * INTEGER[(M)] [UNSIGNED] [ZEROFILL] is a synonym for INT.
      */
     INT("INT", Types.INTEGER, Integer.class, MysqlType.FIELD_FLAG_ZEROFILL, MysqlType.IS_DECIMAL, 10L, "[(M)] [UNSIGNED] [ZEROFILL]"),
@@ -116,13 +116,13 @@ public enum MysqlType implements SQLType {
      * A small (single-precision) floating-point number. Permissible values are -3.402823466E+38 to -1.175494351E-38, 0,
      * and 1.175494351E-38 to 3.402823466E+38. These are the theoretical limits, based on the IEEE standard. The actual
      * range might be slightly smaller depending on your hardware or operating system.
-     *
+     * <p>
      * M is the total number of digits and D is the number of digits following the decimal point. If M and D are omitted,
      * values are stored to the limits permitted by the hardware. A single-precision floating-point number is accurate to
      * approximately 7 decimal places.
-     *
+     * <p>
      * Protocol: FIELD_TYPE_FLOAT = 4
-     *
+     * <p>
      * Additionally:
      * FLOAT(p) [UNSIGNED] [ZEROFILL]
      * A floating-point number. p represents the precision in bits, but MySQL uses this value only to determine whether
@@ -143,13 +143,13 @@ public enum MysqlType implements SQLType {
      * A normal-size (double-precision) floating-point number. Permissible values are -1.7976931348623157E+308 to
      * -2.2250738585072014E-308, 0, and 2.2250738585072014E-308 to 1.7976931348623157E+308. These are the theoretical limits,
      * based on the IEEE standard. The actual range might be slightly smaller depending on your hardware or operating system.
-     *
+     * <p>
      * M is the total number of digits and D is the number of digits following the decimal point. If M and D are omitted,
      * values are stored to the limits permitted by the hardware. A double-precision floating-point number is accurate to
      * approximately 15 decimal places.
-     *
+     * <p>
      * Protocol: FIELD_TYPE_DOUBLE = 5
-     *
+     * <p>
      * These types are synonyms for DOUBLE:
      * DOUBLE PRECISION[(M,D)] [UNSIGNED] [ZEROFILL],
      * REAL[(M,D)] [UNSIGNED] [ZEROFILL]. Exception: If the REAL_AS_FLOAT SQL mode is enabled, REAL is a synonym for FLOAT rather than DOUBLE.
@@ -174,9 +174,8 @@ public enum MysqlType implements SQLType {
      * from the epoch and the value 0 is reserved for representing '0000-00-00 00:00:00', the "zero" TIMESTAMP value.
      * An optional fsp value in the range from 0 to 6 may be given to specify fractional seconds precision. A value
      * of 0 signifies that there is no fractional part. If omitted, the default precision is 0.
-     *
+     * <p>
      * Protocol: FIELD_TYPE_TIMESTAMP = 7
-     *
      */
     // TODO If MySQL server run with the MAXDB SQL mode enabled, TIMESTAMP is identical with DATETIME. If this mode is enabled at the time that a table is created, TIMESTAMP columns are created as DATETIME columns.
     // As a result, such columns use DATETIME display format, have the same range of values, and there is no automatic initialization or updating to the current date and time
@@ -184,9 +183,9 @@ public enum MysqlType implements SQLType {
     /**
      * BIGINT[(M)] [UNSIGNED] [ZEROFILL]
      * A large integer. The signed range is -9223372036854775808 to 9223372036854775807. The unsigned range is 0 to 18446744073709551615.
-     *
+     * <p>
      * Protocol: FIELD_TYPE_LONGLONG = 8
-     *
+     * <p>
      * SERIAL is an alias for BIGINT UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE.
      */
     BIGINT("BIGINT", Types.BIGINT, Long.class, MysqlType.FIELD_FLAG_ZEROFILL, MysqlType.IS_DECIMAL, 19L, "[(M)] [UNSIGNED] [ZEROFILL]"),
@@ -200,7 +199,7 @@ public enum MysqlType implements SQLType {
     /**
      * MEDIUMINT[(M)] [UNSIGNED] [ZEROFILL]
      * A medium-sized integer. The signed range is -8388608 to 8388607. The unsigned range is 0 to 16777215.
-     *
+     * <p>
      * Protocol: FIELD_TYPE_INT24 = 9
      */
     MEDIUMINT("MEDIUMINT", Types.INTEGER, Integer.class, MysqlType.FIELD_FLAG_ZEROFILL, MysqlType.IS_DECIMAL, 7L, "[(M)] [UNSIGNED] [ZEROFILL]"),
@@ -215,7 +214,7 @@ public enum MysqlType implements SQLType {
      * DATE
      * A date. The supported range is '1000-01-01' to '9999-12-31'. MySQL displays DATE values in 'YYYY-MM-DD' format,
      * but permits assignment of values to DATE columns using either strings or numbers.
-     *
+     * <p>
      * Protocol: FIELD_TYPE_DATE = 10
      */
     DATE("DATE", Types.DATE, Date.class, 0, MysqlType.IS_NOT_DECIMAL, 10L, ""),
@@ -225,7 +224,7 @@ public enum MysqlType implements SQLType {
      * 'HH:MM:SS[.fraction]' format, but permits assignment of values to TIME columns using either strings or numbers.
      * An optional fsp value in the range from 0 to 6 may be given to specify fractional seconds precision. A value
      * of 0 signifies that there is no fractional part. If omitted, the default precision is 0.
-     *
+     * <p>
      * Protocol: FIELD_TYPE_TIME = 11
      */
     TIME("TIME", Types.TIME, Time.class, 0, MysqlType.IS_NOT_DECIMAL, 16L, "[(fsp)]"),
@@ -236,7 +235,7 @@ public enum MysqlType implements SQLType {
      * DATETIME columns using either strings or numbers.
      * An optional fsp value in the range from 0 to 6 may be given to specify fractional seconds precision. A value
      * of 0 signifies that there is no fractional part. If omitted, the default precision is 0.
-     *
+     * <p>
      * Protocol: FIELD_TYPE_DATETIME = 12
      */
     DATETIME("DATETIME", Types.TIMESTAMP, LocalDateTime.class, 0, MysqlType.IS_NOT_DECIMAL, 26L, "[(fsp)]"),
@@ -253,18 +252,18 @@ public enum MysqlType implements SQLType {
      * The effective maximum length of a VARCHAR is subject to the maximum row size (65,535 bytes, which is shared among
      * all columns) and the character set used. For example, utf8 characters can require up to three bytes per character,
      * so a VARCHAR column that uses the utf8 character set can be declared to be a maximum of 21,844 characters.
-     *
+     * <p>
      * MySQL stores VARCHAR values as a 1-byte or 2-byte length prefix plus data. The length prefix indicates the number
      * of bytes in the value. A VARCHAR column uses one length byte if values require no more than 255 bytes, two length
      * bytes if values may require more than 255 bytes.
-     *
+     * <p>
      * Note
      * MySQL 5.7 follows the standard SQL specification, and does not remove trailing spaces from VARCHAR values.
-     *
+     * <p>
      * VARCHAR is shorthand for CHARACTER VARYING. NATIONAL VARCHAR is the standard SQL way to define that a VARCHAR
      * column should use some predefined character set. MySQL 4.1 and up uses utf8 as this predefined character set.
      * NVARCHAR is shorthand for NATIONAL VARCHAR.
-     *
+     * <p>
      * Protocol: FIELD_TYPE_VARCHAR = 15
      * Protocol: FIELD_TYPE_VAR_STRING = 253
      */
@@ -273,7 +272,7 @@ public enum MysqlType implements SQLType {
      * VARBINARY(M)
      * The VARBINARY type is similar to the VARCHAR type, but stores binary byte strings rather than nonbinary
      * character strings. M represents the maximum column length in bytes.
-     *
+     * <p>
      * Protocol: FIELD_TYPE_VARCHAR = 15
      * Protocol: FIELD_TYPE_VAR_STRING = 253
      */
@@ -287,7 +286,7 @@ public enum MysqlType implements SQLType {
     /**
      * The size of JSON documents stored in JSON columns is limited to the value of the max_allowed_packet system variable (max value 1073741824).
      * (While the server manipulates a JSON value internally in memory, it can be larger; the limit applies when the server stores it.)
-     *
+     * <p>
      * Protocol: FIELD_TYPE_BIT = 245
      */
     JSON("JSON", Types.LONGVARCHAR, String.class, 0, MysqlType.IS_NOT_DECIMAL, 1073741824L, ""),
@@ -297,7 +296,7 @@ public enum MysqlType implements SQLType {
      * 'value2', ..., NULL or the special '' error value. ENUM values are represented internally as integers.
      * An ENUM column can have a maximum of 65,535 distinct elements. (The practical limit is less than 3000.)
      * A table can have no more than 255 unique element list definitions among its ENUM and SET columns considered as a group
-     *
+     * <p>
      * Protocol: FIELD_TYPE_ENUM = 247
      */
     ENUM("ENUM", Types.CHAR, String.class, 0, MysqlType.IS_NOT_DECIMAL, 65535L,
@@ -308,7 +307,7 @@ public enum MysqlType implements SQLType {
      * of values 'value1', 'value2', ... SET values are represented internally as integers.
      * A SET column can have a maximum of 64 distinct members. A table can have no more than 255 unique
      * element list definitions among its ENUM and SET columns considered as a group
-     *
+     * <p>
      * Protocol: FIELD_TYPE_SET = 248
      */
     SET("SET", Types.CHAR, String.class, 0, MysqlType.IS_NOT_DECIMAL, 64L, "('value1','value2',...) [CHARACTER SET charset_name] [COLLATE collation_name]"),
@@ -316,7 +315,7 @@ public enum MysqlType implements SQLType {
      * TINYBLOB
      * A BLOB column with a maximum length of 255 (28 - 1) bytes. Each TINYBLOB value is stored using a
      * 1-byte length prefix that indicates the number of bytes in the value.
-     *
+     * <p>
      * Protocol:FIELD_TYPE_TINY_BLOB = 249
      */
     TINYBLOB("TINYBLOB", Types.VARBINARY, null, 0, MysqlType.IS_NOT_DECIMAL, 255L, ""),
@@ -325,7 +324,7 @@ public enum MysqlType implements SQLType {
      * A TEXT column with a maximum length of 255 (28 - 1) characters. The effective maximum length
      * is less if the value contains multibyte characters. Each TINYTEXT value is stored using
      * a 1-byte length prefix that indicates the number of bytes in the value.
-     *
+     * <p>
      * Protocol:FIELD_TYPE_TINY_BLOB = 249
      */
     TINYTEXT("TINYTEXT", Types.VARCHAR, String.class, 0, MysqlType.IS_NOT_DECIMAL, 255L, " [CHARACTER SET charset_name] [COLLATE collation_name]"),
@@ -333,7 +332,7 @@ public enum MysqlType implements SQLType {
      * MEDIUMBLOB
      * A BLOB column with a maximum length of 16,777,215 (224 - 1) bytes. Each MEDIUMBLOB value is stored
      * using a 3-byte length prefix that indicates the number of bytes in the value.
-     *
+     * <p>
      * Protocol: FIELD_TYPE_MEDIUM_BLOB = 250
      */
     MEDIUMBLOB("MEDIUMBLOB", Types.LONGVARBINARY, null, 0, MysqlType.IS_NOT_DECIMAL, 16777215L, ""),
@@ -342,7 +341,7 @@ public enum MysqlType implements SQLType {
      * A TEXT column with a maximum length of 16,777,215 (224 - 1) characters. The effective maximum length
      * is less if the value contains multibyte characters. Each MEDIUMTEXT value is stored using a 3-byte
      * length prefix that indicates the number of bytes in the value.
-     *
+     * <p>
      * Protocol: FIELD_TYPE_MEDIUM_BLOB = 250
      */
     MEDIUMTEXT("MEDIUMTEXT", Types.LONGVARCHAR, String.class, 0, MysqlType.IS_NOT_DECIMAL, 16777215L, " [CHARACTER SET charset_name] [COLLATE collation_name]"),
@@ -351,7 +350,7 @@ public enum MysqlType implements SQLType {
      * A BLOB column with a maximum length of 4,294,967,295 or 4GB (232 - 1) bytes. The effective maximum length
      * of LONGBLOB columns depends on the configured maximum packet size in the client/server protocol and available
      * memory. Each LONGBLOB value is stored using a 4-byte length prefix that indicates the number of bytes in the value.
-     *
+     * <p>
      * Protocol: FIELD_TYPE_LONG_BLOB = 251
      */
     LONGBLOB("LONGBLOB", Types.LONGVARBINARY, null, 0, MysqlType.IS_NOT_DECIMAL, 4294967295L, ""),
@@ -362,7 +361,7 @@ public enum MysqlType implements SQLType {
      * of LONGTEXT columns also depends on the configured maximum packet size in the client/server protocol
      * and available memory. Each LONGTEXT value is stored using a 4-byte length prefix that indicates
      * the number of bytes in the value.
-     *
+     * <p>
      * Protocol: FIELD_TYPE_LONG_BLOB = 251
      */
     LONGTEXT("LONGTEXT", Types.LONGVARCHAR, String.class, 0, MysqlType.IS_NOT_DECIMAL, 4294967295L, " [CHARACTER SET charset_name] [COLLATE collation_name]"),
@@ -372,7 +371,7 @@ public enum MysqlType implements SQLType {
      * a 2-byte length prefix that indicates the number of bytes in the value.
      * An optional length M can be given for this type. If this is done, MySQL creates the column as
      * the smallest BLOB type large enough to hold values M bytes long.
-     *
+     * <p>
      * Protocol: FIELD_TYPE_BLOB = 252
      */
     BLOB("BLOB", Types.LONGVARBINARY, null, 0, MysqlType.IS_NOT_DECIMAL, 65535L, "[(M)]"),
@@ -383,7 +382,7 @@ public enum MysqlType implements SQLType {
      * prefix that indicates the number of bytes in the value.
      * An optional length M can be given for this type. If this is done, MySQL creates the column as
      * the smallest TEXT type large enough to hold values M characters long.
-     *
+     * <p>
      * Protocol: FIELD_TYPE_BLOB = 252
      */
     TEXT("TEXT", Types.LONGVARCHAR, String.class, 0, MysqlType.IS_NOT_DECIMAL, 65535L, "[(M)] [CHARACTER SET charset_name] [COLLATE collation_name]"),
@@ -396,12 +395,12 @@ public enum MysqlType implements SQLType {
      * CHAR is shorthand for CHARACTER. NATIONAL CHAR (or its equivalent short form, NCHAR) is the standard SQL way
      * to define that a CHAR column should use some predefined character set. MySQL 4.1 and up uses utf8
      * as this predefined character set.
-     *
+     * <p>
      * MySQL permits you to create a column of type CHAR(0). This is useful primarily when you have to be compliant
      * with old applications that depend on the existence of a column but that do not actually use its value.
      * CHAR(0) is also quite nice when you need a column that can take only two values: A column that is defined
      * as CHAR(0) NULL occupies only one bit and can take only the values NULL and '' (the empty string).
-     *
+     * <p>
      * Protocol: FIELD_TYPE_STRING = 254
      */
     CHAR("CHAR", Types.CHAR, String.class, 0, MysqlType.IS_NOT_DECIMAL, 255L, "[(M)] [CHARACTER SET charset_name] [COLLATE collation_name]"),
@@ -409,15 +408,15 @@ public enum MysqlType implements SQLType {
      * BINARY(M)
      * The BINARY type is similar to the CHAR type, but stores binary byte strings rather than nonbinary character strings.
      * M represents the column length in bytes.
-     *
+     * <p>
      * The CHAR BYTE data type is an alias for the BINARY data type.
-     *
+     * <p>
      * Protocol: no concrete type on the wire TODO: really?
      */
     BINARY("BINARY", Types.BINARY, null, 0, MysqlType.IS_NOT_DECIMAL, 255L, "(M)"),
     /**
      * Top class for Spatial Data Types
-     *
+     * <p>
      * Protocol: FIELD_TYPE_GEOMETRY = 255
      */
     GEOMETRY("GEOMETRY", Types.BINARY, null, 0, MysqlType.IS_NOT_DECIMAL, 65535L, ""), // TODO check precision, it isn't well documented, only mentioned that WKB format is represented by BLOB
@@ -425,7 +424,7 @@ public enum MysqlType implements SQLType {
      * VECTOR[(M)]
      * A VECTOR column with a maximum length of 65,532 (16383 x 4) bytes. An optional length M can be given for this type to indicate the maximum number of
      * entries in a VECTOR. M cannot exceed 16383. Each entry is a 4 Byte (single-precision) floating-point value.
-     *
+     * <p>
      * Protocol: FIELD_TYPE_VECTOR = 242
      */
     VECTOR("VECTOR", Types.LONGVARBINARY, null, 0, MysqlType.IS_NOT_DECIMAL, 65532L, "[(M)]"),
@@ -433,17 +432,92 @@ public enum MysqlType implements SQLType {
     /**
      * Fall-back type for those MySQL data types which Connector/J cannot recognize.
      * Handled the same as BLOB.
-     *
+     * <p>
      * Has no protocol ID.
      */
     UNKNOWN("UNKNOWN", Types.OTHER, null, 0, MysqlType.IS_NOT_DECIMAL, 65535L, "");
+
+    public static final int FIELD_FLAG_NOT_NULL = 1;
+    public static final int FIELD_FLAG_PRIMARY_KEY = 2;
+    public static final int FIELD_FLAG_UNIQUE_KEY = 4;
+    public static final int FIELD_FLAG_MULTIPLE_KEY = 8;
+    public static final int FIELD_FLAG_BLOB = 16;
+    public static final int FIELD_FLAG_UNSIGNED = 32;
+    public static final int FIELD_FLAG_ZEROFILL = 64;
+    public static final int FIELD_FLAG_BINARY = 128;
+    public static final int FIELD_FLAG_AUTO_INCREMENT = 512;
+    // Protocol field type numbers
+    public static final int FIELD_TYPE_DECIMAL = 0;
+    public static final int FIELD_TYPE_TINY = 1;
+    public static final int FIELD_TYPE_SHORT = 2;
+    public static final int FIELD_TYPE_LONG = 3;
+    public static final int FIELD_TYPE_FLOAT = 4;
+    public static final int FIELD_TYPE_DOUBLE = 5;
+    public static final int FIELD_TYPE_NULL = 6;
+    public static final int FIELD_TYPE_TIMESTAMP = 7;
+    public static final int FIELD_TYPE_LONGLONG = 8;
+    public static final int FIELD_TYPE_INT24 = 9;
+    public static final int FIELD_TYPE_DATE = 10;
+    public static final int FIELD_TYPE_TIME = 11;
+    public static final int FIELD_TYPE_DATETIME = 12;
+    public static final int FIELD_TYPE_YEAR = 13;
+    public static final int FIELD_TYPE_VARCHAR = 15;
+    public static final int FIELD_TYPE_BIT = 16;
+    public static final int FIELD_TYPE_VECTOR = 242;
+    public static final int FIELD_TYPE_JSON = 245;
+    public static final int FIELD_TYPE_NEWDECIMAL = 246;
+    public static final int FIELD_TYPE_ENUM = 247;
+    public static final int FIELD_TYPE_SET = 248;
+    public static final int FIELD_TYPE_TINY_BLOB = 249;
+    public static final int FIELD_TYPE_MEDIUM_BLOB = 250;
+    public static final int FIELD_TYPE_LONG_BLOB = 251;
+    public static final int FIELD_TYPE_BLOB = 252;
+    public static final int FIELD_TYPE_VAR_STRING = 253;
+    public static final int FIELD_TYPE_STRING = 254;
+    public static final int FIELD_TYPE_GEOMETRY = 255;
+    private static final boolean IS_DECIMAL = true;
+    private static final boolean IS_NOT_DECIMAL = false;
+    protected final Class<?> javaClass;
+    private final String name;
+    private final int flagsMask;
+    private final boolean isDecimal;
+    private final Long precision;
+    private final String createParams;
+    protected int jdbcType;
+    /**
+     * @param mysqlTypeName mysqlTypeName
+     * @param jdbcType      jdbcType
+     * @param javaClass     javaClass
+     * @param allowedFlags  allowedFlags
+     * @param isDec         isDec
+     * @param precision     represents the maximum column size that the server supports for the given datatype.
+     *                      <ul>
+     *                      <li>For numeric data, this is the maximum precision.
+     *                      <li>
+     *                      For character data, this is the length in characters.
+     *                      <li>For datetime datatypes, this is the length in characters of the String
+     *                      representation (assuming the maximum allowed precision of the fractional seconds component).
+     *                      <li>For binary data, this is the length in bytes.
+     *                      <li>For the ROWID datatype, this is the length in bytes.
+     *                      <li>Null is returned for data types where the column size is not applicable.
+     *                      </ul>
+     * @param createParams  params
+     */
+    private MysqlType(String mysqlTypeName, int jdbcType, Class<?> javaClass, int allowedFlags, boolean isDec, Long precision, String createParams) {
+        this.name = mysqlTypeName;
+        this.jdbcType = jdbcType;
+        this.javaClass = javaClass;
+        this.flagsMask = allowedFlags;
+        this.isDecimal = isDec;
+        this.precision = precision;
+        this.createParams = createParams;
+    }
 
     /**
      * Get MysqlType matching the full MySQL type name, for example "DECIMAL(5,3) UNSIGNED ZEROFILL".
      * Distinct *_UNSIGNED type will be returned if "UNSIGNED" is present in fullMysqlTypeName.
      *
-     * @param fullMysqlTypeName
-     *            full MySQL type name
+     * @param fullMysqlTypeName full MySQL type name
      * @return MysqlType
      */
     public static MysqlType getByName(String fullMysqlTypeName) {
@@ -509,8 +583,8 @@ public enum MysqlType implements SQLType {
                     : INT;
 
         } else if (StringUtils.indexOfIgnoreCase(typeName, "DOUBLE") != -1 || StringUtils.indexOfIgnoreCase(typeName, "REAL") != -1
-        /* || StringUtils.indexOfIgnoreCase(name, "DOUBLE PRECISION") != -1 is caught by "DOUBLE" check */
-        // IMPORTANT: "FLOAT8" must be checked before "FLOAT"
+                /* || StringUtils.indexOfIgnoreCase(name, "DOUBLE PRECISION") != -1 is caught by "DOUBLE" check */
+                // IMPORTANT: "FLOAT8" must be checked before "FLOAT"
                 || StringUtils.indexOfIgnoreCase(typeName, "FLOAT8") != -1) {
             // TODO Exception: If the REAL_AS_FLOAT SQL mode is enabled, REAL is a synonym for FLOAT rather than DOUBLE.
             return StringUtils.indexOfIgnoreCase(fullMysqlTypeName, "UNSIGNED") != -1 || StringUtils.indexOfIgnoreCase(fullMysqlTypeName, "ZEROFILL") != -1
@@ -518,9 +592,9 @@ public enum MysqlType implements SQLType {
                     : DOUBLE;
 
         } else if (StringUtils.indexOfIgnoreCase(typeName, "FLOAT") != -1 /*
-                                                                           * || StringUtils.indexOfIgnoreCase(name, "FLOAT4") != -1 is caught by
-                                                                           * "FLOAT" check
-                                                                           */) {
+         * || StringUtils.indexOfIgnoreCase(name, "FLOAT4") != -1 is caught by
+         * "FLOAT" check
+         */) {
             // TODO FLOAT(p) [UNSIGNED] [ZEROFILL]. If p is from 0 to 24, the data type becomes FLOAT with no M or D values. If p is from 25 to 53, the data type becomes DOUBLE with no M or D values.
             return StringUtils.indexOfIgnoreCase(fullMysqlTypeName, "UNSIGNED") != -1 || StringUtils.indexOfIgnoreCase(fullMysqlTypeName, "ZEROFILL") != -1
                     ? FLOAT_UNSIGNED
@@ -682,7 +756,7 @@ public enum MysqlType implements SQLType {
             case Types.TIMESTAMP_WITH_TIMEZONE:
                 throw new FeatureNotAvailableException("TIMESTAMP_WITH_TIMEZONE type is not supported");
 
-            // TODO check next types
+                // TODO check next types
             case Types.ARRAY:
             case Types.DISTINCT:
             case Types.OTHER:
@@ -698,10 +772,8 @@ public enum MysqlType implements SQLType {
     /**
      * Is CONVERT between the given SQL types supported?
      *
-     * @param fromType
-     *            the type to convert from
-     * @param toType
-     *            the type to convert to
+     * @param fromType the type to convert from
+     * @param toType   the type to convert to
      * @return true if so
      * @see Types
      */
@@ -882,51 +954,6 @@ public enum MysqlType implements SQLType {
         }
     }
 
-    private final String name;
-    protected int jdbcType;
-    protected final Class<?> javaClass;
-    private final int flagsMask;
-    private final boolean isDecimal;
-    private final Long precision;
-    private final String createParams;
-
-    /**
-     *
-     * @param mysqlTypeName
-     *            mysqlTypeName
-     * @param jdbcType
-     *            jdbcType
-     * @param javaClass
-     *            javaClass
-     * @param allowedFlags
-     *            allowedFlags
-     * @param isDec
-     *            isDec
-     * @param precision
-     *            represents the maximum column size that the server supports for the given datatype.
-     *            <ul>
-     *            <li>For numeric data, this is the maximum precision.
-     *            <li>
-     *            For character data, this is the length in characters.
-     *            <li>For datetime datatypes, this is the length in characters of the String
-     *            representation (assuming the maximum allowed precision of the fractional seconds component).
-     *            <li>For binary data, this is the length in bytes.
-     *            <li>For the ROWID datatype, this is the length in bytes.
-     *            <li>Null is returned for data types where the column size is not applicable.
-     *            </ul>
-     * @param createParams
-     *            params
-     */
-    private MysqlType(String mysqlTypeName, int jdbcType, Class<?> javaClass, int allowedFlags, boolean isDec, Long precision, String createParams) {
-        this.name = mysqlTypeName;
-        this.jdbcType = jdbcType;
-        this.javaClass = javaClass;
-        this.flagsMask = allowedFlags;
-        this.isDecimal = isDec;
-        this.precision = precision;
-        this.createParams = createParams;
-    }
-
     @Override
     public String getName() {
         return this.name;
@@ -980,19 +1007,6 @@ public enum MysqlType implements SQLType {
         return this.createParams;
     }
 
-    public static final int FIELD_FLAG_NOT_NULL = 1;
-    public static final int FIELD_FLAG_PRIMARY_KEY = 2;
-    public static final int FIELD_FLAG_UNIQUE_KEY = 4;
-    public static final int FIELD_FLAG_MULTIPLE_KEY = 8;
-    public static final int FIELD_FLAG_BLOB = 16;
-    public static final int FIELD_FLAG_UNSIGNED = 32;
-    public static final int FIELD_FLAG_ZEROFILL = 64;
-    public static final int FIELD_FLAG_BINARY = 128;
-    public static final int FIELD_FLAG_AUTO_INCREMENT = 512;
-
-    private static final boolean IS_DECIMAL = true;
-    private static final boolean IS_NOT_DECIMAL = false;
-
     @Override
     public String getVendor() {
         return "com.mysql.cj";
@@ -1002,35 +1016,5 @@ public enum MysqlType implements SQLType {
     public Integer getVendorTypeNumber() {
         return this.jdbcType;
     }
-
-    // Protocol field type numbers
-    public static final int FIELD_TYPE_DECIMAL = 0;
-    public static final int FIELD_TYPE_TINY = 1;
-    public static final int FIELD_TYPE_SHORT = 2;
-    public static final int FIELD_TYPE_LONG = 3;
-    public static final int FIELD_TYPE_FLOAT = 4;
-    public static final int FIELD_TYPE_DOUBLE = 5;
-    public static final int FIELD_TYPE_NULL = 6;
-    public static final int FIELD_TYPE_TIMESTAMP = 7;
-    public static final int FIELD_TYPE_LONGLONG = 8;
-    public static final int FIELD_TYPE_INT24 = 9;
-    public static final int FIELD_TYPE_DATE = 10;
-    public static final int FIELD_TYPE_TIME = 11;
-    public static final int FIELD_TYPE_DATETIME = 12;
-    public static final int FIELD_TYPE_YEAR = 13;
-    public static final int FIELD_TYPE_VARCHAR = 15;
-    public static final int FIELD_TYPE_BIT = 16;
-    public static final int FIELD_TYPE_VECTOR = 242;
-    public static final int FIELD_TYPE_JSON = 245;
-    public static final int FIELD_TYPE_NEWDECIMAL = 246;
-    public static final int FIELD_TYPE_ENUM = 247;
-    public static final int FIELD_TYPE_SET = 248;
-    public static final int FIELD_TYPE_TINY_BLOB = 249;
-    public static final int FIELD_TYPE_MEDIUM_BLOB = 250;
-    public static final int FIELD_TYPE_LONG_BLOB = 251;
-    public static final int FIELD_TYPE_BLOB = 252;
-    public static final int FIELD_TYPE_VAR_STRING = 253;
-    public static final int FIELD_TYPE_STRING = 254;
-    public static final int FIELD_TYPE_GEOMETRY = 255;
 
 }

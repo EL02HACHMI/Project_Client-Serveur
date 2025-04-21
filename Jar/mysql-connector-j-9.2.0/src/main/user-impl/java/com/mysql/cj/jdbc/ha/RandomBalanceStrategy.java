@@ -39,7 +39,7 @@ public class RandomBalanceStrategy implements BalanceStrategy {
 
     @Override
     public ConnectionImpl pickConnection(InvocationHandler proxy, List<String> configuredHosts, Map<String, JdbcConnection> liveConnections,
-            long[] responseTimes, int numRetries) throws SQLException {
+                                         long[] responseTimes, int numRetries) throws SQLException {
         int numHosts = configuredHosts.size();
 
         SQLException ex = null;
@@ -53,7 +53,7 @@ public class RandomBalanceStrategy implements BalanceStrategy {
 
         Map<String, Integer> allowListMap = getArrayIndexMap(allowList);
 
-        for (int attempts = 0; attempts < numRetries;) {
+        for (int attempts = 0; attempts < numRetries; ) {
             int random = (int) Math.floor(Math.random() * allowList.size());
             if (allowList.size() == 0) {
                 throw SQLError.createSQLException(Messages.getString("RandomBalanceStrategy.0"), null);

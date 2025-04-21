@@ -48,13 +48,13 @@ public class TableImpl implements Table {
 
     /* package private */ TableImpl(MysqlxSession mysqlxSession, SchemaImpl schema, String name) {
         if (mysqlxSession == null) {
-            throw new XDevAPIError(Messages.getString("CreateTableStatement.0", new String[] { "mysqlxSession" }));
+            throw new XDevAPIError(Messages.getString("CreateTableStatement.0", new String[]{"mysqlxSession"}));
         }
         if (schema == null) {
-            throw new XDevAPIError(Messages.getString("CreateTableStatement.0", new String[] { "schema" }));
+            throw new XDevAPIError(Messages.getString("CreateTableStatement.0", new String[]{"schema"}));
         }
         if (name == null) {
-            throw new XDevAPIError(Messages.getString("CreateTableStatement.0", new String[] { "name" }));
+            throw new XDevAPIError(Messages.getString("CreateTableStatement.0", new String[]{"name"}));
         }
         this.mysqlxSession = mysqlxSession;
         this.xbuilder = (XMessageBuilder) this.mysqlxSession.<XMessage>getMessageBuilder();
@@ -87,7 +87,7 @@ public class TableImpl implements Table {
 
     @Override
     public InsertStatement insert() {
-        return new InsertStatementImpl(this.mysqlxSession, this.schema.getName(), this.name, new String[] {});
+        return new InsertStatementImpl(this.mysqlxSession, this.schema.getName(), this.name, new String[]{});
     }
 
     @Override
@@ -171,8 +171,7 @@ public class TableImpl implements Table {
     /**
      * Set flag indicating if the underlying object is a view.
      *
-     * @param isView
-     *            true if it is a View
+     * @param isView true if it is a View
      */
     public void setView(boolean isView) {
         this.isView = isView;

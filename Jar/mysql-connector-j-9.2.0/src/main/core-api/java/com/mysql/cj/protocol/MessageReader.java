@@ -32,8 +32,7 @@ public interface MessageReader<H extends MessageHeader, M extends Message> {
      * Read the next message header from server, possibly blocking indefinitely until the message is received.
      *
      * @return {@link MessageHeader} of the next message
-     * @throws IOException
-     *             if an error occurs
+     * @throws IOException if an error occurs
      */
     H readHeader() throws IOException;
 
@@ -42,8 +41,7 @@ public interface MessageReader<H extends MessageHeader, M extends Message> {
      * and cache it so that the next {@link #readHeader()} return the same header.
      *
      * @return {@link MessageHeader} of the next message
-     * @throws IOException
-     *             if an error occurs
+     * @throws IOException if an error occurs
      */
     default H probeHeader() throws IOException {
         return readHeader();
@@ -54,13 +52,10 @@ public interface MessageReader<H extends MessageHeader, M extends Message> {
      * For asynchronous channel it synchronously reads the next message in the stream, blocking until the message is read fully.
      * Could throw CJCommunicationsException wrapping an {@link IOException} during read or parse
      *
-     * @param reuse
-     *            {@link Message} object to reuse. May be ignored by implementation.
-     * @param header
-     *            {@link MessageHeader} instance
+     * @param reuse  {@link Message} object to reuse. May be ignored by implementation.
+     * @param header {@link MessageHeader} instance
      * @return {@link Message} instance
-     * @throws IOException
-     *             if an error occurs
+     * @throws IOException if an error occurs
      */
     M readMessage(Optional<M> reuse, H header) throws IOException;
 
@@ -70,13 +65,10 @@ public interface MessageReader<H extends MessageHeader, M extends Message> {
      * For asynchronous channel it synchronously reads the next message in the stream, blocking until the message is read fully.
      * Could throw CJCommunicationsException wrapping an {@link IOException} during read or parse
      *
-     * @param reuse
-     *            {@link Message} object to reuse. May be ignored by implementation.
-     * @param header
-     *            {@link MessageHeader} instance
+     * @param reuse  {@link Message} object to reuse. May be ignored by implementation.
+     * @param header {@link MessageHeader} instance
      * @return {@link Message} instance
-     * @throws IOException
-     *             if an error occurs
+     * @throws IOException if an error occurs
      */
     default M probeMessage(Optional<M> reuse, H header) throws IOException {
         return readMessage(reuse, header);
@@ -87,13 +79,10 @@ public interface MessageReader<H extends MessageHeader, M extends Message> {
      * For asynchronous channel it synchronously reads the next message in the stream, blocking until the message is read fully.
      * Could throw WrongArgumentException if the expected message type is not the next message (exception will be thrown in *caller* context).
      *
-     * @param reuse
-     *            {@link Message} object to reuse. May be ignored by implementation.
-     * @param expectedType
-     *            Expected type of message.
+     * @param reuse        {@link Message} object to reuse. May be ignored by implementation.
+     * @param expectedType Expected type of message.
      * @return {@link Message} instance
-     * @throws IOException
-     *             if an error occurs
+     * @throws IOException if an error occurs
      */
     default M readMessage(Optional<M> reuse, int expectedType) throws IOException {
         throw ExceptionFactory.createException(CJOperationNotSupportedException.class, "Not supported");
@@ -102,8 +91,7 @@ public interface MessageReader<H extends MessageHeader, M extends Message> {
     /**
      * Skips the next packet, or the current one if previously probed, by reading and discarding it.
      *
-     * @throws IOException
-     *             if an error occurs
+     * @throws IOException if an error occurs
      */
     default void skipPacket() throws IOException {
         readMessage(Optional.empty(), readHeader());
@@ -112,8 +100,7 @@ public interface MessageReader<H extends MessageHeader, M extends Message> {
     /**
      * Queue a {@link MessageListener} to receive messages delivered asynchronously.
      *
-     * @param l
-     *            {@link MessageListener}
+     * @param l {@link MessageListener}
      */
     default void pushMessageListener(MessageListener<M> l) {
         throw ExceptionFactory.createException(CJOperationNotSupportedException.class, "Not supported");

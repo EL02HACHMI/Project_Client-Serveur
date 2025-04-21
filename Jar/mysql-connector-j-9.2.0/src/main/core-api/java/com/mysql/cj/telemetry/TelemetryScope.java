@@ -22,7 +22,7 @@ package com.mysql.cj.telemetry;
 
 /**
  * A telemetry context scope wrapper that hides all specific details from the underlying telemetry library.
- *
+ * <p>
  * A default no-op implementation is provided so that telemetry may be turned off with minimal impact to the driver code.
  */
 public interface TelemetryScope extends AutoCloseable {

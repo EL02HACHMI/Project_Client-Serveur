@@ -37,12 +37,9 @@ public interface SocketFactory {
      * Called by the driver after issuing the MySQL protocol handshake and
      * reading the results of the handshake.
      *
-     * @throws SocketException
-     *             if a socket error occurs
-     * @throws IOException
-     *             if an I/O error occurs
-     *
      * @return the socket to use after the handshake
+     * @throws SocketException if a socket error occurs
+     * @throws IOException     if an I/O error occurs
      */
     Socket afterHandshake() throws SocketException, IOException;
 
@@ -50,12 +47,9 @@ public interface SocketFactory {
      * Called by the driver before issuing the MySQL protocol handshake. Should
      * return the socket instance that should be used during the handshake.
      *
-     * @throws SocketException
-     *             if a socket error occurs
-     * @throws IOException
-     *             if an I/O error occurs
-     *
      * @return the socket to use before the handshake
+     * @throws SocketException if a socket error occurs
+     * @throws IOException     if an I/O error occurs
      */
     Socket beforeHandshake() throws SocketException, IOException;
 
@@ -67,23 +61,15 @@ public interface SocketFactory {
      * &quot;socketFactory&quot;, where the standard is <code>com.mysql.jdbc.StandardSocketFactory</code> Implementing classes
      * are responsible for handling synchronization of this method (if needed).
      *
-     * @param host
-     *            the hostname passed in the JDBC URL. It will be a single
-     *            hostname, as the driver parses multi-hosts (for failover) and
-     *            calls this method for each host connection attempt.
-     *
-     * @param portNumber
-     *            the port number to connect to (if required).
-     *
-     * @param props
-     *            properties passed to the driver via the URL and/or properties
-     *            instance.
-     *
+     * @param host       the hostname passed in the JDBC URL. It will be a single
+     *                   hostname, as the driver parses multi-hosts (for failover) and
+     *                   calls this method for each host connection attempt.
+     * @param portNumber the port number to connect to (if required).
+     * @param props      properties passed to the driver via the URL and/or properties
+     *                   instance.
      * @return a socket connected to the given host
-     * @throws SocketException
-     *             if a socket error occurs
-     * @throws IOException
-     *             if an I/O error occurs
+     * @throws SocketException if a socket error occurs
+     * @throws IOException     if an I/O error occurs
      */
     Socket connect(String host, int portNumber, Properties props) throws SocketException, IOException;
 

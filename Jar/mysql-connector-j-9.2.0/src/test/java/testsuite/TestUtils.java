@@ -39,8 +39,7 @@ public class TestUtils {
     /**
      * Percent-encode all occurrence of the the percent sign (%) in the given string.
      *
-     * @param strToEncode
-     *            the string to encode
+     * @param strToEncode the string to encode
      * @return the encoded string
      */
     public static String encodePercent(String strToEncode) {
@@ -55,9 +54,9 @@ public class TestUtils {
     public static List<Inet6Address> getIpv6List() {
         List<Inet6Address> addresses = new ArrayList<>();
         try {
-            for (Enumeration<NetworkInterface> nis = NetworkInterface.getNetworkInterfaces(); nis.hasMoreElements();) {
+            for (Enumeration<NetworkInterface> nis = NetworkInterface.getNetworkInterfaces(); nis.hasMoreElements(); ) {
                 NetworkInterface ni = nis.nextElement();
-                for (Enumeration<InetAddress> ias2 = ni.getInetAddresses(); ias2.hasMoreElements();) {
+                for (Enumeration<InetAddress> ias2 = ni.getInetAddresses(); ias2.hasMoreElements(); ) {
                     InetAddress ia = ias2.nextElement();
                     if (ia instanceof Inet6Address) {
                         addresses.add((Inet6Address) ia);
@@ -94,10 +93,8 @@ public class TestUtils {
     /**
      * Checks if there is a server socket listening in the given host and port.
      *
-     * @param hostName
-     *            the host where to look for the server socket
-     * @param port
-     *            the expected port the server is listening
+     * @param hostName the host where to look for the server socket
+     * @param port     the expected port the server is listening
      * @return true if there is a server socket listening in the given address and port, false otherwise
      */
     public static boolean serverListening(String hostName, int port) {
@@ -111,10 +108,8 @@ public class TestUtils {
     /**
      * Checks if there is a server socket listening in the given address and port.
      *
-     * @param addr
-     *            the address where to look for the server socket
-     * @param port
-     *            the expected port the server is listening
+     * @param addr the address where to look for the server socket
+     * @param port the expected port the server is listening
      * @return true if there is a server socket listening in the given address and port, false otherwise
      */
     public static boolean serverListening(InetAddress addr, int port) {

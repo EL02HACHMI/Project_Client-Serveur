@@ -32,26 +32,22 @@ public interface QueryAttributesBindings {
      * Adds a new query attribute to the list of query attributes. Implementations must validate the type of the given the object and reject it or replace it by
      * another representation if not supported, by its String version, for example. Query attribute names are not checked for duplication.
      *
-     * @param name
-     *            the query attribute name.
-     * @param value
-     *            the query attribute value.
+     * @param name  the query attribute name.
+     * @param value the query attribute value.
      */
     void setAttribute(String name, Object value);
 
     /**
      * Removes the specified query attribute from the list of query attributes.
      *
-     * @param name
-     *            the query attribute name.
+     * @param name the query attribute name.
      */
     void removeAttribute(String name);
 
     /**
      * Get the count of query attributes in the list.
      *
-     * @return
-     *         the number of query attributes existing in the list.
+     * @return the number of query attributes existing in the list.
      */
     int getCount();
 
@@ -59,29 +55,23 @@ public interface QueryAttributesBindings {
      * Returns an internal representation of the query attribute in the given position of the query attributes list. It's implementation dependent what to do
      * when the index value is invalid.
      *
-     * @param index
-     *            the position of the query attribute value to return.
-     *
-     * @return
-     *         the {@link BindValue} in the given position of the query attributes list.
+     * @param index the position of the query attribute value to return.
+     * @return the {@link BindValue} in the given position of the query attributes list.
      */
     BindValue getAttributeValue(int index);
 
     /**
      * Runs through all query attributes while feeding the given {@link Consumer} with each one of them.
      *
-     * @param bindAttribute
-     *            A {@link Consumer} for each one of the single query attributes.
+     * @param bindAttribute A {@link Consumer} for each one of the single query attributes.
      */
     void runThroughAll(Consumer<BindValue> bindAttribute);
 
     /**
      * Checks if there is already an attribute with the specified name.
      *
-     * @param name
-     *            the query attribute name.
-     * @return
-     *         <code>true</code> if the specified attribute name already exists.
+     * @param name the query attribute name.
+     * @return <code>true</code> if the specified attribute name already exists.
      */
     boolean containsAttribute(String name);
 

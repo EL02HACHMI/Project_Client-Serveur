@@ -36,26 +36,20 @@ import com.mysql.cj.conf.PropertyKey;
 public class SuspendableXAConnection extends MysqlPooledConnection implements XAConnection, XAResource {
 
     private static final Lock LOCK = new ReentrantLock();
-
+    private static final Map<Xid, XAConnection> XIDS_TO_PHYSICAL_CONNECTIONS = new HashMap<>();
     private final Lock lock = new ReentrantLock();
-
-    protected static SuspendableXAConnection getInstance(JdbcConnection mysqlConnection) throws SQLException {
-        return new SuspendableXAConnection(mysqlConnection);
-    }
-
+    private Xid currentXid;
+    private XAConnection currentXAConnection;
+    private XAResource currentXAResource;
+    private JdbcConnection underlyingConnection;
     public SuspendableXAConnection(JdbcConnection connection) {
         super(connection);
         this.underlyingConnection = connection;
     }
 
-    private static final Map<Xid, XAConnection> XIDS_TO_PHYSICAL_CONNECTIONS = new HashMap<>();
-
-    private Xid currentXid;
-
-    private XAConnection currentXAConnection;
-    private XAResource currentXAResource;
-
-    private JdbcConnection underlyingConnection;
+    protected static SuspendableXAConnection getInstance(JdbcConnection mysqlConnection) throws SQLException {
+        return new SuspendableXAConnection(mysqlConnection);
+    }
 
     private static XAConnection findConnectionForXid(JdbcConnection connectionToWrap, Xid xid) throws SQLException {
         LOCK.lock();

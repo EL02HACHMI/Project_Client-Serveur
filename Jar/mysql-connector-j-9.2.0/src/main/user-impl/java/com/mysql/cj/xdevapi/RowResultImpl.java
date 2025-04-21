@@ -42,16 +42,11 @@ public class RowResultImpl extends AbstractDataResult<Row> implements RowResult 
     /**
      * Constructor.
      *
-     * @param metadata
-     *            {@link ColumnDefinition} object to use for new rows.
-     * @param defaultTimeZone
-     *            {@link TimeZone} object representing the default time zone
-     * @param rows
-     *            {@link RowList} provided by c/J core
-     * @param completer
-     *            supplier for completion task
-     * @param pset
-     *            {@link PropertySet}
+     * @param metadata        {@link ColumnDefinition} object to use for new rows.
+     * @param defaultTimeZone {@link TimeZone} object representing the default time zone
+     * @param rows            {@link RowList} provided by c/J core
+     * @param completer       supplier for completion task
+     * @param pset            {@link PropertySet}
      */
     public RowResultImpl(ColumnDefinition metadata, TimeZone defaultTimeZone, RowList rows, Supplier<ProtocolEntity> completer, PropertySet pset) {
         super(rows, completer, new RowFactory(metadata, defaultTimeZone, pset));

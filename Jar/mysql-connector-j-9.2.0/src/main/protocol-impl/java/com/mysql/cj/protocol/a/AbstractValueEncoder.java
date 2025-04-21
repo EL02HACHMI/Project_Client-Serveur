@@ -102,7 +102,7 @@ public abstract class AbstractValueEncoder implements ValueEncoder {
                 scaledBigDecimal = x.setScale((int) scaleOrLength, BigDecimal.ROUND_HALF_UP);
             } catch (ArithmeticException arEx) {
                 throw ExceptionFactory.createException(WrongArgumentException.class,
-                        Messages.getString("PreparedStatement.65", new Object[] { scaleOrLength, x.toPlainString() }), this.exceptionInterceptor);
+                        Messages.getString("PreparedStatement.65", new Object[]{scaleOrLength, x.toPlainString()}), this.exceptionInterceptor);
             }
         }
         return scaledBigDecimal;

@@ -40,39 +40,40 @@ import com.mysql.cj.result.Field;
 
 public class NativeQueryBindValue implements BindValue {
 
-    /** NULL indicator */
-    protected boolean isNull;
-
-    protected boolean isNational = false;
-
-    protected MysqlType targetType = MysqlType.NULL;
-
-    /** The value to store */
+    /**
+     * The value to store
+     */
     public Object value;
-
-    /** has this parameter been set? */
-    protected boolean isSet = false;
-
     /* Calendar to be used for DATE and DATETIME values storing */
     public Calendar calendar;
-
+    /**
+     * NULL indicator
+     */
+    protected boolean isNull;
+    protected boolean isNational = false;
+    protected MysqlType targetType = MysqlType.NULL;
+    /**
+     * has this parameter been set?
+     */
+    protected boolean isSet = false;
     protected boolean escapeBytesIfNeeded = true;
 
-    /** Is this query a LOAD DATA query? */
+    /**
+     * Is this query a LOAD DATA query?
+     */
     protected boolean isLoadDataQuery = false;
-
-    PropertySet pset;
-    Protocol<?> protocol;
-    ServerSession serverSession;
-    ExceptionInterceptor exceptionInterceptor;
-
-    private Field field = null;
     protected boolean keepOrigNanos = false;
     protected ValueEncoder valueEncoder = null;
     protected long scaleOrLength = -1;
     protected long boundBeforeExecutionNum = 0; // specific to ServerPreparedQuery
-
-    /** The query attribute name */
+    PropertySet pset;
+    Protocol<?> protocol;
+    ServerSession serverSession;
+    ExceptionInterceptor exceptionInterceptor;
+    private Field field = null;
+    /**
+     * The query attribute name
+     */
     private String name;
 
     public NativeQueryBindValue(Session sess) {
@@ -80,11 +81,6 @@ public class NativeQueryBindValue implements BindValue {
         this.protocol = ((NativeSession) sess).getProtocol();
         this.serverSession = sess.getServerSession();
         this.exceptionInterceptor = sess.getExceptionInterceptor();
-    }
-
-    @Override
-    public NativeQueryBindValue clone() {
-        return new NativeQueryBindValue(this);
     }
 
     protected NativeQueryBindValue(NativeQueryBindValue copyMe) {
@@ -109,6 +105,11 @@ public class NativeQueryBindValue implements BindValue {
         this.valueEncoder = copyMe.valueEncoder;
         this.scaleOrLength = copyMe.scaleOrLength;
         this.boundBeforeExecutionNum = copyMe.boundBeforeExecutionNum;
+    }
+
+    @Override
+    public NativeQueryBindValue clone() {
+        return new NativeQueryBindValue(this);
     }
 
     private boolean resetToType(MysqlType newTargetType) { // specific to ServerPreparedQuery
@@ -144,7 +145,7 @@ public class NativeQueryBindValue implements BindValue {
             this.valueEncoder.init(this.pset, this.serverSession, this.exceptionInterceptor);
         } else {
             throw ExceptionFactory.createException(WrongArgumentException.class,
-                    Messages.getString("PreparedStatement.67", new Object[] { obj.getClass().getName(), type.name() }), this.exceptionInterceptor);
+                    Messages.getString("PreparedStatement.67", new Object[]{obj.getClass().getName(), type.name()}), this.exceptionInterceptor);
         }
     }
 

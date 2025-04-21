@@ -74,7 +74,7 @@ public class ServerPreparedQueryTestcaseGenerator extends ServerPreparedQuery {
 
     @Override
     public <T extends Resultset> T serverExecute(int maxRowsToRetrieve, boolean createStreamingResultSet, ColumnDefinition metadata,
-            ProtocolEntityFactory<T, NativePacketPayload> resultSetFactory) {
+                                                 ProtocolEntityFactory<T, NativePacketPayload> resultSetFactory) {
         dumpExecuteForTestcase();
         return super.serverExecute(maxRowsToRetrieve, createStreamingResultSet, metadata, resultSetFactory);
     }

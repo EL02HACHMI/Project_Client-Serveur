@@ -38,10 +38,8 @@ public class LoadBalanceConnectionUrl extends ConnectionUrl {
      * Constructs an instance of {@link LoadBalanceConnectionUrl}, performing all the required initializations and validations. A load-balanced connection
      * cannot deal with multiple hosts with same host:port.
      *
-     * @param connStrParser
-     *            a {@link ConnectionUrlParser} instance containing the parsed version of the original connection string
-     * @param info
-     *            the connection arguments map
+     * @param connStrParser a {@link ConnectionUrlParser} instance containing the parsed version of the original connection string
+     * @param info          the connection arguments map
      */
     public LoadBalanceConnectionUrl(ConnectionUrlParser connStrParser, Properties info) {
         super(connStrParser, info);
@@ -65,10 +63,8 @@ public class LoadBalanceConnectionUrl extends ConnectionUrl {
      * parsing.
      * {@link ConnectionUrl} instances created by this process are not cached.
      *
-     * @param hosts
-     *            the hosts list to use in this connection URL
-     * @param properties
-     *            the properties common to all hosts
+     * @param hosts      the hosts list to use in this connection URL
+     * @param properties the properties common to all hosts
      */
     public LoadBalanceConnectionUrl(List<HostInfo> hosts, Map<String, String> properties) {
         this.originalConnStr = ConnectionUrl.Type.LOADBALANCE_CONNECTION.getScheme() + "//**internally_generated**" + System.currentTimeMillis() + "**";
@@ -83,8 +79,7 @@ public class LoadBalanceConnectionUrl extends ConnectionUrl {
     /**
      * Injects additional properties into the connection arguments while it's being constructed.
      *
-     * @param props
-     *            the properties already containing all known connection arguments
+     * @param props the properties already containing all known connection arguments
      */
     @Override
     protected void injectPerTypeProperties(Map<String, String> props) {
@@ -119,8 +114,7 @@ public class LoadBalanceConnectionUrl extends ConnectionUrl {
      * Returns the list of {@link HostInfo} instances that matches the given collection of host:port pairs. Isolated host info elements are spawned for the
      * missing elements.
      *
-     * @param hostPortPairs
-     *            a list of host:port pairs
+     * @param hostPortPairs a list of host:port pairs
      * @return a list of {@link HostInfo} instances corresponding to the given host:port pairs
      */
     public List<HostInfo> getHostInfoListFromHostPortPairs(Collection<String> hostPortPairs) {

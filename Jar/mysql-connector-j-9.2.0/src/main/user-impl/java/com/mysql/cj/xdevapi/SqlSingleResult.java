@@ -36,16 +36,11 @@ public class SqlSingleResult extends RowResultImpl implements SqlResult {
     /**
      * Constructor.
      *
-     * @param metadata
-     *            {@link ColumnDefinition} object to use for new rows.
-     * @param defaultTimeZone
-     *            {@link TimeZone} object representing the default time zone
-     * @param rows
-     *            {@link RowList} provided by c/J core
-     * @param completer
-     *            supplier for completion task
-     * @param pset
-     *            {@link PropertySet}
+     * @param metadata        {@link ColumnDefinition} object to use for new rows.
+     * @param defaultTimeZone {@link TimeZone} object representing the default time zone
+     * @param rows            {@link RowList} provided by c/J core
+     * @param completer       supplier for completion task
+     * @param pset            {@link PropertySet}
      */
     public SqlSingleResult(ColumnDefinition metadata, TimeZone defaultTimeZone, RowList rows, Supplier<ProtocolEntity> completer, PropertySet pset) {
         super(metadata, defaultTimeZone, rows, completer, pset);

@@ -32,8 +32,7 @@ public class WarningImpl implements com.mysql.cj.xdevapi.Warning {
     /**
      * Constructor.
      *
-     * @param message
-     *            {@link Warning} object provided by c/J core.
+     * @param message {@link Warning} object provided by c/J core.
      */
     public WarningImpl(Warning message) {
         this.message = message;

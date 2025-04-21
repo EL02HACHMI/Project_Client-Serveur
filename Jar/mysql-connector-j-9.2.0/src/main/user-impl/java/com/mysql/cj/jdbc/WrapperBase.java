@@ -37,14 +37,18 @@ import com.mysql.cj.util.Util;
 abstract class WrapperBase {
 
     protected MysqlPooledConnection pooledConnection;
+    protected Map<Class<?>, Object> unwrappedInterfaces = null;
+    protected ExceptionInterceptor exceptionInterceptor;
+    protected WrapperBase(MysqlPooledConnection pooledConnection) {
+        this.pooledConnection = pooledConnection;
+        this.exceptionInterceptor = this.pooledConnection.getExceptionInterceptor();
+    }
 
     /**
      * Fires connection error event if required, before re-throwing exception
      *
-     * @param sqlEx
-     *            the SQLException that has occurred
-     * @throws SQLException
-     *             (rethrown)
+     * @param sqlEx the SQLException that has occurred
+     * @throws SQLException (rethrown)
      */
     protected void checkAndFireConnectionError(SQLException sqlEx) throws SQLException {
         if (this.pooledConnection != null) {
@@ -54,14 +58,6 @@ abstract class WrapperBase {
         }
 
         throw sqlEx;
-    }
-
-    protected Map<Class<?>, Object> unwrappedInterfaces = null;
-    protected ExceptionInterceptor exceptionInterceptor;
-
-    protected WrapperBase(MysqlPooledConnection pooledConnection) {
-        this.pooledConnection = pooledConnection;
-        this.exceptionInterceptor = this.pooledConnection.getExceptionInterceptor();
     }
 
     protected class ConnectionErrorFiringInvocationHandler implements InvocationHandler {
@@ -103,10 +99,8 @@ abstract class WrapperBase {
          * if it implements a java.sql interface, and if so, proxies the
          * instance so that we can catch and fire SQL errors.
          *
-         * @param toProxy
-         *            object to be proxied
-         * @param clazz
-         *            desired class
+         * @param toProxy object to be proxied
+         * @param clazz   desired class
          * @return proxy object
          */
         private Object proxyIfInterfaceIsJdbc(Object toProxy, Class<?> clazz) {

@@ -34,10 +34,8 @@ public class LogFactory {
      * Returns a logger instance of the given class, with the given instance
      * name.
      *
-     * @param className
-     *            the class to instantiate
-     * @param instanceName
-     *            the instance name
+     * @param className    the class to instantiate
+     * @param instanceName the instance name
      * @return a logger instance
      */
     public static Log getLogger(String className, String instanceName) {
@@ -50,13 +48,13 @@ public class LogFactory {
         }
 
         try {
-            return Util.getInstance(Log.class, className, new Class<?>[] { String.class }, new Object[] { instanceName }, null);
+            return Util.getInstance(Log.class, className, new Class<?>[]{String.class}, new Object[]{instanceName}, null);
         } catch (CJException e1) {
             if (ClassNotFoundException.class.isInstance(e1.getCause())) {
                 // Retry with package name prepended.
                 try {
-                    return Util.getInstance(Log.class, Util.getPackageName(LogFactory.class) + "." + className, new Class<?>[] { String.class },
-                            new Object[] { instanceName }, null);
+                    return Util.getInstance(Log.class, Util.getPackageName(LogFactory.class) + "." + className, new Class<?>[]{String.class},
+                            new Object[]{instanceName}, null);
                 } catch (CJException e2) {
                     throw e1;
                 }

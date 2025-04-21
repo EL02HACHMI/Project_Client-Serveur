@@ -35,68 +35,13 @@ import javax.naming.directory.InitialDirContext;
 
 public class DnsSrv {
 
-    public static class SrvRecord implements Comparable<SrvRecord> {
-
-        private final int priority;
-        private final int weight;
-        private final int port;
-        private final String target;
-
-        public static SrvRecord buildFrom(String srvLine) {
-            String[] srvParts = srvLine.split("\\s+");
-            if (srvParts.length == 4) {
-                int priority = Integer.parseInt(srvParts[0]);
-                int weight = Integer.parseInt(srvParts[1]);
-                int port = Integer.parseInt(srvParts[2]);
-                String target = srvParts[3].replaceFirst("\\.$", "");
-                return new SrvRecord(priority, weight, port, target);
-            }
-            return null;
-        }
-
-        public SrvRecord(int priority, int weight, int port, String target) {
-            this.priority = priority;
-            this.weight = weight;
-            this.port = port;
-            this.target = target;
-        }
-
-        public int getPriority() {
-            return this.priority;
-        }
-
-        public int getWeight() {
-            return this.weight;
-        }
-
-        public int getPort() {
-            return this.port;
-        }
-
-        public String getTarget() {
-            return this.target;
-        }
-
-        @Override
-        public String toString() {
-            return String.format("{\"Priority\": %d, \"Weight\": %d, \"Port\": %d, \"Target\": \"%s\"}", getPriority(), getWeight(), getPort(), getTarget());
-        }
-
-        @Override
-        public int compareTo(SrvRecord o) {
-            int priorityDiff = getPriority() - o.getPriority();
-            return priorityDiff == 0 ? getWeight() - o.getWeight() : priorityDiff;
-        }
-
-    }
-
     public static List<SrvRecord> lookupSrvRecords(String serviceName) throws NamingException {
         List<SrvRecord> srvRecords = new ArrayList<>();
 
         Properties environment = new Properties();
         environment.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.dns.DnsContextFactory");
         DirContext context = new InitialDirContext(environment);
-        Attributes dnsEntries = context.getAttributes(serviceName, new String[] { "SRV" });
+        Attributes dnsEntries = context.getAttributes(serviceName, new String[]{"SRV"});
         if (dnsEntries != null) {
             Attribute hosts = dnsEntries.get("SRV");
             if (hosts != null) {
@@ -112,10 +57,8 @@ public class DnsSrv {
     /**
      * Sort a list of DNS SRV records according to the sorting rules described in rfc2782.
      *
-     * @param srvRecords
-     *            the list of {@link SrvRecord}s to sort.
-     * @return
-     *         a new list of sorted {@link SrvRecord}s.
+     * @param srvRecords the list of {@link SrvRecord}s to sort.
+     * @return a new list of sorted {@link SrvRecord}s.
      */
     public static List<SrvRecord> sortSrvRecords(List<SrvRecord> srvRecords) {
         // Sort srv records by their natural order, i.e., first by priority then by weight.
@@ -146,6 +89,61 @@ public class DnsSrv {
         }
 
         return srvRecordsSortedRfc2782;
+    }
+
+    public static class SrvRecord implements Comparable<SrvRecord> {
+
+        private final int priority;
+        private final int weight;
+        private final int port;
+        private final String target;
+
+        public SrvRecord(int priority, int weight, int port, String target) {
+            this.priority = priority;
+            this.weight = weight;
+            this.port = port;
+            this.target = target;
+        }
+
+        public static SrvRecord buildFrom(String srvLine) {
+            String[] srvParts = srvLine.split("\\s+");
+            if (srvParts.length == 4) {
+                int priority = Integer.parseInt(srvParts[0]);
+                int weight = Integer.parseInt(srvParts[1]);
+                int port = Integer.parseInt(srvParts[2]);
+                String target = srvParts[3].replaceFirst("\\.$", "");
+                return new SrvRecord(priority, weight, port, target);
+            }
+            return null;
+        }
+
+        public int getPriority() {
+            return this.priority;
+        }
+
+        public int getWeight() {
+            return this.weight;
+        }
+
+        public int getPort() {
+            return this.port;
+        }
+
+        public String getTarget() {
+            return this.target;
+        }
+
+        @Override
+        public String toString() {
+            return String.format("{\"Priority\": %d, \"Weight\": %d, \"Port\": %d, \"Target\": \"%s\"}", getPriority(), getWeight(), getPort(), getTarget());
+        }
+
+        @Override
+        public int compareTo(SrvRecord o) {
+            int priorityDiff = getPriority() - o.getPriority();
+            return priorityDiff == 0 ? getWeight() - o.getWeight() : priorityDiff;
+        }
+
     }
 
 }

@@ -237,7 +237,7 @@ public class StringRegressionTest extends BaseTestCase {
 
     /**
      * Tests fix for BUG#25047 - StringUtils.indexOfIgnoreCaseRespectQuotes() isn't case-insensitive on the first character of the target.
-     *
+     * <p>
      * UPD: Method StringUtils.indexOfIgnoreCaseRespectQuotes() was replaced by StringUtils.indexOfIgnoreCase()
      *
      * @throws Exception

@@ -48,16 +48,8 @@ import com.mysql.cj.util.StringUtils;
  */
 public class DatabaseMetaDataUsingInfoSchema extends DatabaseMetaData {
 
-    protected enum FunctionConstant {
-        // COLUMN_TYPE values
-        FUNCTION_COLUMN_UNKNOWN, FUNCTION_COLUMN_IN, FUNCTION_COLUMN_INOUT, FUNCTION_COLUMN_OUT, FUNCTION_COLUMN_RETURN, FUNCTION_COLUMN_RESULT,
-        // NULLABLE values
-        FUNCTION_NO_NULLS, FUNCTION_NULLABLE, FUNCTION_NULLABLE_UNKNOWN;
-    }
-
-    private static Map<ServerVersion, String> keywordsCache = Collections.synchronizedMap(new LRUCache<>(10));
     private static final Lock KEYWORDS_CACHE_LOCK = new ReentrantLock();
-
+    private static Map<ServerVersion, String> keywordsCache = Collections.synchronizedMap(new LRUCache<>(10));
     protected DatabaseMetaDataUsingInfoSchema(JdbcConnection connToSet, String databaseToSet, ResultSetFactory resultSetFactory) throws SQLException {
         super(connToSet, databaseToSet, resultSetFactory);
     }
@@ -279,7 +271,7 @@ public class DatabaseMetaDataUsingInfoSchema extends DatabaseMetaData {
 
     @Override
     public ResultSet getCrossReference(final String parentCatalog, final String parentSchema, final String parentTable, final String foreignCatalog,
-            final String foreignSchema, final String foreignTable) throws SQLException {
+                                       final String foreignSchema, final String foreignTable) throws SQLException {
         if (parentTable == null || foreignTable == null) {
             throw SQLError.createSQLException(Messages.getString("DatabaseMetaData.2"), MysqlErrorNumbers.SQLSTATE_CONNJ_ILLEGAL_ARGUMENT,
                     getExceptionInterceptor());
@@ -918,9 +910,7 @@ public class DatabaseMetaDataUsingInfoSchema extends DatabaseMetaData {
     /**
      * Getter to DatabaseMetaData.function* constants.
      *
-     * @param constant
-     *            the constant id from DatabaseMetaData fields to return.
-     *
+     * @param constant the constant id from DatabaseMetaData fields to return.
      * @return one of the java.sql.DatabaseMetaData#function* fields.
      */
     protected int getFunctionConstant(FunctionConstant constant) {
@@ -1253,6 +1243,13 @@ public class DatabaseMetaDataUsingInfoSchema extends DatabaseMetaData {
     public ResultSet getBestRowIdentifier(String catalog, String schema, String table, int scope, boolean nullable) throws SQLException {
         // TODO Implement with I_S
         return super.getBestRowIdentifier(catalog, schema, table, scope, nullable);
+    }
+
+    protected enum FunctionConstant {
+        // COLUMN_TYPE values
+        FUNCTION_COLUMN_UNKNOWN, FUNCTION_COLUMN_IN, FUNCTION_COLUMN_INOUT, FUNCTION_COLUMN_OUT, FUNCTION_COLUMN_RETURN, FUNCTION_COLUMN_RESULT,
+        // NULLABLE values
+        FUNCTION_NO_NULLS, FUNCTION_NULLABLE, FUNCTION_NULLABLE_UNKNOWN;
     }
 
 }

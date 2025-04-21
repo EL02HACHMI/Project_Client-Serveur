@@ -206,7 +206,7 @@ public class NativeMessageBuilder implements MessageBuilder<NativePacketPayload>
 
     @Override
     public NativePacketPayload buildComQuery(NativePacketPayload sharedPacket, Session sess, PreparedQuery preparedQuery, QueryBindings bindings,
-            String characterEncoding) {
+                                             String characterEncoding) {
         NativePacketPayload sendPacket = sharedPacket != null ? sharedPacket : new NativePacketPayload(9);
         QueryAttributesBindings queryAttributesBindings = preparedQuery.getQueryAttributesBindings();
         BindValue[] bindValues = bindings.getBindValues();
@@ -376,7 +376,7 @@ public class NativeMessageBuilder implements MessageBuilder<NativePacketPayload>
     }
 
     public NativePacketPayload buildComStmtExecute(NativePacketPayload sharedPacket, long serverStatementId, byte flags, boolean sendQueryAttributes,
-            PreparedQuery preparedQuery) {
+                                                   PreparedQuery preparedQuery) {
         NativePacketPayload packet = sharedPacket != null ? sharedPacket : new NativePacketPayload(5);
 
         Session sess = preparedQuery.getSession();

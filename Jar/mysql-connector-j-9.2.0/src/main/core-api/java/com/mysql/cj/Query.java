@@ -30,10 +30,6 @@ import com.mysql.cj.protocol.Resultset;
 
 public interface Query {
 
-    public enum CancelStatus {
-        NOT_CANCELED, CANCELED_BY_USER, CANCELED_BY_TIMEOUT;
-    }
-
     /**
      * Returns the query id used when profiling
      *
@@ -82,14 +78,14 @@ public interface Query {
 
     void setTimeoutInMillis(long timeoutInMillis);
 
-    void setExecuteTime(long executeTime);
-
     /**
      * Returns the elapsed time for the server to execute the query.
      *
      * @return the time it took for the server to execute the query.
      */
     long getExecuteTime();
+
+    void setExecuteTime(long executeTime);
 
     CancelQueryTask startQueryTimer(Query stmtToCancel, long timeout);
 
@@ -106,5 +102,9 @@ public interface Query {
     void statementBegins();
 
     void stopQueryTimer(CancelQueryTask timeoutTask, boolean rethrowCancelReason, boolean checkCancelTimeout);
+
+    public enum CancelStatus {
+        NOT_CANCELED, CANCELED_BY_USER, CANCELED_BY_TIMEOUT;
+    }
 
 }

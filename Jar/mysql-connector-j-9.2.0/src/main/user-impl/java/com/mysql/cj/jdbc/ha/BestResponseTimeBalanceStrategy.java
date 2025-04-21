@@ -36,14 +36,14 @@ public class BestResponseTimeBalanceStrategy implements BalanceStrategy {
 
     @Override
     public ConnectionImpl pickConnection(InvocationHandler proxy, List<String> configuredHosts, Map<String, JdbcConnection> liveConnections,
-            long[] responseTimes, int numRetries) throws SQLException {
+                                         long[] responseTimes, int numRetries) throws SQLException {
         List<String> allowList = new ArrayList<>(configuredHosts.size());
         allowList.addAll(configuredHosts);
         Map<String, Long> blockList = ((LoadBalancedConnectionProxy) proxy).getGlobalBlocklist();
         allowList.removeAll(blockList.keySet());
 
         SQLException ex = null;
-        for (int attempts = 0; attempts < numRetries;) {
+        for (int attempts = 0; attempts < numRetries; ) {
             long minResponseTime = Long.MAX_VALUE;
             int bestHostIndex = 0;
 

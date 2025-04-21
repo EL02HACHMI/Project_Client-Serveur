@@ -163,20 +163,20 @@ public class FloatValueFactoryTest extends CommonAsserts {
 
     @Test
     public void testCreateFromBit() {
-        assertEquals(Float.valueOf(0), this.vf.createFromBit(new byte[] { 0 }, 0, 1));
-        assertEquals(Float.valueOf(1), this.vf.createFromBit(new byte[] { 1 }, 0, 1));
-        assertEquals(Float.valueOf(2), this.vf.createFromBit(new byte[] { 2 }, 0, 1));
-        assertEquals(Float.valueOf(255), this.vf.createFromBit(new byte[] { (byte) 0xff }, 0, 1));
-        assertEquals(Float.valueOf(65535), this.vf.createFromBit(new byte[] { (byte) 0xff, (byte) 0xff }, 0, 2));
-        assertEquals(Float.valueOf(0xffffffL), this.vf.createFromBit(new byte[] { (byte) 0xff, (byte) 0xff, (byte) 0xff }, 0, 3));
-        assertEquals(Float.valueOf(0xffffffffL), this.vf.createFromBit(new byte[] { (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff }, 0, 4));
-        assertEquals(Float.valueOf(0xffffffffffL), this.vf.createFromBit(new byte[] { (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff }, 0, 5));
+        assertEquals(Float.valueOf(0), this.vf.createFromBit(new byte[]{0}, 0, 1));
+        assertEquals(Float.valueOf(1), this.vf.createFromBit(new byte[]{1}, 0, 1));
+        assertEquals(Float.valueOf(2), this.vf.createFromBit(new byte[]{2}, 0, 1));
+        assertEquals(Float.valueOf(255), this.vf.createFromBit(new byte[]{(byte) 0xff}, 0, 1));
+        assertEquals(Float.valueOf(65535), this.vf.createFromBit(new byte[]{(byte) 0xff, (byte) 0xff}, 0, 2));
+        assertEquals(Float.valueOf(0xffffffL), this.vf.createFromBit(new byte[]{(byte) 0xff, (byte) 0xff, (byte) 0xff}, 0, 3));
+        assertEquals(Float.valueOf(0xffffffffL), this.vf.createFromBit(new byte[]{(byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff}, 0, 4));
+        assertEquals(Float.valueOf(0xffffffffffL), this.vf.createFromBit(new byte[]{(byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff}, 0, 5));
         assertEquals(Float.valueOf(0xffffffffffffL),
-                this.vf.createFromBit(new byte[] { (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff }, 0, 6));
+                this.vf.createFromBit(new byte[]{(byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff}, 0, 6));
         assertEquals(Float.valueOf(0xffffffffffffffL),
-                this.vf.createFromBit(new byte[] { (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff }, 0, 7));
+                this.vf.createFromBit(new byte[]{(byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff}, 0, 7));
         assertEquals(Float.valueOf("1.8446744073709552E19"), this.vf
-                .createFromBit(new byte[] { (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff }, 0, 8));
+                .createFromBit(new byte[]{(byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff}, 0, 8));
     }
 
     @Test

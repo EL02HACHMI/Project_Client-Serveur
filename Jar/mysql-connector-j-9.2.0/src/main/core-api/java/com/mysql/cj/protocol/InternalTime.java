@@ -37,6 +37,20 @@ public class InternalTime {
     private int nanos = 0;
     private int scale = 0;
 
+    /**
+     * Constructs a zero time
+     */
+    public InternalTime() {
+    }
+
+    public InternalTime(int hours, int minutes, int seconds, int nanos, int scale) {
+        this.hours = hours;
+        this.minutes = minutes;
+        this.seconds = seconds;
+        this.nanos = nanos;
+        this.scale = scale;
+    }
+
     public static InternalTime from(LocalTime x) {
         return new InternalTime(x.getHour(), x.getMinute(), x.getSecond(), x.getNano(), -1);
     }
@@ -61,20 +75,6 @@ public class InternalTime {
 
     public static InternalTime from(Calendar x, int nanos) {
         return new InternalTime(x.get(Calendar.HOUR_OF_DAY), x.get(Calendar.MINUTE), x.get(Calendar.SECOND), nanos, -1);
-    }
-
-    /**
-     * Constructs a zero time
-     */
-    public InternalTime() {
-    }
-
-    public InternalTime(int hours, int minutes, int seconds, int nanos, int scale) {
-        this.hours = hours;
-        this.minutes = minutes;
-        this.seconds = seconds;
-        this.nanos = nanos;
-        this.scale = scale;
     }
 
     public boolean isNegative() {

@@ -34,7 +34,7 @@ public class CJConnectionFeatureNotAvailableException extends CJCommunicationsEx
     }
 
     public CJConnectionFeatureNotAvailableException(PropertySet propertySet, ServerSession serverSession, PacketSentTimeHolder packetSentTimeHolder,
-            Exception underlyingException) {
+                                                    Exception underlyingException) {
         super(underlyingException);
         init(propertySet, serverSession, packetSentTimeHolder, null);
     }

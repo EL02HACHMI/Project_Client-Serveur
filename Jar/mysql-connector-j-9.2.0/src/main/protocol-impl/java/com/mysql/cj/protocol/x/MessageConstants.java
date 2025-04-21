@@ -162,8 +162,7 @@ public class MessageConstants {
     /**
      * Lookup the "ClientMessages" type tag for a Protocol buffers message class.
      *
-     * @param msgClass
-     *            message class extending {@link MessageLite}
+     * @param msgClass message class extending {@link MessageLite}
      * @return type tag for this message class
      */
     public static int getTypeForMessageClass(Class<? extends MessageLite> msgClass) {

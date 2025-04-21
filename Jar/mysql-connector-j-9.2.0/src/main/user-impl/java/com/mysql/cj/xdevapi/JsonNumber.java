@@ -50,8 +50,7 @@ public class JsonNumber implements JsonValue {
     /**
      * Set number value.
      *
-     * @param value
-     *            string number representation
+     * @param value string number representation
      * @return this JsonNumber
      */
     public JsonNumber setValue(String value) {

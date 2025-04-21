@@ -117,12 +117,9 @@ public class NativeAuthenticationProvider implements AuthenticationProvider<Nati
      * Initialize communications with the MySQL server. Handles logging on, and
      * handling initial connection errors.
      *
-     * @param user
-     *            user name
-     * @param pass
-     *            password
-     * @param db
-     *            database name
+     * @param user user name
+     * @param pass password
+     * @param db   database name
      */
     @Override
     public void connect(String user, String pass, String db) {
@@ -161,33 +158,33 @@ public class NativeAuthenticationProvider implements AuthenticationProvider<Nati
 
         long clientParam = capabilityFlags & NativeServerSession.CLIENT_LONG_PASSWORD //
                 | (this.propertySet.getBooleanProperty(PropertyKey.useAffectedRows).getValue() ? //
-                        0 : capabilityFlags & NativeServerSession.CLIENT_FOUND_ROWS) //
+                0 : capabilityFlags & NativeServerSession.CLIENT_FOUND_ROWS) //
                 | capabilityFlags & NativeServerSession.CLIENT_LONG_FLAG //
                 | (this.useConnectWithDb ? capabilityFlags & NativeServerSession.CLIENT_CONNECT_WITH_DB : 0) //
                 | (this.propertySet.getBooleanProperty(PropertyKey.useCompression).getValue() ? //
-                        capabilityFlags & NativeServerSession.CLIENT_COMPRESS : 0) //
+                capabilityFlags & NativeServerSession.CLIENT_COMPRESS : 0) //
                 | (this.propertySet.getBooleanProperty(PropertyKey.allowLoadLocalInfile).getValue()
-                        || this.propertySet.getStringProperty(PropertyKey.allowLoadLocalInfileInPath).isExplicitlySet() ? //
-                                capabilityFlags & NativeServerSession.CLIENT_LOCAL_FILES : 0) //
+                || this.propertySet.getStringProperty(PropertyKey.allowLoadLocalInfileInPath).isExplicitlySet() ? //
+                capabilityFlags & NativeServerSession.CLIENT_LOCAL_FILES : 0) //
                 | capabilityFlags & NativeServerSession.CLIENT_PROTOCOL_41 //
                 | (this.propertySet.getBooleanProperty(PropertyKey.interactiveClient).getValue() ? //
-                        capabilityFlags & NativeServerSession.CLIENT_INTERACTIVE : 0) //
+                capabilityFlags & NativeServerSession.CLIENT_INTERACTIVE : 0) //
                 | (this.propertySet.<SslMode>getEnumProperty(PropertyKey.sslMode).getValue() != SslMode.DISABLED ? //
-                        capabilityFlags & NativeServerSession.CLIENT_SSL : 0) //
+                capabilityFlags & NativeServerSession.CLIENT_SSL : 0) //
                 | capabilityFlags & NativeServerSession.CLIENT_TRANSACTIONS // Required to get server status values.
                 | NativeServerSession.CLIENT_SECURE_CONNECTION //
                 | (this.propertySet.getBooleanProperty(PropertyKey.allowMultiQueries).getValue() ? //
-                        capabilityFlags & NativeServerSession.CLIENT_MULTI_STATEMENTS : 0) //
+                capabilityFlags & NativeServerSession.CLIENT_MULTI_STATEMENTS : 0) //
                 | capabilityFlags & NativeServerSession.CLIENT_MULTI_RESULTS // Always allow multiple result sets.
                 | capabilityFlags & NativeServerSession.CLIENT_PS_MULTI_RESULTS // Always allow multiple result sets for SSPS.
                 | NativeServerSession.CLIENT_PLUGIN_AUTH //
                 | (NONE.equals(this.propertySet.getStringProperty(PropertyKey.connectionAttributes).getValue()) ? //
-                        0 : capabilityFlags & NativeServerSession.CLIENT_CONNECT_ATTRS) //
+                0 : capabilityFlags & NativeServerSession.CLIENT_CONNECT_ATTRS) //
                 | capabilityFlags & NativeServerSession.CLIENT_PLUGIN_AUTH_LENENC_CLIENT_DATA //
                 | (this.propertySet.getBooleanProperty(PropertyKey.disconnectOnExpiredPasswords).getValue() ? //
-                        0 : capabilityFlags & NativeServerSession.CLIENT_CAN_HANDLE_EXPIRED_PASSWORD) //
+                0 : capabilityFlags & NativeServerSession.CLIENT_CAN_HANDLE_EXPIRED_PASSWORD) //
                 | (this.propertySet.getBooleanProperty(PropertyKey.trackSessionState).getValue() ? //
-                        capabilityFlags & NativeServerSession.CLIENT_SESSION_TRACK : 0) //
+                capabilityFlags & NativeServerSession.CLIENT_SESSION_TRACK : 0) //
                 | capabilityFlags & NativeServerSession.CLIENT_DEPRECATE_EOF //
                 | capabilityFlags & NativeServerSession.CLIENT_QUERY_ATTRIBUTES //
                 | capabilityFlags & NativeServerSession.CLIENT_MULTI_FACTOR_AUTHENTICATION;
@@ -210,10 +207,10 @@ public class NativeAuthenticationProvider implements AuthenticationProvider<Nati
 
     /**
      * Fill the authentication plugins map.
-     *
+     * <p>
      * Starts by filling the map with instances of the built-in authentication plugins. Then creates instances of plugins listed in the "authenticationPlugins"
      * connection property and adds them to the map too.
-     *
+     * <p>
      * The plugins map uses the plugin names as keys, which are obtained from {@link AuthenticationPlugin#getProtocolPluginName()} thus it is possible to
      * replace built-in plugins with custom implementations as long as the implementations use the same MySQL authentication plugin client-side name, such as,
      * "caching_sha2_password" and "mysql_native_password".
@@ -225,7 +222,7 @@ public class NativeAuthenticationProvider implements AuthenticationProvider<Nati
         String defaultAuthenticationPluginValue = defaultAuthenticationPluginProp.getValue();
         if (defaultAuthenticationPluginValue == null || "".equals(defaultAuthenticationPluginValue.trim())) {
             throw ExceptionFactory.createException(WrongArgumentException.class,
-                    Messages.getString("AuthenticationProvider.BadDefaultAuthenticationPlugin", new Object[] { defaultAuthenticationPluginValue }),
+                    Messages.getString("AuthenticationProvider.BadDefaultAuthenticationPlugin", new Object[]{defaultAuthenticationPluginValue}),
                     getExceptionInterceptor());
         }
 
@@ -276,7 +273,7 @@ public class NativeAuthenticationProvider implements AuthenticationProvider<Nati
                         && (defaultAuthenticationPluginValue.equals(pluginProtocolName) || defaultAuthenticationPluginValue.equals(pluginClassName))) {
                     throw ExceptionFactory.createException(WrongArgumentException.class,
                             Messages.getString("AuthenticationProvider.BadDisabledAuthenticationPlugin",
-                                    new Object[] { disabledByClassName ? pluginClassName : pluginProtocolName }),
+                                    new Object[]{disabledByClassName ? pluginClassName : pluginProtocolName}),
                             getExceptionInterceptor());
                 }
             } else {
@@ -293,7 +290,7 @@ public class NativeAuthenticationProvider implements AuthenticationProvider<Nati
         // check if the default plugin is listed
         if (!defaultFound) {
             throw ExceptionFactory.createException(WrongArgumentException.class,
-                    Messages.getString("AuthenticationProvider.DefaultAuthenticationPluginIsNotListed", new Object[] { defaultAuthenticationPluginValue }),
+                    Messages.getString("AuthenticationProvider.DefaultAuthenticationPluginIsNotListed", new Object[]{defaultAuthenticationPluginValue}),
                     getExceptionInterceptor());
         }
     }
@@ -302,14 +299,13 @@ public class NativeAuthenticationProvider implements AuthenticationProvider<Nati
      * Get an authentication plugin instance from the authentication plugins map by pluginName key. If such plugin is found, its method
      * {@link AuthenticationPlugin#isReusable()} is called and if the value returned is <code>false</code> then a new instance of the plugin is returned
      * otherwise the instance that already exists is returned.
-     *
+     * <p>
      * If plugin is not found method returns null, in such case the subsequent behavior
      * of handshake process depends on type of last packet received from server:
      * if it was Auth Challenge Packet then handshake will proceed with default plugin,
      * if it was Auth Method Switch Request Packet then handshake will be interrupted with exception.
      *
-     * @param pluginName
-     *            mysql protocol plugin names, for example "caching_sha2_password" and "mysql_native_password" for built-in plugins
+     * @param pluginName mysql protocol plugin names, for example "caching_sha2_password" and "mysql_native_password" for built-in plugins
      * @return null if plugin is not found or authentication plugin instance initialized with current connection properties
      */
     @SuppressWarnings("unchecked")
@@ -325,7 +321,7 @@ public class NativeAuthenticationProvider implements AuthenticationProvider<Nati
                 plugin = plugin.getClass().newInstance();
             } catch (Throwable t) {
                 throw ExceptionFactory.createException(WrongArgumentException.class,
-                        Messages.getString("AuthenticationProvider.BadAuthenticationPlugin", new Object[] { plugin.getClass().getName() }), t,
+                        Messages.getString("AuthenticationProvider.BadAuthenticationPlugin", new Object[]{plugin.getClass().getName()}), t,
                         getExceptionInterceptor());
             }
         }
@@ -337,13 +333,12 @@ public class NativeAuthenticationProvider implements AuthenticationProvider<Nati
     /**
      * Check if given plugin requires confidentiality, but connection is without SSL
      *
-     * @param plugin
-     *            {@link AuthenticationPlugin}
+     * @param plugin {@link AuthenticationPlugin}
      */
     private void checkConfidentiality(AuthenticationPlugin<?> plugin) {
         if (plugin.requiresConfidentiality() && !this.protocol.getSocketConnection().isSSLEstablished()) {
             throw ExceptionFactory.createException(
-                    Messages.getString("AuthenticationProvider.AuthenticationPluginRequiresSSL", new Object[] { plugin.getProtocolPluginName() }),
+                    Messages.getString("AuthenticationProvider.AuthenticationPluginRequiresSSL", new Object[]{plugin.getProtocolPluginName()}),
                     getExceptionInterceptor());
         }
     }
@@ -352,13 +347,12 @@ public class NativeAuthenticationProvider implements AuthenticationProvider<Nati
      * Performs an authentication handshake to authorize connection to a given database as a given MySQL user.
      * This can happen upon initial connection to the server, after receiving Auth Challenge Packet, or
      * at any moment during the connection life-time via a Change User request.
-     *
+     * <p>
      * This method will use registered authentication plugins as requested by the server.
      *
-     * @param challenge
-     *            the Auth Challenge Packet received from server if
-     *            this method is used during the initial connection.
-     *            Otherwise null.
+     * @param challenge the Auth Challenge Packet received from server if
+     *                  this method is used during the initial connection.
+     *                  Otherwise null.
      */
     private void proceedHandshakeWithPluggableAuthentication(final NativePacketPayload challenge) {
         ServerSession serverSession = this.protocol.getServerSession();
@@ -482,7 +476,7 @@ public class NativeAuthenticationProvider implements AuthenticationProvider<Nati
                     plugin = getAuthenticationPlugin(pluginName);
                     if (plugin == null) {
                         throw ExceptionFactory.createException(WrongArgumentException.class,
-                                Messages.getString("AuthenticationProvider.BadAuthenticationPlugin", new Object[] { pluginName }), getExceptionInterceptor());
+                                Messages.getString("AuthenticationProvider.BadAuthenticationPlugin", new Object[]{pluginName}), getExceptionInterceptor());
                     }
                 }
 
@@ -502,7 +496,7 @@ public class NativeAuthenticationProvider implements AuthenticationProvider<Nati
                     plugin = getAuthenticationPlugin(pluginName);
                     if (plugin == null) {
                         throw ExceptionFactory.createException(WrongArgumentException.class,
-                                Messages.getString("AuthenticationProvider.BadAuthenticationPlugin", new Object[] { pluginName }), getExceptionInterceptor());
+                                Messages.getString("AuthenticationProvider.BadAuthenticationPlugin", new Object[]{pluginName}), getExceptionInterceptor());
                     }
                 }
 
@@ -590,12 +584,9 @@ public class NativeAuthenticationProvider implements AuthenticationProvider<Nati
     /**
      * Re-authenticates as the given user and password
      *
-     * @param user
-     *            user name
-     * @param pass
-     *            password
-     * @param db
-     *            database name
+     * @param user user name
+     * @param pass password
+     * @param db   database name
      */
     @Override
     public void changeUser(String user, String pass, String db) {

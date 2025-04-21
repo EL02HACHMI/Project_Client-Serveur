@@ -105,6 +105,8 @@ import testsuite.UnreliableSocketFactory;
 
 public class SessionTest extends DevApiBaseTestCase {
 
+    private List<String> createdTestSchemas = new ArrayList<>();
+
     @BeforeEach
     public void setupSessionTest() {
         assumeTrue(this.isSetForXTests, PropertyDefinitions.SYSP_testsuite_url_mysqlx + " must be set to run this test.");
@@ -124,8 +126,6 @@ public class SessionTest extends DevApiBaseTestCase {
             destroyTestSession();
         }
     }
-
-    private List<String> createdTestSchemas = new ArrayList<>();
 
     /**
      * Create a random schema name. The schema will be dropped upon test cleanup.
@@ -154,8 +154,8 @@ public class SessionTest extends DevApiBaseTestCase {
             final String testUriPattern = "mysqlx://testUserN:testUserN@%s:%s/%s?xdevapi.auth=%s";
 
             // Check if the default schema is correctly sent when using different authentication mechanisms.
-            String[] authMechs = mysqlVersionMeetsMinimum(ServerVersion.parseVersion("8.0.4")) ? new String[] { "PLAIN", "MYSQL41", "SHA256_MEMORY" }
-                    : new String[] { "PLAIN", "MYSQL41" };
+            String[] authMechs = mysqlVersionMeetsMinimum(ServerVersion.parseVersion("8.0.4")) ? new String[]{"PLAIN", "MYSQL41", "SHA256_MEMORY"}
+                    : new String[]{"PLAIN", "MYSQL41"};
             for (String authMech : authMechs) {
                 final String testCase = "Testing default schema provided in authentication mecanism '" + authMech + "'.";
 
@@ -207,10 +207,10 @@ public class SessionTest extends DevApiBaseTestCase {
             final String testUriPattern3 = "mysqlx://testUserN:testUserN@address=(host=%s)(port=%s)(xdevapi.auth=%s)";
 
             // Check if not setting a default schema works correctly when using different authentication mechanisms.
-            String[] authMechs = mysqlVersionMeetsMinimum(ServerVersion.parseVersion("8.0.4")) ? new String[] { "PLAIN", "MYSQL41", "SHA256_MEMORY" }
-                    : new String[] { "PLAIN", "MYSQL41" };
+            String[] authMechs = mysqlVersionMeetsMinimum(ServerVersion.parseVersion("8.0.4")) ? new String[]{"PLAIN", "MYSQL41", "SHA256_MEMORY"}
+                    : new String[]{"PLAIN", "MYSQL41"};
             for (String authMech : authMechs) {
-                for (String testUriPattern : new String[] { testUriPattern1, testUriPattern2, testUriPattern3 }) {
+                for (String testUriPattern : new String[]{testUriPattern1, testUriPattern2, testUriPattern3}) {
                     // Test using a connection String.
                     final String testUri = String.format(testUriPattern, getTestHost(), getTestPort(), authMech);
                     final String testCase = "Testing no default schema with authentication mecanism '" + authMech + "' and URI '" + testUri + "'.";
@@ -259,8 +259,8 @@ public class SessionTest extends DevApiBaseTestCase {
             final String testUriPattern = "mysqlx://testUserN:testUserN@%s:%s/%s?xdevapi.auth=%s";
 
             // Check if the default schema is correctly sent when using different authentication mechanisms.
-            String[] authMechs = mysqlVersionMeetsMinimum(ServerVersion.parseVersion("8.0.4")) ? new String[] { "PLAIN", "MYSQL41", "SHA256_MEMORY" }
-                    : new String[] { "PLAIN", "MYSQL41" };
+            String[] authMechs = mysqlVersionMeetsMinimum(ServerVersion.parseVersion("8.0.4")) ? new String[]{"PLAIN", "MYSQL41", "SHA256_MEMORY"}
+                    : new String[]{"PLAIN", "MYSQL41"};
             for (String authMech : authMechs) {
                 final String testCase = "Testing missing default schema provided in authentication mecanism '" + authMech + "'.";
 
@@ -458,7 +458,8 @@ public class SessionTest extends DevApiBaseTestCase {
             SqlStatement stmt = this.session.sql("call basicMultipleResults()");
             SqlResult res = stmt.execute();
             assertTrue(res.hasData());
-            /* Row r = */ res.next();
+            /* Row r = */
+            res.next();
             assertFalse(res.hasNext());
             assertTrue(res.nextResult());
             assertTrue(res.hasData());
@@ -476,7 +477,8 @@ public class SessionTest extends DevApiBaseTestCase {
             sqlUpdate("drop procedure if exists basicMultipleResults");
             sqlUpdate("create procedure basicMultipleResults() begin explain select 1; explain select 2; end");
             SqlStatement stmt = this.session.sql("call basicMultipleResults()");
-            /* SqlResult res = */ stmt.execute();
+            /* SqlResult res = */
+            stmt.execute();
             // execute another statement, should work fine
             this.session.sql("call basicMultipleResults()");
             this.session.sql("call basicMultipleResults()");
@@ -1001,7 +1003,7 @@ public class SessionTest extends DevApiBaseTestCase {
     }
 
     private <EX extends Throwable> void testPooledSessions_assertFailureTimeout(Client cli, int expLowLimit, int expUpLimit, Class<EX> throwable,
-            String message) {
+                                                                                String message) {
         long begin = System.currentTimeMillis();
         assertThrows(throwable, message, () -> cli.getSession());
         long end = System.currentTimeMillis() - begin;
@@ -1052,7 +1054,7 @@ public class SessionTest extends DevApiBaseTestCase {
         assumeTrue(isServerRunningOnWindows() && isMysqlRunningLocally(),
                 "This test can run only when client and server are running on the same Windows host.");
 
-        for (String path : new String[] { null, "\\\\.\\pipe\\MySQLfoo" }) {
+        for (String path : new String[]{null, "\\\\.\\pipe\\MySQLfoo"}) {
             String url = this.baseUrl + (this.baseUrl.contains("?") ? "" : "?")
                     + makeParam(PropertyKey.socketFactory, "com.mysql.cj.protocol.NamedPipeSocketFactory");
             if (path != null) {
@@ -1066,7 +1068,7 @@ public class SessionTest extends DevApiBaseTestCase {
                 if (cause != null) {
                     if (cause instanceof CJCommunicationsException && cause.getCause() != null && cause.getCause() instanceof FileNotFoundException
                             && ((path == null ? "\\\\.\\pipe\\MySQL" : path) + " (The system cannot find the file specified)")
-                                    .equals(cause.getCause().getMessage())) {
+                            .equals(cause.getCause().getMessage())) {
                         continue;
                     } else if (cause instanceof AssertionFailedException
                             && "ASSERTION FAILED: Unknown message type: 10 (server messages mapping: null)".equals(cause.getMessage())) {
@@ -1502,7 +1504,7 @@ public class SessionTest extends DevApiBaseTestCase {
 
             this.session.sql("drop procedure if exists newproc").execute();
             this.session.sql(
-                    "create procedure newproc (in p1 int,in p2 char(20)) begin select 1; update testBug23721537 set name='b' where id=0; select 2; select 3; end;")
+                            "create procedure newproc (in p1 int,in p2 char(20)) begin select 1; update testBug23721537 set name='b' where id=0; select 2; select 3; end;")
                     .execute();
 
             /* sync execution */
@@ -1632,7 +1634,7 @@ public class SessionTest extends DevApiBaseTestCase {
         String testUriPatternPriorities = String.format(testUriPattern, getTestUser() == null ? "" : getTestUser(),
                 getTestPassword() == null ? "" : getTestPassword(), testHosts, getTestDatabase());
         String testUri = String.format(testUriPatternPriorities, 60, 80, 100, 20, 40);
-        int[] hostsOrder = new int[] { 3, 2, 1, 5, 4 };
+        int[] hostsOrder = new int[]{3, 2, 1, 5, 4};
 
         for (int i = 0; i < hostsOrder.length; i++) {
             int h = hostsOrder[i];
@@ -1784,7 +1786,7 @@ public class SessionTest extends DevApiBaseTestCase {
         String testUriPatternPriorities = String.format(testUriPattern, getTestUser() == null ? "" : getTestUser(),
                 getTestPassword() == null ? "" : getTestPassword(), testHosts, getTestDatabase());
         String testUri = String.format(testUriPatternPriorities, 60, 80, 100, 20, 40);
-        int[] hostsOrder = new int[] { 3, 2, 1, 5, 4 };
+        int[] hostsOrder = new int[]{3, 2, 1, 5, 4};
 
         final ClientFactory cf = new ClientFactory();
         Client client = cf.getClient(testUri, "{\"pooling\" : {\"enabled\" : true, \"maxSize\" : 10} }");
@@ -1854,7 +1856,7 @@ public class SessionTest extends DevApiBaseTestCase {
         String testUriPatternPriorities = String.format(testUriPattern, getTestUser() == null ? "" : getTestUser(),
                 getTestPassword() == null ? "" : getTestPassword(), testHosts, getTestDatabase());
         String testUri = String.format(testUriPatternPriorities, 60, 80, 100, 20, 40);
-        int[] hostsOrder = new int[] { 3, 2, 1, 5, 4 };
+        int[] hostsOrder = new int[]{3, 2, 1, 5, 4};
 
         final ClientFactory cf = new ClientFactory();
         Client client = cf.getClient(testUri, "{\"pooling\" : {\"enabled\" : true, \"maxSize\" : 10} }");
@@ -2171,7 +2173,7 @@ public class SessionTest extends DevApiBaseTestCase {
      */
     @Test
     public void testBug97730() throws Throwable {
-        for (String pooling : new String[] { "false", "true" }) {
+        for (String pooling : new String[]{"false", "true"}) {
             Properties props = new Properties();
             props.setProperty(ClientProperty.POOLING_ENABLED.getKeyName(), pooling);
             ClientFactory cf = new ClientFactory();
@@ -2225,7 +2227,7 @@ public class SessionTest extends DevApiBaseTestCase {
             sqlRes = asyncRes.get();
 
             asyncRes = this.session.sql(
-                    "create table testExecAsync (c1 int,c2 bigint,c3 double,c4 bool,c5 year,c6 float,c7 blob,c8 enum('xs','s','m','l','xl'),c9 set('a','b','c','d'))")
+                            "create table testExecAsync (c1 int,c2 bigint,c3 double,c4 bool,c5 year,c6 float,c7 blob,c8 enum('xs','s','m','l','xl'),c9 set('a','b','c','d'))")
                     .executeAsync();
             sqlRes = asyncRes.get();
 
@@ -2250,7 +2252,7 @@ public class SessionTest extends DevApiBaseTestCase {
             assertEquals(5, sqlRes.getAffectedItemsCount());
 
             asyncRes = this.session.sql(
-                    "select c1 as 'col1',c2 as 'col2', c3 as 'col3',c4 as 'col4',c5 as 'col5', c6 as 'col6', c7 as 'col7', c8 as 'col8' , c9 as 'col9' from testExecAsync order by c1 asc")
+                            "select c1 as 'col1',c2 as 'col2', c3 as 'col3',c4 as 'col4',c5 as 'col5', c6 as 'col6', c7 as 'col7', c8 as 'col8' , c9 as 'col9' from testExecAsync order by c1 asc")
                     .executeAsync();
             sqlRes = asyncRes.get();
             assertTrue(sqlRes.hasData());
@@ -2507,7 +2509,7 @@ public class SessionTest extends DevApiBaseTestCase {
             assertEquals(new Integer(2), ((JsonNumber) doc.get("q")).getInteger());
 
             int cnt = 0;
-            for (Iterator<Warning> warn = docs.getWarnings(); warn.hasNext();) {
+            for (Iterator<Warning> warn = docs.getWarnings(); warn.hasNext(); ) {
                 Warning w = warn.next();
                 if (w.getMessage().equals(message1) || w.getMessage().equals(message2)) {
                     cnt++;
@@ -2521,7 +2523,7 @@ public class SessionTest extends DevApiBaseTestCase {
             SqlResult rs1 = sess.sql("select 1").execute();
             assertEquals(1, rs1.fetchOne().getInt(0));
             cnt = 0;
-            for (Iterator<Warning> warn = rs1.getWarnings(); warn.hasNext();) {
+            for (Iterator<Warning> warn = rs1.getWarnings(); warn.hasNext(); ) {
                 Warning w = warn.next();
                 if (w.getMessage().equals(message1) || w.getMessage().equals(message2)) {
                     cnt++;

@@ -27,6 +27,9 @@ public class NoopTelemetrySpan implements TelemetrySpan {
 
     private static NoopTelemetrySpan INSTANCE = new NoopTelemetrySpan();
 
+    private NoopTelemetrySpan() {
+    }
+
     public static NoopTelemetrySpan getInstance() {
         return INSTANCE;
     }
@@ -34,9 +37,6 @@ public class NoopTelemetrySpan implements TelemetrySpan {
     @Override
     public TelemetryScope makeCurrent() {
         return NoopTelemetryScope.getInstance();
-    }
-
-    private NoopTelemetrySpan() {
     }
 
 }

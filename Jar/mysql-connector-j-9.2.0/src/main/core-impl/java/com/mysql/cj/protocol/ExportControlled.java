@@ -106,8 +106,8 @@ public class ExportControlled {
     private static final String TLSv1_1 = "TLSv1.1";
     private static final String TLSv1_2 = "TLSv1.2";
     private static final String TLSv1_3 = "TLSv1.3";
-    private static final String[] KNOWN_TLS_PROTOCOLS = new String[] { TLSv1_3, TLSv1_2, TLSv1_1, TLSv1 };
-    private static final String[] APPROVED_TLS_PROTOCOLS = new String[] { TLSv1_3, TLSv1_2 };
+    private static final String[] KNOWN_TLS_PROTOCOLS = new String[]{TLSv1_3, TLSv1_2, TLSv1_1, TLSv1};
+    private static final String[] APPROVED_TLS_PROTOCOLS = new String[]{TLSv1_3, TLSv1_2};
 
     private static final String TLS_SETTINGS_RESOURCE = "/com/mysql/cj/TlsSettings.properties";
     private static final List<String> ALLOWED_CIPHERS = new ArrayList<>();
@@ -146,23 +146,14 @@ public class ExportControlled {
     /**
      * Converts the socket being used in the given SocketConnection to an SSLSocket by performing the TLS handshake.
      *
-     * @param rawSocket
-     *            original non-SSL socket
-     * @param socketConnection
-     *            the Protocol instance containing the socket to convert into an SSLSocket.
-     * @param serverVersion
-     *            ServerVersion object
-     * @param log
-     *            Logger
-     *
+     * @param rawSocket        original non-SSL socket
+     * @param socketConnection the Protocol instance containing the socket to convert into an SSLSocket.
+     * @param serverVersion    ServerVersion object
+     * @param log              Logger
      * @return SSL socket
-     *
-     * @throws IOException
-     *             if an I/O exception occurs
-     * @throws SSLParamsException
-     *             if the handshake fails
-     * @throws FeatureNotAvailableException
-     *             if TLS is not supported
+     * @throws IOException                  if an I/O exception occurs
+     * @throws SSLParamsException           if the handshake fails
+     * @throws FeatureNotAvailableException if TLS is not supported
      */
     public static Socket performTlsHandshake(Socket rawSocket, SocketConnection socketConnection, ServerVersion serverVersion, Log log)
             throws IOException, SSLParamsException, FeatureNotAvailableException {
@@ -262,7 +253,8 @@ public class ExportControlled {
             Cipher cipher = Cipher.getInstance(transformation);
             cipher.init(Cipher.ENCRYPT_MODE, key);
             return cipher.doFinal(source);
-        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException e) {
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException |
+                 BadPaddingException e) {
             throw ExceptionFactory.createException(RSAException.class, e.getMessage(), e);
         }
     }
@@ -407,7 +399,7 @@ public class ExportControlled {
                 .filter(c -> !UNACCEPTABLE_CIPHER_SUBSTR.stream().filter(c::contains).findFirst().isPresent()) // unacceptable ciphers
                 .collect(Collectors.toList());
 
-        return allowedCiphers.toArray(new String[] {});
+        return allowedCiphers.toArray(new String[]{});
     }
 
     private static class SslContextBuilder {
@@ -565,7 +557,7 @@ public class ExportControlled {
 
                 // If no other TrustManagers were found then add a single X509TrustManagerWrapper that just takes care of certificate expiration check.
                 if (tms.length == 0 && !this.fipsCompliantJsse) {
-                    tms = new TrustManager[] { new X509TrustManagerWrapper() };
+                    tms = new TrustManager[]{new X509TrustManagerWrapper()};
                 }
             } catch (MalformedURLException e) {
                 throw ExceptionFactory.createException(SSLParamsException.class, this.trustStoreSettings.keyStoreUrl + " does not appear to be a valid URL.", e,
@@ -636,8 +628,7 @@ public class ExportControlled {
         /**
          * Constructor for enabling server certificate validation and certificate expiration check.
          *
-         * @param tm
-         *            if null then enables just certificate expiration check.
+         * @param tm if null then enables just certificate expiration check.
          * @throws CertificateException
          */
         X509TrustManagerWrapper(X509TrustManager tm) throws CertificateException {
@@ -786,10 +777,8 @@ public class ExportControlled {
          * Verify the host name against the given pattern, using the rules specified in <a href="https://tools.ietf.org/html/rfc6125#section-6.4.3">RFC 6125,
          * Section 6.4.3</a>. Support wildcard character as defined in the RFC.
          *
-         * @param ptn
-         *            the pattern to match with the host name.
-         * @return
-         *         <code>true</code> if the host name matches the pattern, <code>false</code> otherwise.
+         * @param ptn the pattern to match with the host name.
+         * @return <code>true</code> if the host name matches the pattern, <code>false</code> otherwise.
          */
         private boolean verifyHostName(String ptn) {
             final int indexOfStar = ptn.indexOf('*');

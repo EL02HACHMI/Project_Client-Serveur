@@ -52,7 +52,7 @@ public class Field implements ProtocolEntity {
     private MysqlType mysqlType = MysqlType.UNKNOWN;
 
     public Field(LazyString databaseName, LazyString tableName, LazyString originalTableName, LazyString columnName, LazyString originalColumnName, long length,
-            int mysqlTypeId, short colFlag, int colDecimals, int collationIndex, String encoding, MysqlType mysqlType) {
+                 int mysqlTypeId, short colFlag, int colDecimals, int collationIndex, String encoding, MysqlType mysqlType) {
         this.databaseName = databaseName;
         this.tableName = tableName;
         this.originalTableName = originalTableName;
@@ -77,53 +77,16 @@ public class Field implements ProtocolEntity {
         adjustFlagsByMysqlType();
     }
 
-    private void adjustFlagsByMysqlType() {
-        switch (this.mysqlType) {
-            case BIT:
-                if (this.length > 1) {
-                    this.colFlag |= MysqlType.FIELD_FLAG_BINARY;
-                    this.colFlag |= MysqlType.FIELD_FLAG_BLOB;
-                }
-                break;
-
-            case BINARY:
-            case VARBINARY:
-                this.colFlag |= MysqlType.FIELD_FLAG_BINARY;
-                this.colFlag |= MysqlType.FIELD_FLAG_BLOB;
-                break;
-
-            case DECIMAL_UNSIGNED:
-            case TINYINT_UNSIGNED:
-            case SMALLINT_UNSIGNED:
-            case INT_UNSIGNED:
-            case FLOAT_UNSIGNED:
-            case DOUBLE_UNSIGNED:
-            case BIGINT_UNSIGNED:
-            case MEDIUMINT_UNSIGNED:
-                this.colFlag |= MysqlType.FIELD_FLAG_UNSIGNED;
-                break;
-
-            default:
-                break;
-        }
-    }
-
     /**
      * Used by prepared statements to re-use result set data conversion methods
      * when generating bound parameter retrieval instance for statement interceptors.
      *
-     * @param tableName
-     *            not used
-     * @param columnName
-     *            not used
-     * @param collationIndex
-     *            the MySQL collation/character set index
-     * @param encoding
-     *            encoding of data in this field
-     * @param mysqlType
-     *            {@link MysqlType}
-     * @param length
-     *            length in characters or bytes (for BINARY data).
+     * @param tableName      not used
+     * @param columnName     not used
+     * @param collationIndex the MySQL collation/character set index
+     * @param encoding       encoding of data in this field
+     * @param mysqlType      {@link MysqlType}
+     * @param length         length in characters or bytes (for BINARY data).
      */
     public Field(String tableName, String columnName, int collationIndex, String encoding, MysqlType mysqlType, int length) {
         this.databaseName = new LazyString(null);
@@ -156,6 +119,37 @@ public class Field implements ProtocolEntity {
                 break;
             default:
                 // ignoring charsets for non-string types
+        }
+    }
+
+    private void adjustFlagsByMysqlType() {
+        switch (this.mysqlType) {
+            case BIT:
+                if (this.length > 1) {
+                    this.colFlag |= MysqlType.FIELD_FLAG_BINARY;
+                    this.colFlag |= MysqlType.FIELD_FLAG_BLOB;
+                }
+                break;
+
+            case BINARY:
+            case VARBINARY:
+                this.colFlag |= MysqlType.FIELD_FLAG_BINARY;
+                this.colFlag |= MysqlType.FIELD_FLAG_BLOB;
+                break;
+
+            case DECIMAL_UNSIGNED:
+            case TINYINT_UNSIGNED:
+            case SMALLINT_UNSIGNED:
+            case INT_UNSIGNED:
+            case FLOAT_UNSIGNED:
+            case DOUBLE_UNSIGNED:
+            case BIGINT_UNSIGNED:
+            case MEDIUMINT_UNSIGNED:
+                this.colFlag |= MysqlType.FIELD_FLAG_UNSIGNED;
+                break;
+
+            default:
+                break;
         }
     }
 
@@ -264,7 +258,7 @@ public class Field implements ProtocolEntity {
      * Is this field _definitely_ not writable?
      *
      * @return true if this field can not be written to in an INSERT/UPDATE
-     *         statement.
+     * statement.
      */
     public boolean isReadOnly() {
         return this.originalColumnName.length() == 0 && this.originalTableName.length() == 0;

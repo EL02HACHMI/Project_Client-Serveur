@@ -35,18 +35,21 @@ public class Security {
     private static int CACHING_SHA2_DIGEST_LENGTH = 32;
 
     /**
+     * Prevent construction.
+     */
+    private Security() {
+        super();
+    }
+
+    /**
      * Encrypt/Decrypt function used for password encryption in authentication
-     *
+     * <p>
      * Simple XOR is used here but it is OK as we encrypt random strings
      *
-     * @param from
-     *            IN Data for encryption
-     * @param to
-     *            OUT Encrypt data to the buffer (may be the same)
-     * @param scramble
-     *            IN Scramble used for encryption
-     * @param length
-     *            IN Length of data to encrypt
+     * @param from     IN Data for encryption
+     * @param to       OUT Encrypt data to the buffer (may be the same)
+     * @param scramble IN Scramble used for encryption
+     * @param length   IN Length of data to encrypt
      */
     public static void xorString(byte[] from, byte[] to, byte[] scramble, int length) {
         int pos = 0;
@@ -78,10 +81,8 @@ public class Security {
      * send(reply)
      * </pre>
      *
-     * @param password
-     *            password
-     * @param seed
-     *            seed
+     * @param password password
+     * @param seed     seed
      * @return bytes
      */
     public static byte[] scramble411(byte[] password, byte[] seed) {
@@ -119,14 +120,10 @@ public class Security {
      * Scramble = XOR(SHA2(password), SHA2(SHA2(SHA2(password)), Nonce))
      * </pre>
      *
-     * @param password
-     *            password
-     * @param seed
-     *            seed
+     * @param password password
+     * @param seed     seed
      * @return bytes
-     *
-     * @throws DigestException
-     *             if an error occurs
+     * @throws DigestException if an error occurs
      */
     public static byte[] scrambleCachingSha2(byte[] password, byte[] seed) throws DigestException {
         /*
@@ -168,13 +165,6 @@ public class Security {
         xorString(dig1, mysqlScrambleBuff, scramble1, CACHING_SHA2_DIGEST_LENGTH);
 
         return mysqlScrambleBuff;
-    }
-
-    /**
-     * Prevent construction.
-     */
-    private Security() {
-        super();
     }
 
 }

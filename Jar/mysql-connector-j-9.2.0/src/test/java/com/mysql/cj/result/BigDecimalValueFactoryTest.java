@@ -141,21 +141,21 @@ public class BigDecimalValueFactoryTest extends CommonAsserts {
 
     @Test
     public void testCreateFromBit() {
-        assertEquals(BigDecimal.ZERO, this.vf.createFromBit(new byte[] { 0 }, 0, 1));
-        assertEquals(BigDecimal.ONE, this.vf.createFromBit(new byte[] { 1 }, 0, 1));
-        assertEquals(BigDecimal.valueOf(2), this.vf.createFromBit(new byte[] { 2 }, 0, 1));
-        assertEquals(BigDecimal.valueOf(0xffL), this.vf.createFromBit(new byte[] { (byte) 0xff }, 0, 1));
-        assertEquals(BigDecimal.valueOf(0xffffL), this.vf.createFromBit(new byte[] { (byte) 0xff, (byte) 0xff }, 0, 2));
-        assertEquals(BigDecimal.valueOf(0xffffffL), this.vf.createFromBit(new byte[] { (byte) 0xff, (byte) 0xff, (byte) 0xff }, 0, 3));
-        assertEquals(BigDecimal.valueOf(0xffffffffL), this.vf.createFromBit(new byte[] { (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff }, 0, 4));
+        assertEquals(BigDecimal.ZERO, this.vf.createFromBit(new byte[]{0}, 0, 1));
+        assertEquals(BigDecimal.ONE, this.vf.createFromBit(new byte[]{1}, 0, 1));
+        assertEquals(BigDecimal.valueOf(2), this.vf.createFromBit(new byte[]{2}, 0, 1));
+        assertEquals(BigDecimal.valueOf(0xffL), this.vf.createFromBit(new byte[]{(byte) 0xff}, 0, 1));
+        assertEquals(BigDecimal.valueOf(0xffffL), this.vf.createFromBit(new byte[]{(byte) 0xff, (byte) 0xff}, 0, 2));
+        assertEquals(BigDecimal.valueOf(0xffffffL), this.vf.createFromBit(new byte[]{(byte) 0xff, (byte) 0xff, (byte) 0xff}, 0, 3));
+        assertEquals(BigDecimal.valueOf(0xffffffffL), this.vf.createFromBit(new byte[]{(byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff}, 0, 4));
         assertEquals(BigDecimal.valueOf(0xffffffffffL),
-                this.vf.createFromBit(new byte[] { (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff }, 0, 5));
+                this.vf.createFromBit(new byte[]{(byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff}, 0, 5));
         assertEquals(BigDecimal.valueOf(0xffffffffffffL),
-                this.vf.createFromBit(new byte[] { (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff }, 0, 6));
+                this.vf.createFromBit(new byte[]{(byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff}, 0, 6));
         assertEquals(BigDecimal.valueOf(0xffffffffffffffL),
-                this.vf.createFromBit(new byte[] { (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff }, 0, 7));
+                this.vf.createFromBit(new byte[]{(byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff}, 0, 7));
         assertEquals(new BigDecimal("18446744073709551615"), this.vf
-                .createFromBit(new byte[] { (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff }, 0, 8));
+                .createFromBit(new byte[]{(byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff}, 0, 8));
     }
 
     @Test

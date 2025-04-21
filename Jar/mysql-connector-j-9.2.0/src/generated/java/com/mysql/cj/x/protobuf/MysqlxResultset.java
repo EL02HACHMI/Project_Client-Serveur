@@ -1758,7 +1758,7 @@ public final class MysqlxResultset {
 
     /**
      * <pre>
-     * * datatype of the field in a row 
+     * * datatype of the field in a row
      * </pre>
      *
      * <code>required .Mysqlx.Resultset.ColumnMetaData.FieldType type = 1;</code>
@@ -1767,7 +1767,7 @@ public final class MysqlxResultset {
     boolean hasType();
     /**
      * <pre>
-     * * datatype of the field in a row 
+     * * datatype of the field in a row
      * </pre>
      *
      * <code>required .Mysqlx.Resultset.ColumnMetaData.FieldType type = 1;</code>
@@ -1777,7 +1777,7 @@ public final class MysqlxResultset {
 
     /**
      * <pre>
-     * * name of the column 
+     * * name of the column
      * </pre>
      *
      * <code>optional bytes name = 2;</code>
@@ -1786,7 +1786,7 @@ public final class MysqlxResultset {
     boolean hasName();
     /**
      * <pre>
-     * * name of the column 
+     * * name of the column
      * </pre>
      *
      * <code>optional bytes name = 2;</code>
@@ -1796,7 +1796,7 @@ public final class MysqlxResultset {
 
     /**
      * <pre>
-     * * name of the column before an alias was applied 
+     * * name of the column before an alias was applied
      * </pre>
      *
      * <code>optional bytes original_name = 3;</code>
@@ -1805,7 +1805,7 @@ public final class MysqlxResultset {
     boolean hasOriginalName();
     /**
      * <pre>
-     * * name of the column before an alias was applied 
+     * * name of the column before an alias was applied
      * </pre>
      *
      * <code>optional bytes original_name = 3;</code>
@@ -1815,7 +1815,7 @@ public final class MysqlxResultset {
 
     /**
      * <pre>
-     * * name of the table the column originates from 
+     * * name of the table the column originates from
      * </pre>
      *
      * <code>optional bytes table = 4;</code>
@@ -1824,7 +1824,7 @@ public final class MysqlxResultset {
     boolean hasTable();
     /**
      * <pre>
-     * * name of the table the column originates from 
+     * * name of the table the column originates from
      * </pre>
      *
      * <code>optional bytes table = 4;</code>
@@ -1834,7 +1834,7 @@ public final class MysqlxResultset {
 
     /**
      * <pre>
-     * * name of the table the column originates from before an alias was applied 
+     * * name of the table the column originates from before an alias was applied
      * </pre>
      *
      * <code>optional bytes original_table = 5;</code>
@@ -1843,7 +1843,7 @@ public final class MysqlxResultset {
     boolean hasOriginalTable();
     /**
      * <pre>
-     * * name of the table the column originates from before an alias was applied 
+     * * name of the table the column originates from before an alias was applied
      * </pre>
      *
      * <code>optional bytes original_table = 5;</code>
@@ -1853,7 +1853,7 @@ public final class MysqlxResultset {
 
     /**
      * <pre>
-     * * schema the column originates from 
+     * * schema the column originates from
      * </pre>
      *
      * <code>optional bytes schema = 6;</code>
@@ -1862,7 +1862,7 @@ public final class MysqlxResultset {
     boolean hasSchema();
     /**
      * <pre>
-     * * schema the column originates from 
+     * * schema the column originates from
      * </pre>
      *
      * <code>optional bytes schema = 6;</code>
@@ -1876,7 +1876,7 @@ public final class MysqlxResultset {
      * &#64;note
      * As there is currently no support for catalogs in MySQL,
      * don't expect this field to be set. In the MySQL C/S
-     * protocol the field had the value ``def`` all the time 
+     * protocol the field had the value ``def`` all the time
      * </pre>
      *
      * <code>optional bytes catalog = 7;</code>
@@ -1889,7 +1889,7 @@ public final class MysqlxResultset {
      * &#64;note
      * As there is currently no support for catalogs in MySQL,
      * don't expect this field to be set. In the MySQL C/S
-     * protocol the field had the value ``def`` all the time 
+     * protocol the field had the value ``def`` all the time
      * </pre>
      *
      * <code>optional bytes catalog = 7;</code>
@@ -1911,7 +1911,7 @@ public final class MysqlxResultset {
     /**
      * <pre>
      * * displayed factional decimal digits for floating point and
-     * fixed point numbers 
+     * fixed point numbers
      * </pre>
      *
      * <code>optional uint32 fractional_digits = 9;</code>
@@ -1921,7 +1921,7 @@ public final class MysqlxResultset {
     /**
      * <pre>
      * * displayed factional decimal digits for floating point and
-     * fixed point numbers 
+     * fixed point numbers
      * </pre>
      *
      * <code>optional uint32 fractional_digits = 9;</code>
@@ -1931,7 +1931,7 @@ public final class MysqlxResultset {
 
     /**
      * <pre>
-     * * maximum count of displayable characters of .type 
+     * * maximum count of displayable characters of .type
      * </pre>
      *
      * <code>optional uint32 length = 10;</code>
@@ -1940,7 +1940,7 @@ public final class MysqlxResultset {
     boolean hasLength();
     /**
      * <pre>
-     * * maximum count of displayable characters of .type 
+     * * maximum count of displayable characters of .type
      * </pre>
      *
      * <code>optional uint32 length = 10;</code>
@@ -1967,7 +1967,7 @@ public final class MysqlxResultset {
      * | 0x0080 | MULTIPLE&#92;_KEY   |
      * | 0x0100 | AUTO&#92;_INCREMENT |
      *
-     * default: 0 
+     * default: 0
      * </pre>
      *
      * <code>optional uint32 flags = 11;</code>
@@ -1993,7 +1993,7 @@ public final class MysqlxResultset {
      * | 0x0080 | MULTIPLE&#92;_KEY   |
      * | 0x0100 | AUTO&#92;_INCREMENT |
      *
-     * default: 0 
+     * default: 0
      * </pre>
      *
      * <code>optional uint32 flags = 11;</code>
@@ -2015,7 +2015,7 @@ public final class MysqlxResultset {
      * and server if this field is set. If the server adds more
      * internal data types that rely on BLOB storage like image
      * manipulation, seeking into complex types in BLOBs, and
-     * more types will be added 
+     * more types will be added
      * </pre>
      *
      * <code>optional uint32 content_type = 12;</code>
@@ -2036,7 +2036,7 @@ public final class MysqlxResultset {
      * and server if this field is set. If the server adds more
      * internal data types that rely on BLOB storage like image
      * manipulation, seeking into complex types in BLOBs, and
-     * more types will be added 
+     * more types will be added
      * </pre>
      *
      * <code>optional uint32 content_type = 12;</code>
@@ -2608,7 +2608,7 @@ public final class MysqlxResultset {
     private int type_ = 1;
     /**
      * <pre>
-     * * datatype of the field in a row 
+     * * datatype of the field in a row
      * </pre>
      *
      * <code>required .Mysqlx.Resultset.ColumnMetaData.FieldType type = 1;</code>
@@ -2619,7 +2619,7 @@ public final class MysqlxResultset {
     }
     /**
      * <pre>
-     * * datatype of the field in a row 
+     * * datatype of the field in a row
      * </pre>
      *
      * <code>required .Mysqlx.Resultset.ColumnMetaData.FieldType type = 1;</code>
@@ -2634,7 +2634,7 @@ public final class MysqlxResultset {
     private com.google.protobuf.ByteString name_ = com.google.protobuf.ByteString.EMPTY;
     /**
      * <pre>
-     * * name of the column 
+     * * name of the column
      * </pre>
      *
      * <code>optional bytes name = 2;</code>
@@ -2646,7 +2646,7 @@ public final class MysqlxResultset {
     }
     /**
      * <pre>
-     * * name of the column 
+     * * name of the column
      * </pre>
      *
      * <code>optional bytes name = 2;</code>
@@ -2661,7 +2661,7 @@ public final class MysqlxResultset {
     private com.google.protobuf.ByteString originalName_ = com.google.protobuf.ByteString.EMPTY;
     /**
      * <pre>
-     * * name of the column before an alias was applied 
+     * * name of the column before an alias was applied
      * </pre>
      *
      * <code>optional bytes original_name = 3;</code>
@@ -2673,7 +2673,7 @@ public final class MysqlxResultset {
     }
     /**
      * <pre>
-     * * name of the column before an alias was applied 
+     * * name of the column before an alias was applied
      * </pre>
      *
      * <code>optional bytes original_name = 3;</code>
@@ -2688,7 +2688,7 @@ public final class MysqlxResultset {
     private com.google.protobuf.ByteString table_ = com.google.protobuf.ByteString.EMPTY;
     /**
      * <pre>
-     * * name of the table the column originates from 
+     * * name of the table the column originates from
      * </pre>
      *
      * <code>optional bytes table = 4;</code>
@@ -2700,7 +2700,7 @@ public final class MysqlxResultset {
     }
     /**
      * <pre>
-     * * name of the table the column originates from 
+     * * name of the table the column originates from
      * </pre>
      *
      * <code>optional bytes table = 4;</code>
@@ -2715,7 +2715,7 @@ public final class MysqlxResultset {
     private com.google.protobuf.ByteString originalTable_ = com.google.protobuf.ByteString.EMPTY;
     /**
      * <pre>
-     * * name of the table the column originates from before an alias was applied 
+     * * name of the table the column originates from before an alias was applied
      * </pre>
      *
      * <code>optional bytes original_table = 5;</code>
@@ -2727,7 +2727,7 @@ public final class MysqlxResultset {
     }
     /**
      * <pre>
-     * * name of the table the column originates from before an alias was applied 
+     * * name of the table the column originates from before an alias was applied
      * </pre>
      *
      * <code>optional bytes original_table = 5;</code>
@@ -2742,7 +2742,7 @@ public final class MysqlxResultset {
     private com.google.protobuf.ByteString schema_ = com.google.protobuf.ByteString.EMPTY;
     /**
      * <pre>
-     * * schema the column originates from 
+     * * schema the column originates from
      * </pre>
      *
      * <code>optional bytes schema = 6;</code>
@@ -2754,7 +2754,7 @@ public final class MysqlxResultset {
     }
     /**
      * <pre>
-     * * schema the column originates from 
+     * * schema the column originates from
      * </pre>
      *
      * <code>optional bytes schema = 6;</code>
@@ -2773,7 +2773,7 @@ public final class MysqlxResultset {
      * &#64;note
      * As there is currently no support for catalogs in MySQL,
      * don't expect this field to be set. In the MySQL C/S
-     * protocol the field had the value ``def`` all the time 
+     * protocol the field had the value ``def`` all the time
      * </pre>
      *
      * <code>optional bytes catalog = 7;</code>
@@ -2789,7 +2789,7 @@ public final class MysqlxResultset {
      * &#64;note
      * As there is currently no support for catalogs in MySQL,
      * don't expect this field to be set. In the MySQL C/S
-     * protocol the field had the value ``def`` all the time 
+     * protocol the field had the value ``def`` all the time
      * </pre>
      *
      * <code>optional bytes catalog = 7;</code>
@@ -2824,7 +2824,7 @@ public final class MysqlxResultset {
     /**
      * <pre>
      * * displayed factional decimal digits for floating point and
-     * fixed point numbers 
+     * fixed point numbers
      * </pre>
      *
      * <code>optional uint32 fractional_digits = 9;</code>
@@ -2837,7 +2837,7 @@ public final class MysqlxResultset {
     /**
      * <pre>
      * * displayed factional decimal digits for floating point and
-     * fixed point numbers 
+     * fixed point numbers
      * </pre>
      *
      * <code>optional uint32 fractional_digits = 9;</code>
@@ -2852,7 +2852,7 @@ public final class MysqlxResultset {
     private int length_ = 0;
     /**
      * <pre>
-     * * maximum count of displayable characters of .type 
+     * * maximum count of displayable characters of .type
      * </pre>
      *
      * <code>optional uint32 length = 10;</code>
@@ -2864,7 +2864,7 @@ public final class MysqlxResultset {
     }
     /**
      * <pre>
-     * * maximum count of displayable characters of .type 
+     * * maximum count of displayable characters of .type
      * </pre>
      *
      * <code>optional uint32 length = 10;</code>
@@ -2896,7 +2896,7 @@ public final class MysqlxResultset {
      * | 0x0080 | MULTIPLE&#92;_KEY   |
      * | 0x0100 | AUTO&#92;_INCREMENT |
      *
-     * default: 0 
+     * default: 0
      * </pre>
      *
      * <code>optional uint32 flags = 11;</code>
@@ -2925,7 +2925,7 @@ public final class MysqlxResultset {
      * | 0x0080 | MULTIPLE&#92;_KEY   |
      * | 0x0100 | AUTO&#92;_INCREMENT |
      *
-     * default: 0 
+     * default: 0
      * </pre>
      *
      * <code>optional uint32 flags = 11;</code>
@@ -2952,7 +2952,7 @@ public final class MysqlxResultset {
      * and server if this field is set. If the server adds more
      * internal data types that rely on BLOB storage like image
      * manipulation, seeking into complex types in BLOBs, and
-     * more types will be added 
+     * more types will be added
      * </pre>
      *
      * <code>optional uint32 content_type = 12;</code>
@@ -2976,7 +2976,7 @@ public final class MysqlxResultset {
      * and server if this field is set. If the server adds more
      * internal data types that rely on BLOB storage like image
      * manipulation, seeking into complex types in BLOBs, and
-     * more types will be added 
+     * more types will be added
      * </pre>
      *
      * <code>optional uint32 content_type = 12;</code>
@@ -3953,7 +3953,7 @@ public final class MysqlxResultset {
       private int type_ = 1;
       /**
        * <pre>
-       * * datatype of the field in a row 
+       * * datatype of the field in a row
        * </pre>
        *
        * <code>required .Mysqlx.Resultset.ColumnMetaData.FieldType type = 1;</code>
@@ -3964,7 +3964,7 @@ public final class MysqlxResultset {
       }
       /**
        * <pre>
-       * * datatype of the field in a row 
+       * * datatype of the field in a row
        * </pre>
        *
        * <code>required .Mysqlx.Resultset.ColumnMetaData.FieldType type = 1;</code>
@@ -3977,7 +3977,7 @@ public final class MysqlxResultset {
       }
       /**
        * <pre>
-       * * datatype of the field in a row 
+       * * datatype of the field in a row
        * </pre>
        *
        * <code>required .Mysqlx.Resultset.ColumnMetaData.FieldType type = 1;</code>
@@ -3995,7 +3995,7 @@ public final class MysqlxResultset {
       }
       /**
        * <pre>
-       * * datatype of the field in a row 
+       * * datatype of the field in a row
        * </pre>
        *
        * <code>required .Mysqlx.Resultset.ColumnMetaData.FieldType type = 1;</code>
@@ -4011,7 +4011,7 @@ public final class MysqlxResultset {
       private com.google.protobuf.ByteString name_ = com.google.protobuf.ByteString.EMPTY;
       /**
        * <pre>
-       * * name of the column 
+       * * name of the column
        * </pre>
        *
        * <code>optional bytes name = 2;</code>
@@ -4023,7 +4023,7 @@ public final class MysqlxResultset {
       }
       /**
        * <pre>
-       * * name of the column 
+       * * name of the column
        * </pre>
        *
        * <code>optional bytes name = 2;</code>
@@ -4035,7 +4035,7 @@ public final class MysqlxResultset {
       }
       /**
        * <pre>
-       * * name of the column 
+       * * name of the column
        * </pre>
        *
        * <code>optional bytes name = 2;</code>
@@ -4051,7 +4051,7 @@ public final class MysqlxResultset {
       }
       /**
        * <pre>
-       * * name of the column 
+       * * name of the column
        * </pre>
        *
        * <code>optional bytes name = 2;</code>
@@ -4067,7 +4067,7 @@ public final class MysqlxResultset {
       private com.google.protobuf.ByteString originalName_ = com.google.protobuf.ByteString.EMPTY;
       /**
        * <pre>
-       * * name of the column before an alias was applied 
+       * * name of the column before an alias was applied
        * </pre>
        *
        * <code>optional bytes original_name = 3;</code>
@@ -4079,7 +4079,7 @@ public final class MysqlxResultset {
       }
       /**
        * <pre>
-       * * name of the column before an alias was applied 
+       * * name of the column before an alias was applied
        * </pre>
        *
        * <code>optional bytes original_name = 3;</code>
@@ -4091,7 +4091,7 @@ public final class MysqlxResultset {
       }
       /**
        * <pre>
-       * * name of the column before an alias was applied 
+       * * name of the column before an alias was applied
        * </pre>
        *
        * <code>optional bytes original_name = 3;</code>
@@ -4107,7 +4107,7 @@ public final class MysqlxResultset {
       }
       /**
        * <pre>
-       * * name of the column before an alias was applied 
+       * * name of the column before an alias was applied
        * </pre>
        *
        * <code>optional bytes original_name = 3;</code>
@@ -4123,7 +4123,7 @@ public final class MysqlxResultset {
       private com.google.protobuf.ByteString table_ = com.google.protobuf.ByteString.EMPTY;
       /**
        * <pre>
-       * * name of the table the column originates from 
+       * * name of the table the column originates from
        * </pre>
        *
        * <code>optional bytes table = 4;</code>
@@ -4135,7 +4135,7 @@ public final class MysqlxResultset {
       }
       /**
        * <pre>
-       * * name of the table the column originates from 
+       * * name of the table the column originates from
        * </pre>
        *
        * <code>optional bytes table = 4;</code>
@@ -4147,7 +4147,7 @@ public final class MysqlxResultset {
       }
       /**
        * <pre>
-       * * name of the table the column originates from 
+       * * name of the table the column originates from
        * </pre>
        *
        * <code>optional bytes table = 4;</code>
@@ -4163,7 +4163,7 @@ public final class MysqlxResultset {
       }
       /**
        * <pre>
-       * * name of the table the column originates from 
+       * * name of the table the column originates from
        * </pre>
        *
        * <code>optional bytes table = 4;</code>
@@ -4179,7 +4179,7 @@ public final class MysqlxResultset {
       private com.google.protobuf.ByteString originalTable_ = com.google.protobuf.ByteString.EMPTY;
       /**
        * <pre>
-       * * name of the table the column originates from before an alias was applied 
+       * * name of the table the column originates from before an alias was applied
        * </pre>
        *
        * <code>optional bytes original_table = 5;</code>
@@ -4191,7 +4191,7 @@ public final class MysqlxResultset {
       }
       /**
        * <pre>
-       * * name of the table the column originates from before an alias was applied 
+       * * name of the table the column originates from before an alias was applied
        * </pre>
        *
        * <code>optional bytes original_table = 5;</code>
@@ -4203,7 +4203,7 @@ public final class MysqlxResultset {
       }
       /**
        * <pre>
-       * * name of the table the column originates from before an alias was applied 
+       * * name of the table the column originates from before an alias was applied
        * </pre>
        *
        * <code>optional bytes original_table = 5;</code>
@@ -4219,7 +4219,7 @@ public final class MysqlxResultset {
       }
       /**
        * <pre>
-       * * name of the table the column originates from before an alias was applied 
+       * * name of the table the column originates from before an alias was applied
        * </pre>
        *
        * <code>optional bytes original_table = 5;</code>
@@ -4235,7 +4235,7 @@ public final class MysqlxResultset {
       private com.google.protobuf.ByteString schema_ = com.google.protobuf.ByteString.EMPTY;
       /**
        * <pre>
-       * * schema the column originates from 
+       * * schema the column originates from
        * </pre>
        *
        * <code>optional bytes schema = 6;</code>
@@ -4247,7 +4247,7 @@ public final class MysqlxResultset {
       }
       /**
        * <pre>
-       * * schema the column originates from 
+       * * schema the column originates from
        * </pre>
        *
        * <code>optional bytes schema = 6;</code>
@@ -4259,7 +4259,7 @@ public final class MysqlxResultset {
       }
       /**
        * <pre>
-       * * schema the column originates from 
+       * * schema the column originates from
        * </pre>
        *
        * <code>optional bytes schema = 6;</code>
@@ -4275,7 +4275,7 @@ public final class MysqlxResultset {
       }
       /**
        * <pre>
-       * * schema the column originates from 
+       * * schema the column originates from
        * </pre>
        *
        * <code>optional bytes schema = 6;</code>
@@ -4295,7 +4295,7 @@ public final class MysqlxResultset {
        * &#64;note
        * As there is currently no support for catalogs in MySQL,
        * don't expect this field to be set. In the MySQL C/S
-       * protocol the field had the value ``def`` all the time 
+       * protocol the field had the value ``def`` all the time
        * </pre>
        *
        * <code>optional bytes catalog = 7;</code>
@@ -4311,7 +4311,7 @@ public final class MysqlxResultset {
        * &#64;note
        * As there is currently no support for catalogs in MySQL,
        * don't expect this field to be set. In the MySQL C/S
-       * protocol the field had the value ``def`` all the time 
+       * protocol the field had the value ``def`` all the time
        * </pre>
        *
        * <code>optional bytes catalog = 7;</code>
@@ -4327,7 +4327,7 @@ public final class MysqlxResultset {
        * &#64;note
        * As there is currently no support for catalogs in MySQL,
        * don't expect this field to be set. In the MySQL C/S
-       * protocol the field had the value ``def`` all the time 
+       * protocol the field had the value ``def`` all the time
        * </pre>
        *
        * <code>optional bytes catalog = 7;</code>
@@ -4347,7 +4347,7 @@ public final class MysqlxResultset {
        * &#64;note
        * As there is currently no support for catalogs in MySQL,
        * don't expect this field to be set. In the MySQL C/S
-       * protocol the field had the value ``def`` all the time 
+       * protocol the field had the value ``def`` all the time
        * </pre>
        *
        * <code>optional bytes catalog = 7;</code>
@@ -4404,7 +4404,7 @@ public final class MysqlxResultset {
       /**
        * <pre>
        * * displayed factional decimal digits for floating point and
-       * fixed point numbers 
+       * fixed point numbers
        * </pre>
        *
        * <code>optional uint32 fractional_digits = 9;</code>
@@ -4417,7 +4417,7 @@ public final class MysqlxResultset {
       /**
        * <pre>
        * * displayed factional decimal digits for floating point and
-       * fixed point numbers 
+       * fixed point numbers
        * </pre>
        *
        * <code>optional uint32 fractional_digits = 9;</code>
@@ -4430,7 +4430,7 @@ public final class MysqlxResultset {
       /**
        * <pre>
        * * displayed factional decimal digits for floating point and
-       * fixed point numbers 
+       * fixed point numbers
        * </pre>
        *
        * <code>optional uint32 fractional_digits = 9;</code>
@@ -4447,7 +4447,7 @@ public final class MysqlxResultset {
       /**
        * <pre>
        * * displayed factional decimal digits for floating point and
-       * fixed point numbers 
+       * fixed point numbers
        * </pre>
        *
        * <code>optional uint32 fractional_digits = 9;</code>
@@ -4463,7 +4463,7 @@ public final class MysqlxResultset {
       private int length_ ;
       /**
        * <pre>
-       * * maximum count of displayable characters of .type 
+       * * maximum count of displayable characters of .type
        * </pre>
        *
        * <code>optional uint32 length = 10;</code>
@@ -4475,7 +4475,7 @@ public final class MysqlxResultset {
       }
       /**
        * <pre>
-       * * maximum count of displayable characters of .type 
+       * * maximum count of displayable characters of .type
        * </pre>
        *
        * <code>optional uint32 length = 10;</code>
@@ -4487,7 +4487,7 @@ public final class MysqlxResultset {
       }
       /**
        * <pre>
-       * * maximum count of displayable characters of .type 
+       * * maximum count of displayable characters of .type
        * </pre>
        *
        * <code>optional uint32 length = 10;</code>
@@ -4503,7 +4503,7 @@ public final class MysqlxResultset {
       }
       /**
        * <pre>
-       * * maximum count of displayable characters of .type 
+       * * maximum count of displayable characters of .type
        * </pre>
        *
        * <code>optional uint32 length = 10;</code>
@@ -4536,7 +4536,7 @@ public final class MysqlxResultset {
        * | 0x0080 | MULTIPLE&#92;_KEY   |
        * | 0x0100 | AUTO&#92;_INCREMENT |
        *
-       * default: 0 
+       * default: 0
        * </pre>
        *
        * <code>optional uint32 flags = 11;</code>
@@ -4565,7 +4565,7 @@ public final class MysqlxResultset {
        * | 0x0080 | MULTIPLE&#92;_KEY   |
        * | 0x0100 | AUTO&#92;_INCREMENT |
        *
-       * default: 0 
+       * default: 0
        * </pre>
        *
        * <code>optional uint32 flags = 11;</code>
@@ -4594,7 +4594,7 @@ public final class MysqlxResultset {
        * | 0x0080 | MULTIPLE&#92;_KEY   |
        * | 0x0100 | AUTO&#92;_INCREMENT |
        *
-       * default: 0 
+       * default: 0
        * </pre>
        *
        * <code>optional uint32 flags = 11;</code>
@@ -4627,7 +4627,7 @@ public final class MysqlxResultset {
        * | 0x0080 | MULTIPLE&#92;_KEY   |
        * | 0x0100 | AUTO&#92;_INCREMENT |
        *
-       * default: 0 
+       * default: 0
        * </pre>
        *
        * <code>optional uint32 flags = 11;</code>
@@ -4655,7 +4655,7 @@ public final class MysqlxResultset {
        * and server if this field is set. If the server adds more
        * internal data types that rely on BLOB storage like image
        * manipulation, seeking into complex types in BLOBs, and
-       * more types will be added 
+       * more types will be added
        * </pre>
        *
        * <code>optional uint32 content_type = 12;</code>
@@ -4679,7 +4679,7 @@ public final class MysqlxResultset {
        * and server if this field is set. If the server adds more
        * internal data types that rely on BLOB storage like image
        * manipulation, seeking into complex types in BLOBs, and
-       * more types will be added 
+       * more types will be added
        * </pre>
        *
        * <code>optional uint32 content_type = 12;</code>
@@ -4703,7 +4703,7 @@ public final class MysqlxResultset {
        * and server if this field is set. If the server adds more
        * internal data types that rely on BLOB storage like image
        * manipulation, seeking into complex types in BLOBs, and
-       * more types will be added 
+       * more types will be added
        * </pre>
        *
        * <code>optional uint32 content_type = 12;</code>
@@ -4731,7 +4731,7 @@ public final class MysqlxResultset {
        * and server if this field is set. If the server adds more
        * internal data types that rely on BLOB storage like image
        * manipulation, seeking into complex types in BLOBs, and
-       * more types will be added 
+       * more types will be added
        * </pre>
        *
        * <code>optional uint32 content_type = 12;</code>
@@ -5352,32 +5352,32 @@ public final class MysqlxResultset {
 
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_Mysqlx_Resultset_FetchDoneMoreOutParams_descriptor;
-  private static final 
+  private static final
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_Mysqlx_Resultset_FetchDoneMoreOutParams_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_Mysqlx_Resultset_FetchDoneMoreResultsets_descriptor;
-  private static final 
+  private static final
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_Mysqlx_Resultset_FetchDoneMoreResultsets_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_Mysqlx_Resultset_FetchDone_descriptor;
-  private static final 
+  private static final
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_Mysqlx_Resultset_FetchDone_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_Mysqlx_Resultset_FetchSuspended_descriptor;
-  private static final 
+  private static final
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_Mysqlx_Resultset_FetchSuspended_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_Mysqlx_Resultset_ColumnMetaData_descriptor;
-  private static final 
+  private static final
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_Mysqlx_Resultset_ColumnMetaData_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_Mysqlx_Resultset_Row_descriptor;
-  private static final 
+  private static final
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_Mysqlx_Resultset_Row_fieldAccessorTable;
 

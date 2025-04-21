@@ -35,12 +35,12 @@ import com.mysql.cj.protocol.InternalTimestamp;
  * The default value factory provides a base class that can be used for value factories that do not support creation from every type. The default value factory
  * will thrown an UnsupportedOperationException for every method and individual methods must be overridden by subclasses.
  *
- * @param <T>
- *            value type
+ * @param <T> value type
  */
 public abstract class DefaultValueFactory<T> implements ValueFactory<T> {
 
     protected boolean jdbcCompliantTruncationForReads = true;
+    protected PropertySet pset = null;
 
     public DefaultValueFactory(PropertySet pset) {
         this.pset = pset;
@@ -50,15 +50,13 @@ public abstract class DefaultValueFactory<T> implements ValueFactory<T> {
         this.jdbcCompliantTruncationForReads = this.pset.getBooleanProperty(PropertyKey.jdbcCompliantTruncation).getInitialValue();
     }
 
-    protected PropertySet pset = null;
-
     @Override
     public void setPropertySet(PropertySet pset) {
         this.pset = pset;
     }
 
     protected T unsupported(String sourceType) {
-        throw new DataConversionException(Messages.getString("ResultSet.UnsupportedConversion", new Object[] { sourceType, getTargetTypeName() }));
+        throw new DataConversionException(Messages.getString("ResultSet.UnsupportedConversion", new Object[]{sourceType, getTargetTypeName()}));
     }
 
     @Override

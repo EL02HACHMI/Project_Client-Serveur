@@ -43,10 +43,8 @@ public class LoadBalanceDnsSrvConnectionUrl extends ConnectionUrl {
     /**
      * Constructs an instance of {@link LoadBalanceDnsSrvConnectionUrl}, performing all the required initializations and validations.
      *
-     * @param connStrParser
-     *            a {@link ConnectionUrlParser} instance containing the parsed version of the original connection string
-     * @param info
-     *            the connection arguments map
+     * @param connStrParser a {@link ConnectionUrlParser} instance containing the parsed version of the original connection string
+     * @param info          the connection arguments map
      */
     public LoadBalanceDnsSrvConnectionUrl(ConnectionUrlParser connStrParser, Properties info) {
         super(connStrParser, info);
@@ -75,7 +73,7 @@ public class LoadBalanceDnsSrvConnectionUrl extends ConnectionUrl {
         if (hostProps.containsKey(PropertyKey.dnsSrv.getKeyName())) {
             if (!BooleanPropertyDefinition.booleanFrom(PropertyKey.dnsSrv.getKeyName(), hostProps.get(PropertyKey.dnsSrv.getKeyName()), null)) {
                 throw ExceptionFactory.createException(InvalidConnectionAttributeException.class,
-                        Messages.getString("ConnectionString.23", new Object[] { PropertyKey.dnsSrv.getKeyName() }));
+                        Messages.getString("ConnectionString.23", new Object[]{PropertyKey.dnsSrv.getKeyName()}));
             }
         }
         if (hostProps.containsKey(PropertyKey.PROTOCOL.getKeyName()) && hostProps.get(PropertyKey.PROTOCOL.getKeyName()).equalsIgnoreCase("PIPE")) {
@@ -83,7 +81,7 @@ public class LoadBalanceDnsSrvConnectionUrl extends ConnectionUrl {
         }
         if (hostProps.containsKey(PropertyKey.loadBalanceConnectionGroup.getKeyName())) {
             throw ExceptionFactory.createException(InvalidConnectionAttributeException.class,
-                    Messages.getString("ConnectionString.25", new Object[] { PropertyKey.loadBalanceConnectionGroup.getKeyName() }));
+                    Messages.getString("ConnectionString.25", new Object[]{PropertyKey.loadBalanceConnectionGroup.getKeyName()}));
         }
     }
 
@@ -91,8 +89,7 @@ public class LoadBalanceDnsSrvConnectionUrl extends ConnectionUrl {
      * Injects additional properties into the connection arguments while the connection arguments map
      * is being constructed.
      *
-     * @param props
-     *            the properties already containing all known connection arguments
+     * @param props the properties already containing all known connection arguments
      */
     @Override
     protected void injectPerTypeProperties(Map<String, String> props) {
@@ -127,11 +124,8 @@ public class LoadBalanceDnsSrvConnectionUrl extends ConnectionUrl {
     /**
      * Returns a hosts list built from the result of the DNS SRV lookup for the original host name.
      *
-     * @param view
-     *            the type of the view to use in the returned list of hosts. This argument is ignored in this implementation.
-     *
-     * @return
-     *         the hosts list from the result of the DNS SRV lookup, filtered for the given view.
+     * @param view the type of the view to use in the returned list of hosts. This argument is ignored in this implementation.
+     * @return the hosts list from the result of the DNS SRV lookup, filtered for the given view.
      */
     @Override
     public List<HostInfo> getHostsList(HostsListView view) {

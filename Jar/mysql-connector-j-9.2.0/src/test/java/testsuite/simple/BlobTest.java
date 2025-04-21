@@ -43,6 +43,7 @@ import testsuite.BaseTestCase;
  */
 public class BlobTest extends BaseTestCase {
 
+    private final static String TEST_BLOB_FILE_PREFIX = "cmj-testblob";
     protected static File testBlobFile;
 
     static {
@@ -106,7 +107,6 @@ public class BlobTest extends BaseTestCase {
      * Tests inserting blob data as a stream
      *
      * @param c
-     *
      * @throws Exception
      */
     private void testByteStreamInsert(Connection c) throws Exception {
@@ -209,8 +209,6 @@ public class BlobTest extends BaseTestCase {
         passed = checkBlob(retrBytes);
         assertTrue(passed, "Inserted BLOB data did not match retrieved BLOB data for getUnicodeStream().");
     }
-
-    private final static String TEST_BLOB_FILE_PREFIX = "cmj-testblob";
 
     private void createBlobFile(int size) throws Exception {
         if (testBlobFile != null && testBlobFile.length() != size) {

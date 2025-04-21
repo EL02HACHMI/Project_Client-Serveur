@@ -27,11 +27,11 @@ public class NoopTelemetryHandler implements TelemetryHandler {
 
     private static NoopTelemetryHandler INSTANCE = new NoopTelemetryHandler();
 
-    public static NoopTelemetryHandler getInstance() {
-        return INSTANCE;
+    private NoopTelemetryHandler() {
     }
 
-    private NoopTelemetryHandler() {
+    public static NoopTelemetryHandler getInstance() {
+        return INSTANCE;
     }
 
     @Override

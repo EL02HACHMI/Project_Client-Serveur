@@ -41,37 +41,18 @@ import com.mysql.cj.util.StringUtils;
  */
 public abstract class ScramShaSaslClient implements SaslClient {
 
-    protected enum ScramExchangeStage {
-
-        TERMINATED(null), SERVER_FINAL(TERMINATED), SERVER_FIRST_CLIENT_FINAL(SERVER_FINAL), CLIENT_FIRST(SERVER_FIRST_CLIENT_FINAL);
-
-        private ScramExchangeStage next;
-
-        private ScramExchangeStage(ScramExchangeStage next) {
-            this.next = next;
-        }
-
-        public ScramExchangeStage getNext() {
-            return this.next == null ? this : this.next;
-        }
-
-    }
-
     protected static final int MINIMUM_ITERATIONS = 4096;
     protected static final String GS2_CBIND_FLAG = "n";
     protected static final byte[] CLIENT_KEY = "Client Key".getBytes();
     protected static final byte[] SERVER_KEY = "Server Key".getBytes();
-
     protected String authorizationId;
     protected String authenticationId;
     protected String password;
-
     protected ScramExchangeStage scramStage = ScramExchangeStage.CLIENT_FIRST;
     protected String cNonce;
     protected String gs2Header;
     protected String clientFirstMessageBare;
     protected byte[] serverSignature;
-
     public ScramShaSaslClient(String authorizationId, String authenticationId, String password) throws SaslException {
         this.authorizationId = StringUtils.isNullOrEmpty(authorizationId) ? "" : authorizationId;
         this.authenticationId = StringUtils.isNullOrEmpty(authenticationId) ? this.authorizationId : authenticationId;
@@ -86,8 +67,7 @@ public abstract class ScramShaSaslClient implements SaslClient {
      * Returns the real IANA-registered mechanism name of this SASL client. This is the same as {@link SaslClient#getMechanismName()} except that subclasses may
      * use custom mechanism names to avoid future name clashes.
      *
-     * @return
-     *         a non-null string representing the IANA-registered mechanism name.
+     * @return a non-null string representing the IANA-registered mechanism name.
      */
     abstract String getIanaMechanismName();
 
@@ -243,10 +223,8 @@ public abstract class ScramShaSaslClient implements SaslClient {
     /**
      * Parses a SASL challenge.
      *
-     * @param challenge
-     *            the server message (challenge) to parse.
-     * @return
-     *         a {@link Map} with the key/value pairs obtained from the server challenge.
+     * @param challenge the server message (challenge) to parse.
+     * @return a {@link Map} with the key/value pairs obtained from the server challenge.
      */
     private Map<String, String> parseChallenge(String challenge) {
         Map<String, String> attributesMap = new HashMap<>();
@@ -260,10 +238,8 @@ public abstract class ScramShaSaslClient implements SaslClient {
     /**
      * Generates a RFC 5802 safe nonce: "a sequence of random printable ASCII characters excluding ','"
      *
-     * @param length
-     *            the length of the nonce.
-     * @return
-     *         a randomly generated string formed by printable ASCII characters except comma.
+     * @param length the length of the nonce.
+     * @return a randomly generated string formed by printable ASCII characters except comma.
      */
     private String generateRandomPrintableAsciiString(int length) {
         final int first = 0x21; // First printable ASCII character: exclamation mark (!).
@@ -273,7 +249,7 @@ public abstract class ScramShaSaslClient implements SaslClient {
         Random random = new SecureRandom();
         char[] result = new char[length];
 
-        for (int i = 0; i < length;) {
+        for (int i = 0; i < length; ) {
             int randomValue = random.nextInt(bound) + first;
             if (randomValue != excl) {
                 result[i++] = (char) randomValue;
@@ -285,55 +261,58 @@ public abstract class ScramShaSaslClient implements SaslClient {
     /**
      * The "H(str)" cryptographic hash function as described in <a href="https://tools.ietf.org/html/rfc5802#section-2.2">RFC 5802, Section 2.2</a>.
      *
-     * @param str
-     *            the string to hash.
-     * @return
-     *         the hash value of the given string.
+     * @param str the string to hash.
+     * @return the hash value of the given string.
      */
     abstract byte[] h(byte[] str);
 
     /**
      * The "HMAC(key, str)" HMAC keyed hash algorithm as described in <a href="https://tools.ietf.org/html/rfc5802#section-2.2">RFC 5802, Section 2.2</a>.
      *
-     * @param key
-     *            the hash key.
-     * @param str
-     *            the input string.
-     * @return
-     *         the hashed value of the given params.
+     * @param key the hash key.
+     * @param str the input string.
+     * @return the hashed value of the given params.
      */
     abstract byte[] hmac(byte[] key, byte[] str);
 
     /**
      * The "Hi(str, salt, i)" PBKDF2 function as described in <a href="https://tools.ietf.org/html/rfc5802#section-2.2">RFC 5802, Section 2.2</a>.
      *
-     * @param str
-     *            the string value to use as the internal HMAC key.
-     * @param salt
-     *            the input string to hash in the initial iteration.
-     * @param iterations
-     *            the number of iterations to run the algorithm.
-     *
-     * @return
-     *         an hash value with an output length equal to the length of H(str).
+     * @param str        the string value to use as the internal HMAC key.
+     * @param salt       the input string to hash in the initial iteration.
+     * @param iterations the number of iterations to run the algorithm.
+     * @return an hash value with an output length equal to the length of H(str).
      */
     abstract byte[] hi(String str, byte[] salt, int iterations);
 
     /**
      * Combines the two byte arrays in a XOR operation, changing the contents of the first.
      *
-     * @param inOut
-     *            the left operand of the XOR operation and the destination of the result.
-     * @param other
-     *            the right operand of the XOR operation.
-     * @return
-     *         the same as the param <code>inOut</code>, after being updated.
+     * @param inOut the left operand of the XOR operation and the destination of the result.
+     * @param other the right operand of the XOR operation.
+     * @return the same as the param <code>inOut</code>, after being updated.
      */
     byte[] xorInPlace(byte[] inOut, byte[] other) {
         for (int i = 0; i < inOut.length; i++) {
             inOut[i] ^= other[i];
         }
         return inOut;
+    }
+
+    protected enum ScramExchangeStage {
+
+        TERMINATED(null), SERVER_FINAL(TERMINATED), SERVER_FIRST_CLIENT_FINAL(SERVER_FINAL), CLIENT_FIRST(SERVER_FIRST_CLIENT_FINAL);
+
+        private ScramExchangeStage next;
+
+        private ScramExchangeStage(ScramExchangeStage next) {
+            this.next = next;
+        }
+
+        public ScramExchangeStage getNext() {
+            return this.next == null ? this : this.next;
+        }
+
     }
 
 }

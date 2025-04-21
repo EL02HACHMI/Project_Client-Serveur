@@ -34,7 +34,7 @@ import com.mysql.cj.protocol.ResultsetRowsOwner;
  * This interface is intended to be used by implementors of statement interceptors so that implementors can create static or dynamic (via
  * java.lang.reflect.Proxy) proxy instances of ResultSets. It consists of methods outside of java.sql.Result that are used internally by other classes in the
  * driver.
- *
+ * <p>
  * This interface, although public is <strong>not</strong> designed to be consumed publicly other than for the statement interceptor use case.
  */
 public interface ResultSetInternalMethods extends java.sql.ResultSet, ResultsetRowsOwner, Resultset {
@@ -43,13 +43,10 @@ public interface ResultSetInternalMethods extends java.sql.ResultSet, ResultsetR
      * Functions like ResultSet.getObject(), but using the given SQL type
      * (as registered during CallableStatement.registerOutParameter()).
      *
-     * @param columnIndex
-     *            1-based column index
-     * @param desiredSqlType
-     *            desired column type, one of {@link Types}
+     * @param columnIndex    1-based column index
+     * @param desiredSqlType desired column type, one of {@link Types}
      * @return object
-     * @throws SQLException
-     *             if an error occurs
+     * @throws SQLException if an error occurs
      */
     Object getObjectStoredProc(int columnIndex, int desiredSqlType) throws SQLException;
 
@@ -57,15 +54,11 @@ public interface ResultSetInternalMethods extends java.sql.ResultSet, ResultsetR
      * Functions like ResultSet.getObject(), but using the given SQL type
      * (as registered during CallableStatement.registerOutParameter()).
      *
-     * @param i
-     *            1-based column index
-     * @param map
-     *            map
-     * @param desiredSqlType
-     *            desired column type, one of {@link Types}
+     * @param i              1-based column index
+     * @param map            map
+     * @param desiredSqlType desired column type, one of {@link Types}
      * @return object
-     * @throws SQLException
-     *             if an error occurs
+     * @throws SQLException if an error occurs
      */
     Object getObjectStoredProc(int i, java.util.Map<Object, Object> map, int desiredSqlType) throws SQLException;
 
@@ -73,13 +66,10 @@ public interface ResultSetInternalMethods extends java.sql.ResultSet, ResultsetR
      * Functions like ResultSet.getObject(), but using the given SQL type
      * (as registered during CallableStatement.registerOutParameter()).
      *
-     * @param columnName
-     *            column name
-     * @param desiredSqlType
-     *            desired column type, one of {@link Types}
+     * @param columnName     column name
+     * @param desiredSqlType desired column type, one of {@link Types}
      * @return object
-     * @throws SQLException
-     *             if an error occurs
+     * @throws SQLException if an error occurs
      */
     Object getObjectStoredProc(String columnName, int desiredSqlType) throws SQLException;
 
@@ -87,44 +77,28 @@ public interface ResultSetInternalMethods extends java.sql.ResultSet, ResultsetR
      * Functions like ResultSet.getObject(), but using the given SQL type
      * (as registered during CallableStatement.registerOutParameter()).
      *
-     * @param colName
-     *            column name
-     * @param map
-     *            map
-     * @param desiredSqlType
-     *            desired column type, one of {@link Types}
+     * @param colName        column name
+     * @param map            map
+     * @param desiredSqlType desired column type, one of {@link Types}
      * @return object
-     * @throws SQLException
-     *             if an error occurs
+     * @throws SQLException if an error occurs
      */
     Object getObjectStoredProc(String colName, java.util.Map<Object, Object> map, int desiredSqlType) throws SQLException;
 
     /**
      * Close this ResultSet and release resources.
      *
-     * @param options
-     *            options indicating how the close was initiated and/or what should be performed during the close
-     * @throws SQLException
-     *             if an error occurs
+     * @param options options indicating how the close was initiated and/or what should be performed during the close
+     * @throws SQLException if an error occurs
      */
     void doClose(CloseOption... options) throws SQLException;
-
-    /**
-     * Sets the first character of the query that was issued to create
-     * this result set. The character should be upper-cased.
-     *
-     * @param firstCharUpperCase
-     *            character
-     */
-    void setFirstCharOfQuery(char firstCharUpperCase);
 
     /**
      * Sets the statement that "owns" this result set (usually used when the
      * result set should internally "belong" to one statement, but is created
      * by another.
      *
-     * @param owningStatement
-     *            the statement this result set will belong to
+     * @param owningStatement the statement this result set will belong to
      */
     void setOwningStatement(JdbcStatement owningStatement);
 
@@ -136,11 +110,18 @@ public interface ResultSetInternalMethods extends java.sql.ResultSet, ResultsetR
      */
     char getFirstCharOfQuery();
 
+    /**
+     * Sets the first character of the query that was issued to create
+     * this result set. The character should be upper-cased.
+     *
+     * @param firstCharUpperCase character
+     */
+    void setFirstCharOfQuery(char firstCharUpperCase);
+
     void setStatementUsedForFetchingRows(JdbcPreparedStatement stmt);
 
     /**
-     * @param wrapperStatement
-     *            The wrapperStatement to set.
+     * @param wrapperStatement The wrapperStatement to set.
      */
     void setWrapperStatement(java.sql.Statement wrapperStatement);
 

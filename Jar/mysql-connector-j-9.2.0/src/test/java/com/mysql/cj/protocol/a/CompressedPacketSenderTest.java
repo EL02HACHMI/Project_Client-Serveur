@@ -39,52 +39,6 @@ public class CompressedPacketSenderTest extends PacketSenderTestBase {
     private ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     private MessageSender<NativePacketPayload> sender = new CompressedPacketSender(new BufferedOutputStream(this.outputStream));
 
-    /**
-     * Test utility to transform a buffer containing compressed packets into a sequence of payloads.
-     */
-    static class CompressedPackets {
-
-        byte[] packetData;
-        private ByteArrayOutputStream decompressedStream;
-
-        byte[] payload;
-        int compressedPayloadLen;
-        int compressedSequenceId;
-        int uncompressedPayloadLen;
-        int offset = 0; // offset after all currently read data
-
-        public CompressedPackets(byte[] packetData) {
-            this.packetData = packetData;
-            this.decompressedStream = new ByteArrayOutputStream();
-        }
-
-        public boolean nextPayload() throws IOException {
-            if (this.offset == this.packetData.length) {
-                return false;
-            }
-            // read compressed packet header
-            this.compressedPayloadLen = NativeUtils.decodeMysqlThreeByteInteger(this.packetData, this.offset);
-            this.compressedSequenceId = this.packetData[this.offset + 3];
-            this.uncompressedPayloadLen = NativeUtils.decodeMysqlThreeByteInteger(this.packetData, this.offset + 4);
-            this.offset += CompressedPacketSender.COMP_HEADER_LENGTH;
-            if (this.uncompressedPayloadLen == 0) {
-                // uncompressed packet
-                this.payload = java.util.Arrays.copyOfRange(this.packetData, this.offset, this.offset + this.compressedPayloadLen);
-            } else {
-                // uncompress payload
-                InflaterOutputStream inflater = new InflaterOutputStream(this.decompressedStream);
-                inflater.write(this.packetData, this.offset, this.compressedPayloadLen);
-                inflater.finish();
-                inflater.flush();
-                this.payload = this.decompressedStream.toByteArray();
-                this.decompressedStream.reset();
-            }
-            this.offset += this.compressedPayloadLen;
-            return true;
-        }
-
-    }
-
     @AfterEach
     public void cleanupByteArrayOutputStream() {
         this.outputStream.reset();
@@ -286,6 +240,51 @@ public class CompressedPacketSenderTest extends PacketSenderTestBase {
         assertEquals(packetLen, NativeUtils.decodeMysqlThreeByteInteger(sentPacket, CompressedPacketSender.COMP_HEADER_LENGTH));
         assertEquals(packetSequence, sentPacket[CompressedPacketSender.COMP_HEADER_LENGTH + 3]);
         checkSequentiallyFilledPacket(sentPacket, CompressedPacketSender.COMP_HEADER_LENGTH + NativeConstants.HEADER_LENGTH, packetLen);
+    }
+
+    /**
+     * Test utility to transform a buffer containing compressed packets into a sequence of payloads.
+     */
+    static class CompressedPackets {
+
+        byte[] packetData;
+        byte[] payload;
+        int compressedPayloadLen;
+        int compressedSequenceId;
+        int uncompressedPayloadLen;
+        int offset = 0; // offset after all currently read data
+        private ByteArrayOutputStream decompressedStream;
+
+        public CompressedPackets(byte[] packetData) {
+            this.packetData = packetData;
+            this.decompressedStream = new ByteArrayOutputStream();
+        }
+
+        public boolean nextPayload() throws IOException {
+            if (this.offset == this.packetData.length) {
+                return false;
+            }
+            // read compressed packet header
+            this.compressedPayloadLen = NativeUtils.decodeMysqlThreeByteInteger(this.packetData, this.offset);
+            this.compressedSequenceId = this.packetData[this.offset + 3];
+            this.uncompressedPayloadLen = NativeUtils.decodeMysqlThreeByteInteger(this.packetData, this.offset + 4);
+            this.offset += CompressedPacketSender.COMP_HEADER_LENGTH;
+            if (this.uncompressedPayloadLen == 0) {
+                // uncompressed packet
+                this.payload = java.util.Arrays.copyOfRange(this.packetData, this.offset, this.offset + this.compressedPayloadLen);
+            } else {
+                // uncompress payload
+                InflaterOutputStream inflater = new InflaterOutputStream(this.decompressedStream);
+                inflater.write(this.packetData, this.offset, this.compressedPayloadLen);
+                inflater.finish();
+                inflater.flush();
+                this.payload = this.decompressedStream.toByteArray();
+                this.decompressedStream.reset();
+            }
+            this.offset += this.compressedPayloadLen;
+            return true;
+        }
+
     }
 
 }

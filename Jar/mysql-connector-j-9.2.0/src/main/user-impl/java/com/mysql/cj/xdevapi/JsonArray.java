@@ -58,8 +58,7 @@ public class JsonArray extends ArrayList<JsonValue> implements JsonValue {
     /**
      * Add value to this array.
      *
-     * @param val
-     *            value
+     * @param val value
      * @return this JsonArray
      */
     public JsonArray addValue(JsonValue val) {

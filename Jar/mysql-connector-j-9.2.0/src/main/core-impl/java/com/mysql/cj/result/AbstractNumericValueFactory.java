@@ -53,7 +53,7 @@ public abstract class AbstractNumericValueFactory<T> extends DefaultValueFactory
             }
             return createFromBigInteger(MysqlTextValueDecoder.getBigInteger(newBytes, 0, newBytes.length));
         }
-        throw new DataConversionException(Messages.getString("ResultSet.UnableToInterpretString", new Object[] { s }));
+        throw new DataConversionException(Messages.getString("ResultSet.UnableToInterpretString", new Object[]{s}));
     }
 
     @Override

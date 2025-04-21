@@ -74,24 +74,16 @@ class EscapeProcessor {
     /**
      * Escape process one string
      *
-     * @param sql
-     *            the SQL to escape process.
-     * @param connectionTimeZone
-     *            server time zone
-     * @param serverSupportsFractionalSecond
-     *            flag indicating if server supports fractional seconds
-     * @param serverTruncatesFractionalSecond
-     *            flag indicating if server truncates fractional seconds (sql_mode contains TIME_TRUNCATE_FRACTIONAL)
-     * @param exceptionInterceptor
-     *            exception interceptor
-     *
+     * @param sql                             the SQL to escape process.
+     * @param connectionTimeZone              server time zone
+     * @param serverSupportsFractionalSecond  flag indicating if server supports fractional seconds
+     * @param serverTruncatesFractionalSecond flag indicating if server truncates fractional seconds (sql_mode contains TIME_TRUNCATE_FRACTIONAL)
+     * @param exceptionInterceptor            exception interceptor
      * @return the SQL after it has been escape processed.
-     *
-     * @throws SQLException
-     *             if error occurs
+     * @throws SQLException if error occurs
      */
     public static final Object escapeSQL(String sql, TimeZone connectionTimeZone, boolean serverSupportsFractionalSecond,
-            boolean serverTruncatesFractionalSecond, ExceptionInterceptor exceptionInterceptor) throws java.sql.SQLException {
+                                         boolean serverTruncatesFractionalSecond, ExceptionInterceptor exceptionInterceptor) throws java.sql.SQLException {
         boolean replaceEscapeSequence = false;
         String escapeSequence = null;
 
@@ -123,7 +115,7 @@ class EscapeProcessor {
                 if (token.charAt(0) == '{') { // It's an escape code
 
                     if (!token.endsWith("}")) {
-                        throw SQLError.createSQLException(Messages.getString("EscapeProcessor.0", new Object[] { token }), exceptionInterceptor);
+                        throw SQLError.createSQLException(Messages.getString("EscapeProcessor.0", new Object[]{token}), exceptionInterceptor);
                     }
 
                     if (token.length() > 2) {
@@ -213,7 +205,7 @@ class EscapeProcessor {
                                 String dateString = "'" + year4 + "-" + month2 + "-" + day2 + "'";
                                 newSql.append(dateString);
                             } catch (java.util.NoSuchElementException e) {
-                                throw SQLError.createSQLException(Messages.getString("EscapeProcessor.1", new Object[] { argument }),
+                                throw SQLError.createSQLException(Messages.getString("EscapeProcessor.1", new Object[]{argument}),
                                         MysqlErrorNumbers.SQLSTATE_SYNTAX_ERROR_OR_ACCESS_RULE_VIOLATION_NO_SUBCLASS, exceptionInterceptor);
                             }
                         }
@@ -330,14 +322,14 @@ class EscapeProcessor {
                 }
                 newSql.append("'");
             } catch (java.util.NoSuchElementException e) {
-                throw SQLError.createSQLException(Messages.getString("EscapeProcessor.3", new Object[] { argument }),
+                throw SQLError.createSQLException(Messages.getString("EscapeProcessor.3", new Object[]{argument}),
                         MysqlErrorNumbers.SQLSTATE_SYNTAX_ERROR_OR_ACCESS_RULE_VIOLATION_NO_SUBCLASS, exceptionInterceptor);
             }
         }
     }
 
     private static void processTimestampToken(TimeZone tz, StringBuilder newSql, String token, boolean serverSupportsFractionalSecond,
-            boolean serverTruncatesFractionalSecond, ExceptionInterceptor exceptionInterceptor) throws SQLException {
+                                              boolean serverTruncatesFractionalSecond, ExceptionInterceptor exceptionInterceptor) throws SQLException {
         int startPos = token.indexOf('\'') + 1;
         int endPos = token.lastIndexOf('\''); // no }
 
@@ -361,7 +353,7 @@ class EscapeProcessor {
 
                 newSql.append('\'');
             } catch (IllegalArgumentException illegalArgumentException) {
-                SQLException sqlEx = SQLError.createSQLException(Messages.getString("EscapeProcessor.2", new Object[] { argument }),
+                SQLException sqlEx = SQLError.createSQLException(Messages.getString("EscapeProcessor.2", new Object[]{argument}),
                         MysqlErrorNumbers.SQLSTATE_SYNTAX_ERROR_OR_ACCESS_RULE_VIOLATION_NO_SUBCLASS, exceptionInterceptor);
                 sqlEx.initCause(illegalArgumentException);
 
@@ -373,13 +365,10 @@ class EscapeProcessor {
     /**
      * Re-writes {fn convert (expr, type)} as cast(expr AS type)
      *
-     * @param functionToken
-     *            token
-     * @param exceptionInterceptor
-     *            exception interceptor
+     * @param functionToken        token
+     * @param exceptionInterceptor exception interceptor
      * @return result of rewriting
-     * @throws SQLException
-     *             if error occurs
+     * @throws SQLException if error occurs
      */
     private static String processConvertToken(String functionToken, ExceptionInterceptor exceptionInterceptor) throws SQLException {
         // The JDBC spec requires these types:
@@ -416,21 +405,21 @@ class EscapeProcessor {
         int firstIndexOfParen = functionToken.indexOf("(");
 
         if (firstIndexOfParen == -1) {
-            throw SQLError.createSQLException(Messages.getString("EscapeProcessor.4", new Object[] { functionToken }),
+            throw SQLError.createSQLException(Messages.getString("EscapeProcessor.4", new Object[]{functionToken}),
                     MysqlErrorNumbers.SQLSTATE_SYNTAX_ERROR_OR_ACCESS_RULE_VIOLATION_NO_SUBCLASS, exceptionInterceptor);
         }
 
         int indexOfComma = functionToken.lastIndexOf(",");
 
         if (indexOfComma == -1) {
-            throw SQLError.createSQLException(Messages.getString("EscapeProcessor.5", new Object[] { functionToken }),
+            throw SQLError.createSQLException(Messages.getString("EscapeProcessor.5", new Object[]{functionToken}),
                     MysqlErrorNumbers.SQLSTATE_SYNTAX_ERROR_OR_ACCESS_RULE_VIOLATION_NO_SUBCLASS, exceptionInterceptor);
         }
 
         int indexOfCloseParen = functionToken.indexOf(')', indexOfComma);
 
         if (indexOfCloseParen == -1) {
-            throw SQLError.createSQLException(Messages.getString("EscapeProcessor.6", new Object[] { functionToken }),
+            throw SQLError.createSQLException(Messages.getString("EscapeProcessor.6", new Object[]{functionToken}),
                     MysqlErrorNumbers.SQLSTATE_SYNTAX_ERROR_OR_ACCESS_RULE_VIOLATION_NO_SUBCLASS, exceptionInterceptor);
 
         }
@@ -449,7 +438,7 @@ class EscapeProcessor {
         newType = JDBC_CONVERT_TO_MYSQL_TYPE_MAP.get(trimmedType.toUpperCase(Locale.ENGLISH));
 
         if (newType == null) {
-            throw SQLError.createSQLException(Messages.getString("EscapeProcessor.7", new Object[] { type.trim() }),
+            throw SQLError.createSQLException(Messages.getString("EscapeProcessor.7", new Object[]{type.trim()}),
                     MysqlErrorNumbers.SQLSTATE_CONNJ_GENERAL_ERROR, exceptionInterceptor);
         }
 
@@ -476,9 +465,7 @@ class EscapeProcessor {
      * Removes all whitespace from the given String. We use this to make escape
      * token comparison white-space ignorant.
      *
-     * @param toCollapse
-     *            the string to remove the whitespace from
-     *
+     * @param toCollapse the string to remove the whitespace from
      * @return a string with _no_ whitespace.
      */
     private static String removeWhitespace(String toCollapse) {

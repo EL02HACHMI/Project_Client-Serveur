@@ -59,7 +59,7 @@ public class LocalTimeValueEncoder extends AbstractValueEncoder {
                 return sb.toString();
             default:
                 throw ExceptionFactory.createException(WrongArgumentException.class,
-                        Messages.getString("PreparedStatement.67", new Object[] { binding.getValue().getClass().getName(), binding.getMysqlType().toString() }),
+                        Messages.getString("PreparedStatement.67", new Object[]{binding.getValue().getClass().getName(), binding.getMysqlType().toString()}),
                         this.exceptionInterceptor);
         }
     }
@@ -78,13 +78,13 @@ public class LocalTimeValueEncoder extends AbstractValueEncoder {
             case MEDIUMTEXT:
             case LONGTEXT:
                 intoPacket.writeBytes(StringSelfDataType.STRING_LENENC, StringUtils.getBytes(((LocalTime) binding.getValue()).format(
-                        this.sendFractionalSeconds.getValue() && ((LocalTime) binding.getValue()).getNano() > 0 ? TimeUtil.TIME_FORMATTER_WITH_NANOS_NO_OFFSET
-                                : TimeUtil.TIME_FORMATTER_NO_FRACT_NO_OFFSET),
+                                this.sendFractionalSeconds.getValue() && ((LocalTime) binding.getValue()).getNano() > 0 ? TimeUtil.TIME_FORMATTER_WITH_NANOS_NO_OFFSET
+                                        : TimeUtil.TIME_FORMATTER_NO_FRACT_NO_OFFSET),
                         this.charEncoding.getValue()));
                 return;
             default:
                 throw ExceptionFactory.createException(WrongArgumentException.class,
-                        Messages.getString("PreparedStatement.67", new Object[] { binding.getValue().getClass().getName(), binding.getMysqlType().toString() }),
+                        Messages.getString("PreparedStatement.67", new Object[]{binding.getValue().getClass().getName(), binding.getMysqlType().toString()}),
                         this.exceptionInterceptor);
         }
     }

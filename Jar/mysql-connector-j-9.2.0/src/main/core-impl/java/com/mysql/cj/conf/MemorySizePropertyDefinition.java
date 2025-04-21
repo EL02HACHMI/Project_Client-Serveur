@@ -28,12 +28,12 @@ public class MemorySizePropertyDefinition extends IntegerPropertyDefinition {
     private static final long serialVersionUID = -6878680905514177949L;
 
     public MemorySizePropertyDefinition(PropertyKey key, int defaultValue, boolean isRuntimeModifiable, String description, String sinceVersion,
-            String category, int orderInCategory) {
+                                        String category, int orderInCategory) {
         super(key, defaultValue, isRuntimeModifiable, description, sinceVersion, category, orderInCategory);
     }
 
     public MemorySizePropertyDefinition(PropertyKey key, int defaultValue, boolean isRuntimeModifiable, String description, String sinceVersion,
-            String category, int orderInCategory, int lowerBound, int upperBound) {
+                                        String category, int orderInCategory, int lowerBound, int upperBound) {
         super(key, defaultValue, isRuntimeModifiable, description, sinceVersion, category, orderInCategory, lowerBound, upperBound);
     }
 

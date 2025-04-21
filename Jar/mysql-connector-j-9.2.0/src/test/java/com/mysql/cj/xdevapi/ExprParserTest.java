@@ -434,12 +434,12 @@ public class ExprParserTest {
 
         Iterator<ObjectField> fields = proj.getSource().getObject().getFldList().iterator();
 
-        Arrays.stream(new String[][] { new String[] { "a", "\"value for a\"" }, new String[] { "b", "(1 + 1)" }, new String[] { "c", ":0" },
-                new String[] { "d", "$.member[22]" }, new String[] { "e", "{'nested':\"doc\"}" } }).forEach(pair -> {
-                    ObjectField f = fields.next();
-                    assertEquals(pair[0], f.getKey());
-                    assertEquals(pair[1], ExprUnparser.exprToString(f.getValue()));
-                });
+        Arrays.stream(new String[][]{new String[]{"a", "\"value for a\""}, new String[]{"b", "(1 + 1)"}, new String[]{"c", ":0"},
+                new String[]{"d", "$.member[22]"}, new String[]{"e", "{'nested':\"doc\"}"}}).forEach(pair -> {
+            ObjectField f = fields.next();
+            assertEquals(pair[0], f.getKey());
+            assertEquals(pair[1], ExprUnparser.exprToString(f.getValue()));
+        });
         assertFalse(fields.hasNext());
     }
 

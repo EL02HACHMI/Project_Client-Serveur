@@ -54,7 +54,7 @@ public class LocalTimeValueFactory extends AbstractDateTimeValueFactory<LocalTim
     @Override
     public LocalTime localCreateFromTime(InternalTime it) {
         if (it.getHours() < 0 || it.getHours() >= 24) {
-            throw new DataReadException(Messages.getString("ResultSet.InvalidTimeValue", new Object[] { it.toString() }));
+            throw new DataReadException(Messages.getString("ResultSet.InvalidTimeValue", new Object[]{it.toString()}));
         }
         return LocalTime.of(it.getHours(), it.getMinutes(), it.getSeconds(), it.getNanos());
     }
@@ -62,7 +62,7 @@ public class LocalTimeValueFactory extends AbstractDateTimeValueFactory<LocalTim
     @Override
     public LocalTime localCreateFromTimestamp(InternalTimestamp its) {
         if (this.warningListener != null) {
-            this.warningListener.warningEncountered(Messages.getString("ResultSet.PrecisionLostWarning", new Object[] { getTargetTypeName() }));
+            this.warningListener.warningEncountered(Messages.getString("ResultSet.PrecisionLostWarning", new Object[]{getTargetTypeName()}));
         }
         // truncate date information
         return createFromTime(new InternalTime(its.getHours(), its.getMinutes(), its.getSeconds(), its.getNanos(), its.getScale()));
@@ -71,7 +71,7 @@ public class LocalTimeValueFactory extends AbstractDateTimeValueFactory<LocalTim
     @Override
     public LocalTime localCreateFromDatetime(InternalTimestamp its) {
         if (this.warningListener != null) {
-            this.warningListener.warningEncountered(Messages.getString("ResultSet.PrecisionLostWarning", new Object[] { getTargetTypeName() }));
+            this.warningListener.warningEncountered(Messages.getString("ResultSet.PrecisionLostWarning", new Object[]{getTargetTypeName()}));
         }
         // truncate date information
         return createFromTime(new InternalTime(its.getHours(), its.getMinutes(), its.getSeconds(), its.getNanos(), its.getScale()));

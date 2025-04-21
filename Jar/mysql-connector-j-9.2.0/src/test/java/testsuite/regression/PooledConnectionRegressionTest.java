@@ -121,13 +121,11 @@ import testsuite.BaseTestCase;
  */
 public final class PooledConnectionRegressionTest extends BaseTestCase {
 
-    private ConnectionPoolDataSource cpds;
-
     // Count nb of closeEvent.
     protected int closeEventCount;
-
     // Count nb of connectionErrorEvent
     protected int connectionErrorEventCount;
+    private ConnectionPoolDataSource cpds;
 
     /**
      * Set up test case before a test is run.
@@ -338,25 +336,6 @@ public final class PooledConnectionRegressionTest extends BaseTestCase {
     }
 
     /**
-     * Listener for PooledConnection events.
-     */
-    protected final class ConnectionListener implements ConnectionEventListener {
-
-        @Override
-        public void connectionClosed(ConnectionEvent event) {
-            PooledConnectionRegressionTest.this.closeEventCount++;
-            System.out.println(PooledConnectionRegressionTest.this.closeEventCount + " - Connection closed.");
-        }
-
-        @Override
-        public void connectionErrorOccurred(ConnectionEvent event) {
-            PooledConnectionRegressionTest.this.connectionErrorEventCount++;
-            System.out.println("Connection error: " + event.getSQLException());
-        }
-
-    }
-
-    /**
      * Tests fix for BUG#35489 - Prepared statements from pooled connections cause NPE when closed() under JDBC4
      *
      * @throws Exception
@@ -400,22 +379,22 @@ public final class PooledConnectionRegressionTest extends BaseTestCase {
         assertEquals(PreparedStatementWrapper.class, cw.clientPrepare("SELECT 1", ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY).getClass());
         assertEquals(PreparedStatementWrapper.class, cw.clientPrepareStatement("SELECT 1").getClass());
         assertEquals(PreparedStatementWrapper.class, cw.clientPrepareStatement("SELECT 1", Statement.RETURN_GENERATED_KEYS).getClass());
-        assertEquals(PreparedStatementWrapper.class, cw.clientPrepareStatement("SELECT 1", new int[] { 1 }).getClass());
-        assertEquals(PreparedStatementWrapper.class, cw.clientPrepareStatement("SELECT 1", new String[] { "1" }).getClass());
+        assertEquals(PreparedStatementWrapper.class, cw.clientPrepareStatement("SELECT 1", new int[]{1}).getClass());
+        assertEquals(PreparedStatementWrapper.class, cw.clientPrepareStatement("SELECT 1", new String[]{"1"}).getClass());
         assertEquals(PreparedStatementWrapper.class, cw.clientPrepareStatement("SELECT 1", ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY).getClass());
         assertEquals(PreparedStatementWrapper.class,
                 cw.clientPrepareStatement("SELECT 1", ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY, ResultSet.CLOSE_CURSORS_AT_COMMIT).getClass());
         assertEquals(PreparedStatementWrapper.class, cw.serverPrepareStatement("SELECT 1").getClass());
         assertEquals(PreparedStatementWrapper.class, cw.serverPrepareStatement("SELECT 1", Statement.RETURN_GENERATED_KEYS).getClass());
-        assertEquals(PreparedStatementWrapper.class, cw.serverPrepareStatement("SELECT 1", new int[] { 1 }).getClass());
-        assertEquals(PreparedStatementWrapper.class, cw.serverPrepareStatement("SELECT 1", new String[] { "1" }).getClass());
+        assertEquals(PreparedStatementWrapper.class, cw.serverPrepareStatement("SELECT 1", new int[]{1}).getClass());
+        assertEquals(PreparedStatementWrapper.class, cw.serverPrepareStatement("SELECT 1", new String[]{"1"}).getClass());
         assertEquals(PreparedStatementWrapper.class, cw.serverPrepareStatement("SELECT 1", ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY).getClass());
         assertEquals(PreparedStatementWrapper.class,
                 cw.serverPrepareStatement("SELECT 1", ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY, ResultSet.CLOSE_CURSORS_AT_COMMIT).getClass());
         assertEquals(PreparedStatementWrapper.class, cw.prepareStatement("SELECT 1").getClass());
         assertEquals(PreparedStatementWrapper.class, cw.prepareStatement("SELECT 1", Statement.RETURN_GENERATED_KEYS).getClass());
-        assertEquals(PreparedStatementWrapper.class, cw.prepareStatement("SELECT 1", new int[] { 1 }).getClass());
-        assertEquals(PreparedStatementWrapper.class, cw.prepareStatement("SELECT 1", new String[] { "1" }).getClass());
+        assertEquals(PreparedStatementWrapper.class, cw.prepareStatement("SELECT 1", new int[]{1}).getClass());
+        assertEquals(PreparedStatementWrapper.class, cw.prepareStatement("SELECT 1", new String[]{"1"}).getClass());
         assertEquals(PreparedStatementWrapper.class, cw.prepareStatement("SELECT 1", ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY).getClass());
         assertEquals(PreparedStatementWrapper.class,
                 cw.prepareStatement("SELECT 1", ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY, ResultSet.CLOSE_CURSORS_AT_COMMIT).getClass());
@@ -433,11 +412,11 @@ public final class PooledConnectionRegressionTest extends BaseTestCase {
         assertEquals(26, cw.getActiveStatementCount());
 
         assertThrows(SQLFeatureNotSupportedException.class, () -> {
-            cw.createArrayOf(String.class.getName(), new Object[] {}).getClass();
+            cw.createArrayOf(String.class.getName(), new Object[]{}).getClass();
             return null;
         });
         assertThrows(SQLFeatureNotSupportedException.class, () -> {
-            cw.createStruct(String.class.getName(), new Object[] {}).getClass();
+            cw.createStruct(String.class.getName(), new Object[]{}).getClass();
             return null;
         });
 
@@ -598,11 +577,11 @@ public final class PooledConnectionRegressionTest extends BaseTestCase {
             return null;
         });
         assertThrows(SQLNonTransientConnectionException.class, "Logical handle no longer valid", () -> {
-            cw.clientPrepareStatement("SELECT 1", new int[] { 1 });
+            cw.clientPrepareStatement("SELECT 1", new int[]{1});
             return null;
         });
         assertThrows(SQLNonTransientConnectionException.class, "Logical handle no longer valid", () -> {
-            cw.clientPrepareStatement("SELECT 1", new String[] { "1" });
+            cw.clientPrepareStatement("SELECT 1", new String[]{"1"});
             return null;
         });
         assertThrows(SQLNonTransientConnectionException.class, "Logical handle no longer valid", () -> {
@@ -622,11 +601,11 @@ public final class PooledConnectionRegressionTest extends BaseTestCase {
             return null;
         });
         assertThrows(SQLNonTransientConnectionException.class, "Logical handle no longer valid", () -> {
-            cw.serverPrepareStatement("SELECT 1", new int[] { 1 });
+            cw.serverPrepareStatement("SELECT 1", new int[]{1});
             return null;
         });
         assertThrows(SQLNonTransientConnectionException.class, "Logical handle no longer valid", () -> {
-            cw.serverPrepareStatement("SELECT 1", new String[] { "1" });
+            cw.serverPrepareStatement("SELECT 1", new String[]{"1"});
             return null;
         });
         assertThrows(SQLNonTransientConnectionException.class, "Logical handle no longer valid", () -> {
@@ -646,11 +625,11 @@ public final class PooledConnectionRegressionTest extends BaseTestCase {
             return null;
         });
         assertThrows(SQLNonTransientConnectionException.class, "Logical handle no longer valid", () -> {
-            cw.prepareStatement("SELECT 1", new int[] { 1 });
+            cw.prepareStatement("SELECT 1", new int[]{1});
             return null;
         });
         assertThrows(SQLNonTransientConnectionException.class, "Logical handle no longer valid", () -> {
-            cw.prepareStatement("SELECT 1", new String[] { "1" });
+            cw.prepareStatement("SELECT 1", new String[]{"1"});
             return null;
         });
         assertThrows(SQLNonTransientConnectionException.class, "Logical handle no longer valid", () -> {
@@ -687,11 +666,11 @@ public final class PooledConnectionRegressionTest extends BaseTestCase {
         });
 
         assertThrows(SQLNonTransientConnectionException.class, "Logical handle no longer valid", () -> {
-            cw.createArrayOf(String.class.getName(), new Object[] {}).getClass();
+            cw.createArrayOf(String.class.getName(), new Object[]{}).getClass();
             return null;
         });
         assertThrows(SQLNonTransientConnectionException.class, "Logical handle no longer valid", () -> {
-            cw.createStruct(String.class.getName(), new Object[] {}).getClass();
+            cw.createStruct(String.class.getName(), new Object[]{}).getClass();
             return null;
         });
         assertThrows(SQLNonTransientConnectionException.class, "Logical handle no longer valid", () -> {
@@ -934,11 +913,11 @@ public final class PooledConnectionRegressionTest extends BaseTestCase {
             return null;
         });
         assertThrows(SQLNonTransientConnectionException.class, "Logical handle no longer valid", () -> {
-            cw.clientPrepareStatement("SELECT 1", new int[] { 1 });
+            cw.clientPrepareStatement("SELECT 1", new int[]{1});
             return null;
         });
         assertThrows(SQLNonTransientConnectionException.class, "Logical handle no longer valid", () -> {
-            cw.clientPrepareStatement("SELECT 1", new String[] { "1" });
+            cw.clientPrepareStatement("SELECT 1", new String[]{"1"});
             return null;
         });
         assertThrows(SQLNonTransientConnectionException.class, "Logical handle no longer valid", () -> {
@@ -958,11 +937,11 @@ public final class PooledConnectionRegressionTest extends BaseTestCase {
             return null;
         });
         assertThrows(SQLNonTransientConnectionException.class, "Logical handle no longer valid", () -> {
-            cw.serverPrepareStatement("SELECT 1", new int[] { 1 });
+            cw.serverPrepareStatement("SELECT 1", new int[]{1});
             return null;
         });
         assertThrows(SQLNonTransientConnectionException.class, "Logical handle no longer valid", () -> {
-            cw.serverPrepareStatement("SELECT 1", new String[] { "1" });
+            cw.serverPrepareStatement("SELECT 1", new String[]{"1"});
             return null;
         });
         assertThrows(SQLNonTransientConnectionException.class, "Logical handle no longer valid", () -> {
@@ -982,11 +961,11 @@ public final class PooledConnectionRegressionTest extends BaseTestCase {
             return null;
         });
         assertThrows(SQLNonTransientConnectionException.class, "Logical handle no longer valid", () -> {
-            cw.prepareStatement("SELECT 1", new int[] { 1 });
+            cw.prepareStatement("SELECT 1", new int[]{1});
             return null;
         });
         assertThrows(SQLNonTransientConnectionException.class, "Logical handle no longer valid", () -> {
-            cw.prepareStatement("SELECT 1", new String[] { "1" });
+            cw.prepareStatement("SELECT 1", new String[]{"1"});
             return null;
         });
         assertThrows(SQLNonTransientConnectionException.class, "Logical handle no longer valid", () -> {
@@ -1023,11 +1002,11 @@ public final class PooledConnectionRegressionTest extends BaseTestCase {
         });
 
         assertThrows(SQLNonTransientConnectionException.class, "Logical handle no longer valid", () -> {
-            cw.createArrayOf(String.class.getName(), new Object[] {}).getClass();
+            cw.createArrayOf(String.class.getName(), new Object[]{}).getClass();
             return null;
         });
         assertThrows(SQLNonTransientConnectionException.class, "Logical handle no longer valid", () -> {
-            cw.createStruct(String.class.getName(), new Object[] {}).getClass();
+            cw.createStruct(String.class.getName(), new Object[]{}).getClass();
             return null;
         });
         assertThrows(SQLNonTransientConnectionException.class, "Logical handle no longer valid", () -> {
@@ -1258,6 +1237,25 @@ public final class PooledConnectionRegressionTest extends BaseTestCase {
         //        cw.cleanup(whyCleanedUp);
         //        cw.abort(executor);
         //        cw.abortInternal();
+    }
+
+    /**
+     * Listener for PooledConnection events.
+     */
+    protected final class ConnectionListener implements ConnectionEventListener {
+
+        @Override
+        public void connectionClosed(ConnectionEvent event) {
+            PooledConnectionRegressionTest.this.closeEventCount++;
+            System.out.println(PooledConnectionRegressionTest.this.closeEventCount + " - Connection closed.");
+        }
+
+        @Override
+        public void connectionErrorOccurred(ConnectionEvent event) {
+            PooledConnectionRegressionTest.this.connectionErrorEventCount++;
+            System.out.println("Connection error: " + event.getSQLException());
+        }
+
     }
 
 }

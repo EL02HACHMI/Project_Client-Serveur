@@ -32,7 +32,7 @@ import com.mysql.cj.protocol.PacketSentTimeHolder;
 
 /**
  * An exception to represent communications errors with the database.
- *
+ * <p>
  * Attempts to provide 'friendlier' error messages to end-users, including the last time a packet was sent to the database,
  * what the client-timeout is set to, and whether the idle time has been exceeded.
  */
@@ -43,7 +43,7 @@ public class CommunicationsException extends SQLRecoverableException implements 
     private String exceptionMessage;
 
     public CommunicationsException(JdbcConnection conn, PacketSentTimeHolder packetSentTimeHolder, PacketReceivedTimeHolder packetReceivedTimeHolder,
-            Exception underlyingException) {
+                                   Exception underlyingException) {
         this(ExceptionFactory.createLinkFailureMessageBasedOnHeuristics(conn.getPropertySet(), conn.getSession().getServerSession(), packetSentTimeHolder,
                 packetReceivedTimeHolder, underlyingException), underlyingException);
     }

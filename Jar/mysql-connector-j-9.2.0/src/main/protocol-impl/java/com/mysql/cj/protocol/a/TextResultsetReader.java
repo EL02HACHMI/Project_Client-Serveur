@@ -46,7 +46,7 @@ public class TextResultsetReader implements ProtocolEntityReader<Resultset, Nati
 
     @Override
     public Resultset read(int maxRows, boolean streamResults, NativePacketPayload resultPacket, ColumnDefinition metadata,
-            ProtocolEntityFactory<Resultset, NativePacketPayload> resultSetFactory) throws IOException {
+                          ProtocolEntityFactory<Resultset, NativePacketPayload> resultSetFactory) throws IOException {
         Resultset rs = null;
         //try {
         long columnCount = resultPacket.readInteger(IntegerDataType.INT_LENENC);

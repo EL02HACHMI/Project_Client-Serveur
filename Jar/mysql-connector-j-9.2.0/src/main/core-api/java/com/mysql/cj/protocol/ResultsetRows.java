@@ -35,8 +35,7 @@ public interface ResultsetRows extends RowList, ProtocolEntity {
     /**
      * Adds a row.
      *
-     * @param row
-     *            the row to add
+     * @param row the row to add
      */
     default void addRow(Row row) {
         throw ExceptionFactory.createException(CJOperationNotSupportedException.class, Messages.getString("OperationNotSupportedException.0"));
@@ -44,7 +43,6 @@ public interface ResultsetRows extends RowList, ProtocolEntity {
 
     /**
      * Moves to after last.
-     *
      */
     default void afterLast() {
         throw ExceptionFactory.createException(CJOperationNotSupportedException.class, Messages.getString("OperationNotSupportedException.0"));
@@ -52,7 +50,6 @@ public interface ResultsetRows extends RowList, ProtocolEntity {
 
     /**
      * Moves to before first.
-     *
      */
     default void beforeFirst() {
         throw ExceptionFactory.createException(CJOperationNotSupportedException.class, Messages.getString("OperationNotSupportedException.0"));
@@ -60,7 +57,6 @@ public interface ResultsetRows extends RowList, ProtocolEntity {
 
     /**
      * Moves to before last.
-     *
      */
     default void beforeLast() {
         throw ExceptionFactory.createException(CJOperationNotSupportedException.class, Messages.getString("OperationNotSupportedException.0"));
@@ -80,6 +76,13 @@ public interface ResultsetRows extends RowList, ProtocolEntity {
     ResultsetRowsOwner getOwner();
 
     /**
+     * Set the result set that 'owns' this RowData
+     *
+     * @param rs the result set that 'owns' this RowData
+     */
+    void setOwner(ResultsetRowsOwner rs);
+
+    /**
      * Returns true if we got the last element.
      *
      * @return true if after last row
@@ -95,7 +98,7 @@ public interface ResultsetRows extends RowList, ProtocolEntity {
 
     /**
      * Returns true if the result set is dynamic.
-     *
+     * <p>
      * This means that move back and move forward won't work because we do not
      * hold on to the records.
      *
@@ -135,8 +138,7 @@ public interface ResultsetRows extends RowList, ProtocolEntity {
     /**
      * Moves the current position relative 'rows' from the current position.
      *
-     * @param rows
-     *            the relative number of rows to move
+     * @param rows the relative number of rows to move
      */
     default void moveRowRelative(int rows) {
         throw ExceptionFactory.createException(CJOperationNotSupportedException.class, Messages.getString("OperationNotSupportedException.0"));
@@ -145,20 +147,11 @@ public interface ResultsetRows extends RowList, ProtocolEntity {
     /**
      * Moves the current position in the result set to the given row number.
      *
-     * @param rowNumber
-     *            row to move to
+     * @param rowNumber row to move to
      */
     default void setCurrentRow(int rowNumber) {
         throw ExceptionFactory.createException(CJOperationNotSupportedException.class, Messages.getString("OperationNotSupportedException.0"));
     }
-
-    /**
-     * Set the result set that 'owns' this RowData
-     *
-     * @param rs
-     *            the result set that 'owns' this RowData
-     */
-    void setOwner(ResultsetRowsOwner rs);
 
     /**
      * Did this result set have no rows?
@@ -167,16 +160,15 @@ public interface ResultsetRows extends RowList, ProtocolEntity {
      */
     boolean wasEmpty();
 
+    ColumnDefinition getMetadata();
+
     /**
      * Sometimes the driver doesn't have metadata until after
      * the statement has the result set in-hand (because it's cached),
      * so it can call this to set it after the fact.
      *
-     * @param columnDefinition
-     *            field-level metadata for the result set
+     * @param columnDefinition field-level metadata for the result set
      */
     void setMetadata(ColumnDefinition columnDefinition);
-
-    ColumnDefinition getMetadata();
 
 }

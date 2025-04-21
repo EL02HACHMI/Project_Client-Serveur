@@ -50,10 +50,8 @@ public class ResultsetRowReader implements ProtocolEntityReader<ResultsetRow, Na
      * thread-safe, but it is only called from methods that are guarded by
      * synchronizing on this object.
      *
-     * @param sf
-     *            ProtocolEntityFactory
-     * @throws IOException
-     *             if an error occurs
+     * @param sf ProtocolEntityFactory
+     * @throws IOException if an error occurs
      */
     @Override
     public ResultsetRow read(ProtocolEntityFactory<ResultsetRow, NativePacketPayload> sf) throws IOException {

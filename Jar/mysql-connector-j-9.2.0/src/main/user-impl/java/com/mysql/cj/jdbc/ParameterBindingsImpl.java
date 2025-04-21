@@ -121,8 +121,7 @@ public class ParameterBindingsImpl implements ParameterBindings {
     }
 
     /**
-     * @param parameterIndex
-     *            parameter index
+     * @param parameterIndex parameter index
      * @return bytes
      */
     private byte[] getBytesRepresentation(int parameterIndex) {
@@ -132,10 +131,8 @@ public class ParameterBindingsImpl implements ParameterBindings {
     /**
      * Get bytes representation for a parameter in a statement batch.
      *
-     * @param parameterIndex
-     *            parameter index
-     * @param commandIndex
-     *            command index
+     * @param parameterIndex parameter index
+     * @param commandIndex   command index
      * @return bytes
      */
     private byte[] getBytesRepresentationForBatch(int parameterIndex, int commandIndex) {

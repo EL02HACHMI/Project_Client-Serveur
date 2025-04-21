@@ -27,7 +27,7 @@ import com.mysql.cj.protocol.MessageHeader;
 /**
  * Represents the legacy protocol packet header, consisting of
  * 3-bytes payload_length and 1-byte sequence_id.
- *
+ * <p>
  * see http://dev.mysql.com/doc/internals/en/mysql-packet.html
  */
 public class NativePacketHeader implements MessageHeader {

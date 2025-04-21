@@ -26,16 +26,15 @@ public interface LoadBalanceExceptionChecker {
 
     /**
      * Called once per connection that wants to use the extension
-     *
+     * <p>
      * The properties are the same ones passed in in the URL or arguments to
      * Driver.connect() or DriverManager.getConnection().
      *
-     * @param props
-     *            configuration values as passed to the connection. Note that
-     *            in order to support javax.sql.DataSources, configuration properties specific
-     *            to an interceptor <strong>must</strong> be passed via setURL() on the
-     *            DataSource. Extension properties are not exposed via
-     *            accessor/mutator methods on DataSources.
+     * @param props configuration values as passed to the connection. Note that
+     *              in order to support javax.sql.DataSources, configuration properties specific
+     *              to an interceptor <strong>must</strong> be passed via setURL() on the
+     *              DataSource. Extension properties are not exposed via
+     *              accessor/mutator methods on DataSources.
      */
     void init(Properties props);
 
@@ -49,15 +48,14 @@ public interface LoadBalanceExceptionChecker {
     /**
      * Invoked to determine whether or a given SQLException should
      * trigger a failover in a load-balanced deployment.
-     *
+     * <p>
      * The driver will not pass in a Connection instance when calling init(), but it
      * will pass in the Properties, otherwise it acts like a normal Extension.
-     *
+     * <p>
      * One instance of a handler *per* JDBC connection instance will be created. If
      * you need singleton-like behavior, you're on your own to provide it.
      *
-     * @param ex
-     *            exception
+     * @param ex exception
      * @return true if the exception should trigger failover.
      */
     boolean shouldExceptionTriggerFailover(Throwable ex);

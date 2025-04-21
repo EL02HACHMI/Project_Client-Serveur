@@ -42,14 +42,7 @@ import com.mysql.cj.util.StringUtils;
 public class MysqlXAConnection extends MysqlPooledConnection implements XAConnection, XAResource {
 
     private static final int MAX_COMMAND_LENGTH = 300;
-
-    private com.mysql.cj.jdbc.JdbcConnection underlyingConnection;
-
     private final static Map<Integer, Integer> MYSQL_ERROR_CODES_TO_XA_ERROR_CODES;
-
-    private Log log;
-
-    protected boolean logXaCommands;
 
     static {
         HashMap<Integer, Integer> temp = new HashMap<>();
@@ -67,9 +60,9 @@ public class MysqlXAConnection extends MysqlPooledConnection implements XAConnec
         MYSQL_ERROR_CODES_TO_XA_ERROR_CODES = Collections.unmodifiableMap(temp);
     }
 
-    protected static MysqlXAConnection getInstance(JdbcConnection mysqlConnection, boolean logXaCommands) throws SQLException {
-        return new MysqlXAConnection(mysqlConnection, logXaCommands);
-    }
+    protected boolean logXaCommands;
+    private com.mysql.cj.jdbc.JdbcConnection underlyingConnection;
+    private Log log;
 
     public MysqlXAConnection(JdbcConnection connection, boolean logXaCommands) {
         super(connection);
@@ -78,33 +71,8 @@ public class MysqlXAConnection extends MysqlPooledConnection implements XAConnec
         this.logXaCommands = logXaCommands;
     }
 
-    @Override
-    public XAResource getXAResource() throws SQLException {
-        return this;
-    }
-
-    @Override
-    public int getTransactionTimeout() throws XAException {
-        return 0;
-    }
-
-    @Override
-    public boolean setTransactionTimeout(int arg0) throws XAException {
-        return false;
-    }
-
-    @Override
-    public boolean isSameRM(XAResource xares) throws XAException {
-        if (xares instanceof MysqlXAConnection) {
-            return this.underlyingConnection.isSameResource(((MysqlXAConnection) xares).underlyingConnection);
-        }
-
-        return false;
-    }
-
-    @Override
-    public Xid[] recover(int flag) throws XAException {
-        return recover(this.underlyingConnection, flag);
+    protected static MysqlXAConnection getInstance(JdbcConnection mysqlConnection, boolean logXaCommands) throws SQLException {
+        return new MysqlXAConnection(mysqlConnection, logXaCommands);
     }
 
     protected static Xid[] recover(Connection c, int flag) throws XAException {
@@ -205,6 +173,62 @@ public class MysqlXAConnection extends MysqlPooledConnection implements XAConnec
         }
 
         return asXids;
+    }
+
+    protected static XAException mapXAExceptionFromSQLException(SQLException sqlEx) {
+        Integer xaCode = MYSQL_ERROR_CODES_TO_XA_ERROR_CODES.get(sqlEx.getErrorCode());
+
+        if (xaCode != null) {
+            return (XAException) new MysqlXAException(xaCode.intValue(), sqlEx.getMessage(), null).initCause(sqlEx);
+        }
+
+        return (XAException) new MysqlXAException(XAException.XAER_RMFAIL, Messages.getString("MysqlXAConnection.003"), null).initCause(sqlEx);
+    }
+
+    private static void appendXid(StringBuilder builder, Xid xid) {
+        byte[] gtrid = xid.getGlobalTransactionId();
+        byte[] btrid = xid.getBranchQualifier();
+
+        if (gtrid != null) {
+            StringUtils.appendAsHex(builder, gtrid);
+        }
+
+        builder.append(',');
+        if (btrid != null) {
+            StringUtils.appendAsHex(builder, btrid);
+        }
+
+        builder.append(',');
+        StringUtils.appendAsHex(builder, xid.getFormatId());
+    }
+
+    @Override
+    public XAResource getXAResource() throws SQLException {
+        return this;
+    }
+
+    @Override
+    public int getTransactionTimeout() throws XAException {
+        return 0;
+    }
+
+    @Override
+    public boolean setTransactionTimeout(int arg0) throws XAException {
+        return false;
+    }
+
+    @Override
+    public boolean isSameRM(XAResource xares) throws XAException {
+        if (xares instanceof MysqlXAConnection) {
+            return this.underlyingConnection.isSameResource(((MysqlXAConnection) xares).underlyingConnection);
+        }
+
+        return false;
+    }
+
+    @Override
+    public Xid[] recover(int flag) throws XAException {
+        return recover(this.underlyingConnection, flag);
     }
 
     @Override
@@ -325,33 +349,6 @@ public class MysqlXAConnection extends MysqlPooledConnection implements XAConnec
                 }
             }
         }
-    }
-
-    protected static XAException mapXAExceptionFromSQLException(SQLException sqlEx) {
-        Integer xaCode = MYSQL_ERROR_CODES_TO_XA_ERROR_CODES.get(sqlEx.getErrorCode());
-
-        if (xaCode != null) {
-            return (XAException) new MysqlXAException(xaCode.intValue(), sqlEx.getMessage(), null).initCause(sqlEx);
-        }
-
-        return (XAException) new MysqlXAException(XAException.XAER_RMFAIL, Messages.getString("MysqlXAConnection.003"), null).initCause(sqlEx);
-    }
-
-    private static void appendXid(StringBuilder builder, Xid xid) {
-        byte[] gtrid = xid.getGlobalTransactionId();
-        byte[] btrid = xid.getBranchQualifier();
-
-        if (gtrid != null) {
-            StringUtils.appendAsHex(builder, gtrid);
-        }
-
-        builder.append(',');
-        if (btrid != null) {
-            StringUtils.appendAsHex(builder, btrid);
-        }
-
-        builder.append(',');
-        StringUtils.appendAsHex(builder, xid.getFormatId());
     }
 
     @Override

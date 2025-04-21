@@ -36,24 +36,19 @@ import com.mysql.cj.protocol.Protocol.ProtocolEventListener.EventType;
 /**
  * A protocol provides the facilities to communicate with a MySQL server.
  *
- * @param <M>
- *            Message type
+ * @param <M> Message type
  */
 public interface Protocol<M extends Message> {
 
     /**
      * Init method takes the place of constructor.
-     *
+     * <p>
      * A constructor should be used unless the encapsulation of ProtocolFactory is necessary.
      *
-     * @param session
-     *            {@link Session}
-     * @param socketConnection
-     *            {@link SocketConnection}
-     * @param propertySet
-     *            {@link PropertySet}
-     * @param transactionManager
-     *            {@link TransactionEventHandler}
+     * @param session            {@link Session}
+     * @param socketConnection   {@link SocketConnection}
+     * @param propertySet        {@link PropertySet}
+     * @param transactionManager {@link TransactionEventHandler}
      */
     void init(Session session, SocketConnection socketConnection, PropertySet propertySet, TransactionEventHandler transactionManager);
 
@@ -89,12 +84,9 @@ public interface Protocol<M extends Message> {
     /**
      * Create a new session. This generally happens once at the beginning of a connection.
      *
-     * @param user
-     *            DB user name
-     * @param password
-     *            DB user password
-     * @param database
-     *            database name
+     * @param user     DB user name
+     * @param password DB user password
+     * @param database database name
      */
     void connect(String user, String password, String database);
 
@@ -109,13 +101,9 @@ public interface Protocol<M extends Message> {
     /**
      * Re-authenticates as the given user and password
      *
-     * @param user
-     *            DB user name
-     * @param password
-     *            DB user password
-     * @param database
-     *            database name
-     *
+     * @param user     DB user name
+     * @param password DB user password
+     * @param database database name
      */
     void changeUser(String user, String password, String database);
 
@@ -124,8 +112,7 @@ public interface Protocol<M extends Message> {
     /**
      * Read one message from the MySQL server into the reusable buffer if provided or into the new one.
      *
-     * @param reuse
-     *            {@link Message} instance to read into, may be null
+     * @param reuse {@link Message} instance to read into, may be null
      * @return the message from the server.
      */
     M readMessage(M reuse);
@@ -139,10 +126,8 @@ public interface Protocol<M extends Message> {
     M checkErrorMessage();
 
     /**
-     * @param message
-     *            {@link Message} instance
-     * @param packetLen
-     *            length of header + payload
+     * @param message   {@link Message} instance
+     * @param packetLen length of header + payload
      */
     void send(Message message, int packetLen);
 
@@ -151,19 +136,13 @@ public interface Protocol<M extends Message> {
     /**
      * Send a command to the MySQL server.
      *
-     * @param queryPacket
-     *            a packet pre-loaded with data for the protocol (eg.
-     *            from a client-side prepared statement). The first byte of
-     *            this packet is the MySQL protocol 'command' from MysqlDefs
-     * @param skipCheck
-     *            do not call checkErrorPacket() if true
-     * @param timeoutMillis
-     *            timeout
-     *
+     * @param queryPacket   a packet pre-loaded with data for the protocol (eg.
+     *                      from a client-side prepared statement). The first byte of
+     *                      this packet is the MySQL protocol 'command' from MysqlDefs
+     * @param skipCheck     do not call checkErrorPacket() if true
+     * @param timeoutMillis timeout
      * @return the response packet from the server
-     *
-     * @throws CJException
-     *             if an I/O error or SQL error occurs
+     * @throws CJException if an I/O error or SQL error occurs
      */
 
     M sendCommand(Message queryPacket, boolean skipCheck, int timeoutMillis);
@@ -173,56 +152,25 @@ public interface Protocol<M extends Message> {
     /**
      * Read protocol entity.
      *
-     * @param requiredClass
-     *            required Resultset class
-     * @param maxRows
-     *            the maximum number of rows to read (-1 means all rows)
-     * @param streamResults
-     *            should the driver leave the results on the wire,
-     *            and read them only when needed?
-     * @param resultPacket
-     *            the first packet of information in the result set
-     * @param isBinaryEncoded
-     *            true if the binary protocol is used (for server prepared statements)
-     * @param metadata
-     *            use this metadata instead of the one provided on wire
-     * @param protocolEntityFactory
-     *            {@link ProtocolEntityFactory} instance
-     * @param <T>
-     *            object extending the {@link ProtocolEntity}
-     * @return
-     *         {@link ProtocolEntity} instance
-     * @throws IOException
-     *             if an error occurs
+     * @param requiredClass         required Resultset class
+     * @param maxRows               the maximum number of rows to read (-1 means all rows)
+     * @param streamResults         should the driver leave the results on the wire,
+     *                              and read them only when needed?
+     * @param resultPacket          the first packet of information in the result set
+     * @param isBinaryEncoded       true if the binary protocol is used (for server prepared statements)
+     * @param metadata              use this metadata instead of the one provided on wire
+     * @param protocolEntityFactory {@link ProtocolEntityFactory} instance
+     * @param <T>                   object extending the {@link ProtocolEntity}
+     * @return {@link ProtocolEntity} instance
+     * @throws IOException if an error occurs
      */
     <T extends ProtocolEntity> T read(Class<Resultset> requiredClass, int maxRows, boolean streamResults, M resultPacket, boolean isBinaryEncoded,
-            ColumnDefinition metadata, ProtocolEntityFactory<T, M> protocolEntityFactory) throws IOException;
-
-    /**
-     * Sets an InputStream instance that will be used to send data
-     * to the MySQL server for a "LOAD DATA LOCAL INFILE" statement
-     * rather than a FileInputStream or URLInputStream that represents
-     * the path given as an argument to the statement.
-     *
-     * This stream will be read to completion upon execution of a
-     * "LOAD DATA LOCAL INFILE" statement, and will automatically
-     * be closed by the driver, so it needs to be reset
-     * before each call to execute*() that would cause the MySQL
-     * server to request data to fulfill the request for
-     * "LOAD DATA LOCAL INFILE".
-     *
-     * If this value is set to NULL, the driver will revert to using
-     * a FileInputStream or URLInputStream as required.
-     *
-     * @param stream
-     *            input stream
-     */
-    void setLocalInfileInputStream(InputStream stream);
+                                      ColumnDefinition metadata, ProtocolEntityFactory<T, M> protocolEntityFactory) throws IOException;
 
     /**
      * Returns the InputStream instance that will be used to send
      * data in response to a "LOAD DATA LOCAL INFILE" statement.
-     *
+     * <p>
      * This method returns NULL if no such stream has been set
      * via setLocalInfileInputStream().
      *
@@ -231,12 +179,30 @@ public interface Protocol<M extends Message> {
     InputStream getLocalInfileInputStream();
 
     /**
+     * Sets an InputStream instance that will be used to send data
+     * to the MySQL server for a "LOAD DATA LOCAL INFILE" statement
+     * rather than a FileInputStream or URLInputStream that represents
+     * the path given as an argument to the statement.
+     * <p>
+     * This stream will be read to completion upon execution of a
+     * "LOAD DATA LOCAL INFILE" statement, and will automatically
+     * be closed by the driver, so it needs to be reset
+     * before each call to execute*() that would cause the MySQL
+     * server to request data to fulfill the request for
+     * "LOAD DATA LOCAL INFILE".
+     * <p>
+     * If this value is set to NULL, the driver will revert to using
+     * a FileInputStream or URLInputStream as required.
+     *
+     * @param stream input stream
+     */
+    void setLocalInfileInputStream(InputStream stream);
+
+    /**
      * Read messages from server and deliver them to resultBuilder.
      *
-     * @param resultBuilder
-     *            {@link ResultBuilder} instance
-     * @param <T>
-     *            result type
+     * @param resultBuilder {@link ResultBuilder} instance
+     * @param <T>           result type
      * @return {@link QueryResult}
      */
     <T extends QueryResult> T readQueryResult(ResultBuilder<T> resultBuilder);
@@ -254,13 +220,15 @@ public interface Protocol<M extends Message> {
 
     String getQueryTimingUnits();
 
+    Supplier<ValueEncoder> getValueEncoderSupplier(Object obj);
+
     public static interface ProtocolEventListener {
+
+        void handleEvent(EventType type, Object info, Throwable reason);
 
         public enum EventType {
             SERVER_SHUTDOWN, SERVER_CLOSED_SESSION;
         }
-
-        void handleEvent(EventType type, Object info, Throwable reason);
 
     }
 
@@ -269,23 +237,19 @@ public interface Protocol<M extends Message> {
         /**
          * Add listener for this protocol events.
          *
-         * @param l
-         *            {@link ProtocolEventListener} instance.
+         * @param l {@link ProtocolEventListener} instance.
          */
         void addListener(ProtocolEventListener l);
 
         /**
          * Remove protocol listener.
          *
-         * @param l
-         *            {@link ProtocolEventListener} instance.
+         * @param l {@link ProtocolEventListener} instance.
          */
         void removeListener(ProtocolEventListener l);
 
         void invokeListeners(EventType type, Throwable reason);
 
     }
-
-    Supplier<ValueEncoder> getValueEncoderSupplier(Object obj);
 
 }

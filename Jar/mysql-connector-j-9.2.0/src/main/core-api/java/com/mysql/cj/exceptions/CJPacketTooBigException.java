@@ -48,13 +48,11 @@ public class CJPacketTooBigException extends CJException {
     /**
      * Creates a new CJPacketTooBigException object.
      *
-     * @param packetSize
-     *            the size of the packet that was going to be sent
-     * @param maximumPacketSize
-     *            the maximum size the server will accept
+     * @param packetSize        the size of the packet that was going to be sent
+     * @param maximumPacketSize the maximum size the server will accept
      */
     public CJPacketTooBigException(long packetSize, long maximumPacketSize) {
-        super(Messages.getString("PacketTooBigException.0", new Object[] { packetSize, maximumPacketSize }));
+        super(Messages.getString("PacketTooBigException.0", new Object[]{packetSize, maximumPacketSize}));
     }
 
 }

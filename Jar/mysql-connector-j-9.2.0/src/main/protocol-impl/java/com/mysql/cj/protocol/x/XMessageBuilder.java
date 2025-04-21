@@ -98,6 +98,69 @@ public class XMessageBuilder implements MessageBuilder<XMessage> {
 
     private static final String XPLUGIN_NAMESPACE = "mysqlx";
 
+    /**
+     * Apply the given filter params to the builder object (represented by the setter methods).
+     * <p>
+     * Abstract the process of setting the filter params on the operation message builder.
+     *
+     * @param filterParams the filter params to apply
+     * @param setOrder     the "builder.addAllOrder()" method reference
+     * @param setLimit     the "builder.setLimit()" method reference
+     * @param setCriteria  the "builder.setCriteria()" method reference
+     * @param setArgs      the "builder.addAllArgs()" method reference
+     */
+    @SuppressWarnings("unchecked")
+    private static void applyFilterParams(FilterParams filterParams, Consumer<List<Order>> setOrder, Consumer<Limit> setLimit, Consumer<Expr> setCriteria,
+                                          Consumer<List<Scalar>> setArgs) {
+        filterParams.verifyAllArgsBound();
+        if (filterParams.getOrder() != null) {
+            setOrder.accept((List<Order>) filterParams.getOrder());
+        }
+        if (filterParams.getLimit() != null) {
+            Limit.Builder lb = Limit.newBuilder().setRowCount(filterParams.getLimit());
+            if (filterParams.getOffset() != null) {
+                lb.setOffset(filterParams.getOffset());
+            }
+            setLimit.accept(lb.build());
+        }
+        if (filterParams.getCriteria() != null) {
+            setCriteria.accept((Expr) filterParams.getCriteria());
+        }
+        if (filterParams.getArgs() != null) {
+            setArgs.accept((List<Scalar>) filterParams.getArgs());
+        }
+    }
+
+    /**
+     * Apply the given filter params to the builder object (represented by the setter methods) using the variant that takes a <code>LimitExpr</code> and no
+     * <code>Args</code>. This variant is suitable for building prepared statements prepare messages.
+     * <p>
+     * Abstract the process of setting the filter params on the operation message builder.
+     *
+     * @param filterParams the filter params to apply
+     * @param setOrder     the "builder.addAllOrder()" method reference
+     * @param setLimit     the "builder.setLimitExp()" method reference
+     * @param setCriteria  the "builder.setCriteria()" method reference
+     */
+    @SuppressWarnings("unchecked")
+    private static void applyFilterParams(FilterParams filterParams, Consumer<List<Order>> setOrder, Consumer<LimitExpr> setLimit, Consumer<Expr> setCriteria) {
+        if (filterParams.getOrder() != null) {
+            setOrder.accept((List<Order>) filterParams.getOrder());
+        }
+        Object argsList = filterParams.getArgs();
+        int numberOfArgs = argsList == null ? 0 : ((List<Scalar>) argsList).size();
+        if (filterParams.getLimit() != null) {
+            LimitExpr.Builder lb = LimitExpr.newBuilder().setRowCount(ExprUtil.buildPlaceholderExpr(numberOfArgs));
+            if (filterParams.supportsOffset()) {
+                lb.setOffset(ExprUtil.buildPlaceholderExpr(numberOfArgs + 1));
+            }
+            setLimit.accept(lb.build());
+        }
+        if (filterParams.getCriteria() != null) {
+            setCriteria.accept((Expr) filterParams.getCriteria());
+        }
+    }
+
     public XMessage buildCapabilitiesGet() {
         return new XMessage(CapabilitiesGet.getDefaultInstance());
     }
@@ -125,16 +188,11 @@ public class XMessageBuilder implements MessageBuilder<XMessage> {
     /**
      * Build an {@link XMessage} for a non-prepared doc insert operation.
      *
-     * @param schemaName
-     *            the schema name
-     * @param collectionName
-     *            the collection name
-     * @param json
-     *            the documents to insert
-     * @param upsert
-     *            Whether this is an upsert operation or not
-     * @return
-     *         an {@link XMessage} instance
+     * @param schemaName     the schema name
+     * @param collectionName the collection name
+     * @param json           the documents to insert
+     * @param upsert         Whether this is an upsert operation or not
+     * @return an {@link XMessage} instance
      */
     public XMessage buildDocInsert(String schemaName, String collectionName, List<String> json, boolean upsert) {
         Insert.Builder builder = Insert.newBuilder().setCollection(ExprUtil.buildCollection(schemaName, collectionName));
@@ -148,14 +206,10 @@ public class XMessageBuilder implements MessageBuilder<XMessage> {
     /**
      * Initialize a {@link com.mysql.cj.x.protobuf.MysqlxCrud.Insert.Builder} for table data model with common data for prepared and non-prepared executions.
      *
-     * @param schemaName
-     *            the schema name
-     * @param tableName
-     *            the table name
-     * @param insertParams
-     *            the parameters to insert
-     * @return
-     *         an initialized {@link com.mysql.cj.x.protobuf.MysqlxCrud.Insert.Builder} instance
+     * @param schemaName   the schema name
+     * @param tableName    the table name
+     * @param insertParams the parameters to insert
+     * @return an initialized {@link com.mysql.cj.x.protobuf.MysqlxCrud.Insert.Builder} instance
      */
     @SuppressWarnings("unchecked")
     private Insert.Builder commonRowInsertBuilder(String schemaName, String tableName, InsertParams insertParams) {
@@ -169,14 +223,10 @@ public class XMessageBuilder implements MessageBuilder<XMessage> {
     /**
      * Build an {@link XMessage} for a non-prepared row insert operation.
      *
-     * @param schemaName
-     *            the schema name
-     * @param tableName
-     *            the table name
-     * @param insertParams
-     *            the parameters to insert
-     * @return
-     *         an {@link XMessage} instance
+     * @param schemaName   the schema name
+     * @param tableName    the table name
+     * @param insertParams the parameters to insert
+     * @return an {@link XMessage} instance
      */
     @SuppressWarnings("unchecked")
     public XMessage buildRowInsert(String schemaName, String tableName, InsertParams insertParams) {
@@ -189,12 +239,9 @@ public class XMessageBuilder implements MessageBuilder<XMessage> {
      * Initialize an {@link com.mysql.cj.x.protobuf.MysqlxCrud.Update.Builder} for collection data model with common data for prepared and non-prepared
      * executions.
      *
-     * @param filterParams
-     *            the filter parameters
-     * @param updates
-     *            the updates specifications to perform
-     * @return
-     *         an initialized {@link com.mysql.cj.x.protobuf.MysqlxCrud.Update.Builder} instance
+     * @param filterParams the filter parameters
+     * @param updates      the updates specifications to perform
+     * @return an initialized {@link com.mysql.cj.x.protobuf.MysqlxCrud.Update.Builder} instance
      */
     private Update.Builder commonDocUpdateBuilder(FilterParams filterParams, List<UpdateSpec> updates) {
         Update.Builder builder = Update.newBuilder().setCollection((Collection) filterParams.getCollection());
@@ -213,12 +260,9 @@ public class XMessageBuilder implements MessageBuilder<XMessage> {
     /**
      * Build an {@link XMessage} for a non-prepared doc update operation.
      *
-     * @param filterParams
-     *            the filter parameters
-     * @param updates
-     *            the updates specifications to perform
-     * @return
-     *         an {@link XMessage} instance
+     * @param filterParams the filter parameters
+     * @param updates      the updates specifications to perform
+     * @return an {@link XMessage} instance
      */
     public XMessage buildDocUpdate(FilterParams filterParams, List<UpdateSpec> updates) {
         Update.Builder builder = commonDocUpdateBuilder(filterParams, updates);
@@ -229,14 +273,10 @@ public class XMessageBuilder implements MessageBuilder<XMessage> {
     /**
      * Build an {@link XMessage} for a prepared doc update operation.
      *
-     * @param preparedStatementId
-     *            the prepared statement id
-     * @param filterParams
-     *            the filter parameters
-     * @param updates
-     *            the updates specifications to perform
-     * @return
-     *         an {@link XMessage} instance
+     * @param preparedStatementId the prepared statement id
+     * @param filterParams        the filter parameters
+     * @param updates             the updates specifications to perform
+     * @return an {@link XMessage} instance
      */
     public XMessage buildPrepareDocUpdate(int preparedStatementId, FilterParams filterParams, List<UpdateSpec> updates) {
         Update.Builder updateBuilder = commonDocUpdateBuilder(filterParams, updates);
@@ -250,12 +290,9 @@ public class XMessageBuilder implements MessageBuilder<XMessage> {
     /**
      * Initialize an {@link com.mysql.cj.x.protobuf.MysqlxCrud.Update.Builder} for table data model with common data for prepared and non-prepared executions.
      *
-     * @param filterParams
-     *            the filter parameters
-     * @param updateParams
-     *            the update parameters
-     * @return
-     *         an initialized {@link com.mysql.cj.x.protobuf.MysqlxCrud.Update.Builder} instance
+     * @param filterParams the filter parameters
+     * @param updateParams the update parameters
+     * @return an initialized {@link com.mysql.cj.x.protobuf.MysqlxCrud.Update.Builder} instance
      */
     @SuppressWarnings("unchecked")
     private Update.Builder commonRowUpdateBuilder(FilterParams filterParams, UpdateParams updateParams) {
@@ -269,12 +306,9 @@ public class XMessageBuilder implements MessageBuilder<XMessage> {
     /**
      * Build an {@link XMessage} for a non-prepared row update operation.
      *
-     * @param filterParams
-     *            the filter parameters
-     * @param updateParams
-     *            the update parameters
-     * @return
-     *         an {@link XMessage} instance
+     * @param filterParams the filter parameters
+     * @param updateParams the update parameters
+     * @return an {@link XMessage} instance
      */
     public XMessage buildRowUpdate(FilterParams filterParams, UpdateParams updateParams) {
         Update.Builder builder = commonRowUpdateBuilder(filterParams, updateParams);
@@ -285,14 +319,10 @@ public class XMessageBuilder implements MessageBuilder<XMessage> {
     /**
      * Build an {@link XMessage} for a prepared row update operation.
      *
-     * @param preparedStatementId
-     *            the prepared statement id
-     * @param filterParams
-     *            the filter parameters
-     * @param updateParams
-     *            the update parameters
-     * @return
-     *         an {@link XMessage} instance
+     * @param preparedStatementId the prepared statement id
+     * @param filterParams        the filter parameters
+     * @param updateParams        the update parameters
+     * @return an {@link XMessage} instance
      */
     public XMessage buildPrepareRowUpdate(int preparedStatementId, FilterParams filterParams, UpdateParams updateParams) {
         Update.Builder updateBuilder = commonRowUpdateBuilder(filterParams, updateParams);
@@ -306,10 +336,8 @@ public class XMessageBuilder implements MessageBuilder<XMessage> {
     /**
      * Initialize a {@link com.mysql.cj.x.protobuf.MysqlxCrud.Find.Builder} for collection data model with common data for prepared and non-prepared executions.
      *
-     * @param filterParams
-     *            the filter parameters
-     * @return
-     *         an initialized {@link com.mysql.cj.x.protobuf.MysqlxCrud.Find.Builder} instance
+     * @param filterParams the filter parameters
+     * @return an initialized {@link com.mysql.cj.x.protobuf.MysqlxCrud.Find.Builder} instance
      */
     @SuppressWarnings("unchecked")
     private Find.Builder commonFindBuilder(FilterParams filterParams) {
@@ -336,10 +364,8 @@ public class XMessageBuilder implements MessageBuilder<XMessage> {
     /**
      * Build an {@link XMessage} for a non-prepared find operation.
      *
-     * @param filterParams
-     *            the filter parameters
-     * @return
-     *         an {@link XMessage} instance
+     * @param filterParams the filter parameters
+     * @return an {@link XMessage} instance
      */
     public XMessage buildFind(FilterParams filterParams) {
         Find.Builder builder = commonFindBuilder(filterParams);
@@ -350,12 +376,9 @@ public class XMessageBuilder implements MessageBuilder<XMessage> {
     /**
      * Build an {@link XMessage} for a prepared find operation.
      *
-     * @param preparedStatementId
-     *            the prepared statement id
-     * @param filterParams
-     *            the filter parameters
-     * @return
-     *         an {@link XMessage} instance
+     * @param preparedStatementId the prepared statement id
+     * @param filterParams        the filter parameters
+     * @return an {@link XMessage} instance
      */
     public XMessage buildPrepareFind(int preparedStatementId, FilterParams filterParams) {
         Find.Builder findBuilder = commonFindBuilder(filterParams);
@@ -369,10 +392,8 @@ public class XMessageBuilder implements MessageBuilder<XMessage> {
     /**
      * Initialize a {@link com.mysql.cj.x.protobuf.MysqlxCrud.Delete.Builder} with common data for prepared and non-prepared executions.
      *
-     * @param filterParams
-     *            the filter parameters
-     * @return
-     *         an initialized {@link com.mysql.cj.x.protobuf.MysqlxCrud.Delete.Builder} instance
+     * @param filterParams the filter parameters
+     * @return an initialized {@link com.mysql.cj.x.protobuf.MysqlxCrud.Delete.Builder} instance
      */
     private Delete.Builder commonDeleteBuilder(FilterParams filterParams) {
         Delete.Builder builder = Delete.newBuilder().setCollection((Collection) filterParams.getCollection());
@@ -382,10 +403,8 @@ public class XMessageBuilder implements MessageBuilder<XMessage> {
     /**
      * Build an {@link XMessage} for a non-prepared delete operation.
      *
-     * @param filterParams
-     *            the filter parameters
-     * @return
-     *         an {@link XMessage} instance
+     * @param filterParams the filter parameters
+     * @return an {@link XMessage} instance
      */
     public XMessage buildDelete(FilterParams filterParams) {
         Delete.Builder builder = commonDeleteBuilder(filterParams);
@@ -396,12 +415,9 @@ public class XMessageBuilder implements MessageBuilder<XMessage> {
     /**
      * Build an {@link XMessage} for a prepared delete operation.
      *
-     * @param preparedStatementId
-     *            the prepared statement id
-     * @param filterParams
-     *            the filter parameters
-     * @return
-     *         an {@link XMessage} instance
+     * @param preparedStatementId the prepared statement id
+     * @param filterParams        the filter parameters
+     * @return an {@link XMessage} instance
      */
     public XMessage buildPrepareDelete(int preparedStatementId, FilterParams filterParams) {
         Delete.Builder deleteBuilder = commonDeleteBuilder(filterParams);
@@ -415,10 +431,8 @@ public class XMessageBuilder implements MessageBuilder<XMessage> {
     /**
      * Initialize a {@link com.mysql.cj.x.protobuf.MysqlxSql.StmtExecute.Builder} with common data for prepared and non-prepared executions.
      *
-     * @param statement
-     *            the SQL statement
-     * @return
-     *         an initialized {@link com.mysql.cj.x.protobuf.MysqlxSql.StmtExecute.Builder} instance
+     * @param statement the SQL statement
+     * @return an initialized {@link com.mysql.cj.x.protobuf.MysqlxSql.StmtExecute.Builder} instance
      */
     private StmtExecute.Builder commonSqlStatementBuilder(String statement) {
         StmtExecute.Builder builder = StmtExecute.newBuilder();
@@ -430,8 +444,7 @@ public class XMessageBuilder implements MessageBuilder<XMessage> {
     /**
      * Build a <i>StmtExecute</i> message for a SQL statement.
      *
-     * @param statement
-     *            SQL statement string
+     * @param statement SQL statement string
      * @return {@link XMessage} wrapping {@link StmtExecute}
      */
     @Override
@@ -442,10 +455,8 @@ public class XMessageBuilder implements MessageBuilder<XMessage> {
     /**
      * Build a <i>StmtExecute</i> message for a SQL statement.
      *
-     * @param statement
-     *            SQL statement string
-     * @param args
-     *            list of {@link Object} arguments
+     * @param statement SQL statement string
+     * @param args      list of {@link Object} arguments
      * @return {@link XMessage} wrapping {@link StmtExecute}
      */
     @Override
@@ -460,10 +471,8 @@ public class XMessageBuilder implements MessageBuilder<XMessage> {
     /**
      * Build a <i>Prepare</i> message for a SQL statement.
      *
-     * @param preparedStatementId
-     *            the prepared statement id
-     * @param statement
-     *            SQL statement string
+     * @param preparedStatementId the prepared statement id
+     * @param statement           SQL statement string
      * @return {@link XMessage} wrapping {@link StmtExecute}
      */
     public XMessage buildPrepareSqlStatement(int preparedStatementId, String statement) {
@@ -475,86 +484,11 @@ public class XMessageBuilder implements MessageBuilder<XMessage> {
     }
 
     /**
-     * Apply the given filter params to the builder object (represented by the setter methods).
-     *
-     * Abstract the process of setting the filter params on the operation message builder.
-     *
-     * @param filterParams
-     *            the filter params to apply
-     * @param setOrder
-     *            the "builder.addAllOrder()" method reference
-     * @param setLimit
-     *            the "builder.setLimit()" method reference
-     * @param setCriteria
-     *            the "builder.setCriteria()" method reference
-     * @param setArgs
-     *            the "builder.addAllArgs()" method reference
-     */
-    @SuppressWarnings("unchecked")
-    private static void applyFilterParams(FilterParams filterParams, Consumer<List<Order>> setOrder, Consumer<Limit> setLimit, Consumer<Expr> setCriteria,
-            Consumer<List<Scalar>> setArgs) {
-        filterParams.verifyAllArgsBound();
-        if (filterParams.getOrder() != null) {
-            setOrder.accept((List<Order>) filterParams.getOrder());
-        }
-        if (filterParams.getLimit() != null) {
-            Limit.Builder lb = Limit.newBuilder().setRowCount(filterParams.getLimit());
-            if (filterParams.getOffset() != null) {
-                lb.setOffset(filterParams.getOffset());
-            }
-            setLimit.accept(lb.build());
-        }
-        if (filterParams.getCriteria() != null) {
-            setCriteria.accept((Expr) filterParams.getCriteria());
-        }
-        if (filterParams.getArgs() != null) {
-            setArgs.accept((List<Scalar>) filterParams.getArgs());
-        }
-    }
-
-    /**
-     * Apply the given filter params to the builder object (represented by the setter methods) using the variant that takes a <code>LimitExpr</code> and no
-     * <code>Args</code>. This variant is suitable for building prepared statements prepare messages.
-     *
-     * Abstract the process of setting the filter params on the operation message builder.
-     *
-     * @param filterParams
-     *            the filter params to apply
-     * @param setOrder
-     *            the "builder.addAllOrder()" method reference
-     * @param setLimit
-     *            the "builder.setLimitExp()" method reference
-     * @param setCriteria
-     *            the "builder.setCriteria()" method reference
-     */
-    @SuppressWarnings("unchecked")
-    private static void applyFilterParams(FilterParams filterParams, Consumer<List<Order>> setOrder, Consumer<LimitExpr> setLimit, Consumer<Expr> setCriteria) {
-        if (filterParams.getOrder() != null) {
-            setOrder.accept((List<Order>) filterParams.getOrder());
-        }
-        Object argsList = filterParams.getArgs();
-        int numberOfArgs = argsList == null ? 0 : ((List<Scalar>) argsList).size();
-        if (filterParams.getLimit() != null) {
-            LimitExpr.Builder lb = LimitExpr.newBuilder().setRowCount(ExprUtil.buildPlaceholderExpr(numberOfArgs));
-            if (filterParams.supportsOffset()) {
-                lb.setOffset(ExprUtil.buildPlaceholderExpr(numberOfArgs + 1));
-            }
-            setLimit.accept(lb.build());
-        }
-        if (filterParams.getCriteria() != null) {
-            setCriteria.accept((Expr) filterParams.getCriteria());
-        }
-    }
-
-    /**
      * Build an {@link XMessage} for executing a prepared statement with the given filters.
      *
-     * @param preparedStatementId
-     *            the prepared statement id
-     * @param filterParams
-     *            the filter parameter values
-     * @return
-     *         an {@link XMessage} instance
+     * @param preparedStatementId the prepared statement id
+     * @param filterParams        the filter parameter values
+     * @return an {@link XMessage} instance
      */
     @SuppressWarnings("unchecked")
     public XMessage buildPrepareExecute(int preparedStatementId, FilterParams filterParams) {
@@ -575,10 +509,8 @@ public class XMessageBuilder implements MessageBuilder<XMessage> {
     /**
      * Build an {@link XMessage} for deallocating a prepared statement.
      *
-     * @param preparedStatementId
-     *            the prepared statement id
-     * @return
-     *         an {@link XMessage} instance
+     * @param preparedStatementId the prepared statement id
+     * @return an {@link XMessage} instance
      */
     public XMessage buildPrepareDeallocate(int preparedStatementId) {
         Deallocate.Builder builder = Deallocate.newBuilder().setStmtId(preparedStatementId);
@@ -587,10 +519,10 @@ public class XMessageBuilder implements MessageBuilder<XMessage> {
 
     public XMessage buildCreateCollection(String schemaName, String collectionName, CreateCollectionOptions options) {
         if (schemaName == null) {
-            throw new XProtocolError(Messages.getString("CreateTableStatement.0", new String[] { "schemaName" }));
+            throw new XProtocolError(Messages.getString("CreateTableStatement.0", new String[]{"schemaName"}));
         }
         if (collectionName == null) {
-            throw new XProtocolError(Messages.getString("CreateTableStatement.0", new String[] { "collectionName" }));
+            throw new XProtocolError(Messages.getString("CreateTableStatement.0", new String[]{"collectionName"}));
         }
 
         Builder argsBuilder = com.mysql.cj.x.protobuf.MysqlxDatatypes.Object.newBuilder()
@@ -627,10 +559,10 @@ public class XMessageBuilder implements MessageBuilder<XMessage> {
 
     public XMessage buildModifyCollectionOptions(String schemaName, String collectionName, ModifyCollectionOptions options) {
         if (schemaName == null) {
-            throw new XProtocolError(Messages.getString("CreateTableStatement.0", new String[] { "schemaName" }));
+            throw new XProtocolError(Messages.getString("CreateTableStatement.0", new String[]{"schemaName"}));
         }
         if (collectionName == null) {
-            throw new XProtocolError(Messages.getString("CreateTableStatement.0", new String[] { "collectionName" }));
+            throw new XProtocolError(Messages.getString("CreateTableStatement.0", new String[]{"collectionName"}));
         }
 
         Builder argsBuilder = com.mysql.cj.x.protobuf.MysqlxDatatypes.Object.newBuilder()
@@ -659,10 +591,10 @@ public class XMessageBuilder implements MessageBuilder<XMessage> {
 
     public XMessage buildCreateCollection(String schemaName, String collectionName) {
         if (schemaName == null) {
-            throw new XProtocolError(Messages.getString("CreateTableStatement.0", new String[] { "schemaName" }));
+            throw new XProtocolError(Messages.getString("CreateTableStatement.0", new String[]{"schemaName"}));
         }
         if (collectionName == null) {
-            throw new XProtocolError(Messages.getString("CreateTableStatement.0", new String[] { "collectionName" }));
+            throw new XProtocolError(Messages.getString("CreateTableStatement.0", new String[]{"collectionName"}));
         }
         return new XMessage(buildXpluginCommand(XpluginStatementCommand.XPLUGIN_STMT_CREATE_COLLECTION,
                 Any.newBuilder().setType(Any.Type.OBJECT)
@@ -675,10 +607,10 @@ public class XMessageBuilder implements MessageBuilder<XMessage> {
     public XMessage buildDropCollection(String schemaName, String collectionName) {
         // TODO this works for tables too
         if (schemaName == null) {
-            throw new XProtocolError(Messages.getString("CreateTableStatement.0", new String[] { "schemaName" }));
+            throw new XProtocolError(Messages.getString("CreateTableStatement.0", new String[]{"schemaName"}));
         }
         if (collectionName == null) {
-            throw new XProtocolError(Messages.getString("CreateTableStatement.0", new String[] { "collectionName" }));
+            throw new XProtocolError(Messages.getString("CreateTableStatement.0", new String[]{"collectionName"}));
         }
         return new XMessage(buildXpluginCommand(XpluginStatementCommand.XPLUGIN_STMT_DROP_COLLECTION,
                 Any.newBuilder().setType(Any.Type.OBJECT)
@@ -703,18 +635,16 @@ public class XMessageBuilder implements MessageBuilder<XMessage> {
      * | some_view           | VIEW       |
      * | xprotocol_test_test | TABLE      |
      * </pre>
-     *
+     * <p>
      * .
      *
-     * @param schemaName
-     *            schema name
-     * @param pattern
-     *            object name pattern
+     * @param schemaName schema name
+     * @param pattern    object name pattern
      * @return XMessage
      */
     public XMessage buildListObjects(String schemaName, String pattern) {
         if (schemaName == null) {
-            throw new XProtocolError(Messages.getString("CreateTableStatement.0", new String[] { "schemaName" }));
+            throw new XProtocolError(Messages.getString("CreateTableStatement.0", new String[]{"schemaName"}));
         }
 
         Builder obj = com.mysql.cj.x.protobuf.MysqlxDatatypes.Object.newBuilder()
@@ -818,10 +748,8 @@ public class XMessageBuilder implements MessageBuilder<XMessage> {
     /**
      * Build a <i>StmtExecute</i> message for an xplugin command.
      *
-     * @param command
-     *            the xplugin command to send
-     * @param args
-     *            the arguments to the command
+     * @param command the xplugin command to send
+     * @param args    the arguments to the command
      * @return {@link StmtExecute}
      */
     private StmtExecute buildXpluginCommand(XpluginStatementCommand command, Any... args) {
@@ -842,9 +770,9 @@ public class XMessageBuilder implements MessageBuilder<XMessage> {
     public XMessage buildSha256MemoryAuthContinue(String user, String password, byte[] nonce, String database) {
         // TODO: encoding for all this?
         String encoding = "UTF8";
-        byte[] databaseBytes = database == null ? new byte[] {} : StringUtils.getBytes(database, encoding);
-        byte[] userBytes = user == null ? new byte[] {} : StringUtils.getBytes(user, encoding);
-        byte[] passwordBytes = password == null || password.length() == 0 ? new byte[] {} : StringUtils.getBytes(password, encoding);
+        byte[] databaseBytes = database == null ? new byte[]{} : StringUtils.getBytes(database, encoding);
+        byte[] userBytes = user == null ? new byte[]{} : StringUtils.getBytes(user, encoding);
+        byte[] passwordBytes = password == null || password.length() == 0 ? new byte[]{} : StringUtils.getBytes(password, encoding);
 
         byte[] hashedPassword = passwordBytes;
         try {
@@ -876,9 +804,9 @@ public class XMessageBuilder implements MessageBuilder<XMessage> {
     public XMessage buildMysql41AuthContinue(String user, String password, byte[] salt, String database) {
         // TODO: encoding for all this?
         String encoding = "UTF8";
-        byte[] userBytes = user == null ? new byte[] {} : StringUtils.getBytes(user, encoding);
-        byte[] passwordBytes = password == null || password.length() == 0 ? new byte[] {} : StringUtils.getBytes(password, encoding);
-        byte[] databaseBytes = database == null ? new byte[] {} : StringUtils.getBytes(database, encoding);
+        byte[] userBytes = user == null ? new byte[]{} : StringUtils.getBytes(user, encoding);
+        byte[] passwordBytes = password == null || password.length() == 0 ? new byte[]{} : StringUtils.getBytes(password, encoding);
+        byte[] databaseBytes = database == null ? new byte[]{} : StringUtils.getBytes(database, encoding);
 
         byte[] hashedPassword = passwordBytes;
         if (password != null && password.length() > 0) {
@@ -923,7 +851,7 @@ public class XMessageBuilder implements MessageBuilder<XMessage> {
         };
         try {
             // now we create the client object we use which can handle PLAIN mechanism for "X Protocol" to "serverName"
-            String[] mechanisms = new String[] { "PLAIN" };
+            String[] mechanisms = new String[]{"PLAIN"};
             String authorizationId = database == null || database.trim().length() == 0 ? null : database; // as per protocol spec
             String protocol = "X Protocol";
             Map<String, ?> props = null;
@@ -960,7 +888,7 @@ public class XMessageBuilder implements MessageBuilder<XMessage> {
         };
         try {
             // now we create the client object we use which can handle EXTERNAL mechanism for "X Protocol" to "serverName"
-            String[] mechanisms = new String[] { "EXTERNAL" };
+            String[] mechanisms = new String[]{"EXTERNAL"};
             String authorizationId = database == null || database.trim().length() == 0 ? null : database; // as per protocol spec
             String protocol = "X Protocol";
             Map<String, ?> props = null;

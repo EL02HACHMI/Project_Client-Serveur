@@ -30,46 +30,10 @@ public class AssertionFailedException extends CJException {
     private static final long serialVersionUID = 5832552608575043403L;
 
     /**
-     * Convenience method.
-     *
-     * @param ex
-     *            the exception that should never have been thrown.
-     * @return {@link AssertionFailedException}
-     * @throws AssertionFailedException
-     *             for the exception ex.
-     */
-    public static AssertionFailedException shouldNotHappen(Exception ex) throws AssertionFailedException {
-        throw new AssertionFailedException(ex);
-    }
-
-    /**
-     * Create (and caller should subsequently throw) an <code>AssertionFailedException</code>.
-     *
-     * <P>
-     * Typical use is as follows:
-     *
-     * <PRE>
-     * if (something == null) {
-     *     throw AssertionFailedException.shouldNotHappen("Something cannot be null");
-     * }
-     * </PRE>
-     *
-     * @param assertion
-     *            message
-     * @return the exception. exception should be thrown by the caller to satisfy compiler checks for data-flow, etc
-     * @throws AssertionFailedException
-     *             if exception occurs
-     */
-    public static AssertionFailedException shouldNotHappen(String assertion) throws AssertionFailedException {
-        return new AssertionFailedException(assertion);
-    }
-
-    /**
      * Creates an AssertionFailedException for the given exception that should
      * never have been thrown.
      *
-     * @param ex
-     *            the exception that should never have been thrown.
+     * @param ex the exception that should never have been thrown.
      */
     public AssertionFailedException(Exception ex) {
         super(Messages.getString("AssertionFailedException.0") + ex.toString() + Messages.getString("AssertionFailedException.1"), ex);
@@ -78,11 +42,41 @@ public class AssertionFailedException extends CJException {
     /**
      * Creates an AssertionFailedException for the reason given.
      *
-     * @param assertion
-     *            a description of the assertion that failed
+     * @param assertion a description of the assertion that failed
      */
     public AssertionFailedException(String assertion) {
-        super(Messages.getString("AssertionFailedException.2", new Object[] { assertion }));
+        super(Messages.getString("AssertionFailedException.2", new Object[]{assertion}));
+    }
+
+    /**
+     * Convenience method.
+     *
+     * @param ex the exception that should never have been thrown.
+     * @return {@link AssertionFailedException}
+     * @throws AssertionFailedException for the exception ex.
+     */
+    public static AssertionFailedException shouldNotHappen(Exception ex) throws AssertionFailedException {
+        throw new AssertionFailedException(ex);
+    }
+
+    /**
+     * Create (and caller should subsequently throw) an <code>AssertionFailedException</code>.
+     *
+     * <p>
+     * Typical use is as follows:
+     *
+     * <PRE>
+     * if (something == null) {
+     * throw AssertionFailedException.shouldNotHappen("Something cannot be null");
+     * }
+     * </PRE>
+     *
+     * @param assertion message
+     * @return the exception. exception should be thrown by the caller to satisfy compiler checks for data-flow, etc
+     * @throws AssertionFailedException if exception occurs
+     */
+    public static AssertionFailedException shouldNotHappen(String assertion) throws AssertionFailedException {
+        return new AssertionFailedException(assertion);
     }
 
 }

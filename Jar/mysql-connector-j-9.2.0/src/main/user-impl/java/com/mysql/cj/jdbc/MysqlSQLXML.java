@@ -113,6 +113,18 @@ public class MysqlSQLXML implements SQLXML {
         this.exceptionInterceptor = exceptionInterceptor;
     }
 
+    private static void setFeature(Object factory, String name, boolean value) {
+        try {
+            if (factory instanceof DocumentBuilderFactory) {
+                ((DocumentBuilderFactory) factory).setFeature(name, value);
+            } else if (factory instanceof XMLReader) {
+                ((XMLReader) factory).setFeature(name, value);
+            }
+        } catch (Exception ignore) {
+            // no-op
+        }
+    }
+
     @Override
     public void free() throws SQLException {
         this.lock.lock();
@@ -147,6 +159,21 @@ public class MysqlSQLXML implements SQLXML {
         }
     }
 
+    @Override
+    public void setString(String str) throws SQLException {
+        this.lock.lock();
+        try {
+            checkClosed();
+            checkWorkingWithResult();
+
+            this.stringRep = str;
+            this.fromResultSet = false;
+
+        } finally {
+            this.lock.unlock();
+        }
+    }
+
     private void checkClosed() throws SQLException {
         this.lock.lock();
         try {
@@ -165,21 +192,6 @@ public class MysqlSQLXML implements SQLXML {
                 throw SQLError.createSQLException(Messages.getString("MysqlSQLXML.1"), MysqlErrorNumbers.SQLSTATE_CONNJ_ILLEGAL_ARGUMENT,
                         this.exceptionInterceptor);
             }
-
-        } finally {
-            this.lock.unlock();
-        }
-    }
-
-    @Override
-    public void setString(String str) throws SQLException {
-        this.lock.lock();
-        try {
-            checkClosed();
-            checkWorkingWithResult();
-
-            this.stringRep = str;
-            this.fromResultSet = false;
 
         } finally {
             this.lock.unlock();
@@ -299,23 +311,11 @@ public class MysqlSQLXML implements SQLXML {
                     throw sqlEx;
                 }
             } else {
-                throw SQLError.createSQLException(Messages.getString("MysqlSQLXML.2", new Object[] { clazz.toString() }),
+                throw SQLError.createSQLException(Messages.getString("MysqlSQLXML.2", new Object[]{clazz.toString()}),
                         MysqlErrorNumbers.SQLSTATE_CONNJ_ILLEGAL_ARGUMENT, this.exceptionInterceptor);
             }
         } finally {
             this.lock.unlock();
-        }
-    }
-
-    private static void setFeature(Object factory, String name, boolean value) {
-        try {
-            if (factory instanceof DocumentBuilderFactory) {
-                ((DocumentBuilderFactory) factory).setFeature(name, value);
-            } else if (factory instanceof XMLReader) {
-                ((XMLReader) factory).setFeature(name, value);
-            }
-        } catch (Exception ignore) {
-            // no-op
         }
     }
 
@@ -413,7 +413,7 @@ public class MysqlSQLXML implements SQLXML {
                     throw sqlEx;
                 }
             } else {
-                throw SQLError.createSQLException(Messages.getString("MysqlSQLXML.3", new Object[] { clazz.toString() }),
+                throw SQLError.createSQLException(Messages.getString("MysqlSQLXML.3", new Object[]{clazz.toString()}),
                         MysqlErrorNumbers.SQLSTATE_CONNJ_ILLEGAL_ARGUMENT, this.exceptionInterceptor);
             }
         } finally {
@@ -580,6 +580,7 @@ public class MysqlSQLXML implements SQLXML {
     class SimpleSaxToReader extends DefaultHandler {
 
         StringBuilder buf = new StringBuilder();
+        private boolean inCDATA = false;
 
         @Override
         public void startDocument() throws SAXException {
@@ -621,8 +622,6 @@ public class MysqlSQLXML implements SQLXML {
         public void ignorableWhitespace(char ch[], int start, int length) throws SAXException {
             characters(ch, start, length);
         }
-
-        private boolean inCDATA = false;
 
         public void startCDATA() throws SAXException {
             this.buf.append("<![CDATA[");

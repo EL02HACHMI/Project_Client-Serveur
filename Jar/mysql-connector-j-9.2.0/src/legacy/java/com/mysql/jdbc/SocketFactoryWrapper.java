@@ -43,7 +43,7 @@ public class SocketFactoryWrapper extends StandardSocketFactory implements Socke
         this.socketFactory = legacyFactory;
     }
 
-    @SuppressWarnings({ "deprecation", "unchecked" })
+    @SuppressWarnings({"deprecation", "unchecked"})
     @Override
     public <T extends Closeable> T connect(String hostname, int portNumber, PropertySet pset, int loginTimeout) throws IOException {
         this.rawSocket = this.socketFactory.connect(hostname, portNumber, pset.exposeAsProperties());

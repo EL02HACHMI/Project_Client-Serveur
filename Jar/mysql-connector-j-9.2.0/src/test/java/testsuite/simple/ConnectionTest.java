@@ -288,11 +288,11 @@ public class ConnectionTest extends BaseTestCase {
         assertEquals(actualTransactionIsolation, initialTransactionIsolation, "Inital transaction isolation level doesn't match the server's");
 
         // Check setting all allowed transaction isolation levels
-        String[] isoLevelNames = new String[] { "Connection.TRANSACTION_NONE", "Connection.TRANSACTION_READ_COMMITTED",
-                "Connection.TRANSACTION_READ_UNCOMMITTED", "Connection.TRANSACTION_REPEATABLE_READ", "Connection.TRANSACTION_SERIALIZABLE" };
+        String[] isoLevelNames = new String[]{"Connection.TRANSACTION_NONE", "Connection.TRANSACTION_READ_COMMITTED",
+                "Connection.TRANSACTION_READ_UNCOMMITTED", "Connection.TRANSACTION_REPEATABLE_READ", "Connection.TRANSACTION_SERIALIZABLE"};
 
-        int[] isolationLevels = new int[] { Connection.TRANSACTION_NONE, Connection.TRANSACTION_READ_COMMITTED, Connection.TRANSACTION_READ_UNCOMMITTED,
-                Connection.TRANSACTION_REPEATABLE_READ, Connection.TRANSACTION_SERIALIZABLE };
+        int[] isolationLevels = new int[]{Connection.TRANSACTION_NONE, Connection.TRANSACTION_READ_COMMITTED, Connection.TRANSACTION_READ_UNCOMMITTED,
+                Connection.TRANSACTION_REPEATABLE_READ, Connection.TRANSACTION_SERIALIZABLE};
 
         DatabaseMetaData dbmd = this.conn.getMetaData();
         for (int i = 0; i < isolationLevels.length; i++) {
@@ -888,7 +888,6 @@ public class ConnectionTest extends BaseTestCase {
     /**
      * @param useCompression
      * @param maxPayloadSize
-     *
      * @throws Exception
      */
     private void testCompressionWith(String useCompression, int maxPayloadSize) throws Exception {
@@ -954,8 +953,7 @@ public class ConnectionTest extends BaseTestCase {
      * timeouts if we're using localSocketAddress. We try and keep the time down on the testcase by spawning the checking of each interface off into separate
      * threads.
      *
-     * @throws Exception
-     *             if the test can't use at least one of the local machine's interfaces to make an outgoing connection to the server.
+     * @throws Exception if the test can't use at least one of the local machine's interfaces to make an outgoing connection to the server.
      */
     @Test
     public void testLocalSocketAddress() throws Exception {
@@ -1003,58 +1001,6 @@ public class ConnectionTest extends BaseTestCase {
         }
 
         assertTrue(didOneWork, "At least one connection was made with the localSocketAddress set");
-    }
-
-    class SpawnedWorkerCounter {
-
-        protected int workerCount = 0;
-
-        synchronized void setWorkerCount(int i) {
-            this.workerCount = i;
-        }
-
-        synchronized void decrementWorkerCount() {
-            this.workerCount--;
-            notify();
-        }
-
-    }
-
-    class LocalSocketAddressCheckThread extends Thread {
-
-        boolean atLeastOneWorked = false;
-        Enumeration<InetAddress> allAddresses = null;
-        SpawnedWorkerCounter counter = null;
-
-        LocalSocketAddressCheckThread(Enumeration<InetAddress> e, SpawnedWorkerCounter c) {
-            this.allAddresses = e;
-            this.counter = c;
-        }
-
-        @Override
-        public void run() {
-            while (this.allAddresses.hasMoreElements()) {
-                InetAddress addr = this.allAddresses.nextElement();
-
-                try {
-                    Properties props = new Properties();
-                    props.setProperty(PropertyKey.sslMode.getKeyName(), SslMode.DISABLED.name());
-                    props.setProperty(PropertyKey.allowPublicKeyRetrieval.getKeyName(), "true");
-                    props.setProperty(PropertyKey.localSocketAddress.getKeyName(), addr.getHostAddress());
-                    props.setProperty(PropertyKey.connectTimeout.getKeyName(), "2000");
-                    getConnectionWithProps(props).close();
-
-                    this.atLeastOneWorked = true;
-
-                    break;
-                } catch (SQLException sqlEx) {
-                    // ignore, we're only seeing if one of these tests succeeds
-                }
-            }
-
-            this.counter.decrementWorkerCount();
-        }
-
     }
 
     @Test
@@ -1658,7 +1604,7 @@ public class ConnectionTest extends BaseTestCase {
     /**
      * Test the new connection property 'enableEscapeProcessing', as well as the old connection property 'processEscapeCodesForPrepStmts' and interrelation
      * between them.
-     *
+     * <p>
      * This test uses a QueryInterceptor to capture the query sent to the server and assert whether escape processing has been done in the client side or if
      * the query is sent untouched and escape processing will be done at server side, according to provided connection properties and type of Statement objects
      * in use.
@@ -1707,7 +1653,7 @@ public class ConnectionTest extends BaseTestCase {
             assertEquals(1d, this.rs.getDouble(1), testCase);
 
             Timestamp ts = !enableEscapeProcessing && this.rs.getMetaData().getColumnType(2) == Types.VARCHAR ?
-            // MySQL 5.5 returns {ts '2015-08-16 11:22:33'} as a VARCHAR column, while newer servers return it as a DATETIME
+                    // MySQL 5.5 returns {ts '2015-08-16 11:22:33'} as a VARCHAR column, while newer servers return it as a DATETIME
                     Timestamp.from(ZonedDateTime
                             .of(2015, 8, 16, 11, 22, 33, 0, ((MysqlConnection) testConn).getSession().getServerSession().getSessionTimeZone().toZoneId())
                             .withZoneSameInstant(ZoneId.systemDefault()).toInstant())
@@ -1721,7 +1667,7 @@ public class ConnectionTest extends BaseTestCase {
             this.rs = this.pstmt.executeQuery();
 
             ts = !processEscapeCodesForPrepStmts && this.rs.getMetaData().getColumnType(2) == Types.VARCHAR ?
-            // MySQL 5.5 returns {ts '2015-08-16 11:22:33'} as a VARCHAR column, while newer servers return it as a DATETIME
+                    // MySQL 5.5 returns {ts '2015-08-16 11:22:33'} as a VARCHAR column, while newer servers return it as a DATETIME
                     Timestamp.from(ZonedDateTime
                             .of(2015, 8, 16, 11, 22, 33, 0, ((MysqlConnection) testConn).getSession().getServerSession().getSessionTimeZone().toZoneId())
                             .withZoneSameInstant(ZoneId.systemDefault()).toInstant())
@@ -1737,41 +1683,6 @@ public class ConnectionTest extends BaseTestCase {
 
             testConn.close();
         }
-    }
-
-    public static class TestEnableEscapeProcessingQueryInterceptor extends BaseQueryInterceptor {
-
-        @Override
-        public <T extends Resultset> T preProcess(Supplier<String> str, Query interceptedQuery) {
-            String sql = str == null ? null : str.get();
-            if (sql == null) {
-                if (interceptedQuery instanceof ClientPreparedStatement) {
-                    sql = ((PreparedQuery) (ClientPreparedStatement) interceptedQuery).asSql();
-                } else if (interceptedQuery instanceof PreparedQuery) {
-                    sql = ((PreparedQuery) interceptedQuery).asSql();
-                }
-            }
-
-            int p;
-            if (sql != null && (p = sql.indexOf("testEnableEscapeProcessing:")) != -1) {
-                int tst = Integer.parseInt(sql.substring(sql.indexOf('(', p) + 1, sql.indexOf(')', p)));
-                boolean enableEscapeProcessing = (tst & 0x1) != 0;
-                boolean processEscapeCodesForPrepStmts = (tst & 0x2) != 0;
-                boolean useServerPrepStmts = (tst & 0x4) != 0;
-                boolean isPreparedStatement = interceptedQuery instanceof PreparedStatement || interceptedQuery instanceof PreparedQuery;
-
-                String testCase = String.format("Case: %d [ %s | %s | %s ]/%s", tst, enableEscapeProcessing ? "enEscProc" : "-",
-                        processEscapeCodesForPrepStmts ? "procEscProcPS" : "-", useServerPrepStmts ? "useSSPS" : "-",
-                        isPreparedStatement ? "PreparedStatement" : "Statement");
-
-                boolean escapeProcessingDone = sql.indexOf('{') == -1;
-                assertTrue(isPreparedStatement && processEscapeCodesForPrepStmts == escapeProcessingDone
-                        || !isPreparedStatement && enableEscapeProcessing == escapeProcessingDone, testCase);
-            }
-            final String fsql = sql;
-            return super.preProcess(() -> fsql, interceptedQuery);
-        }
-
     }
 
     @Test
@@ -2392,6 +2303,93 @@ public class ConnectionTest extends BaseTestCase {
         assertTrue(((MysqlConnection) con).getSession().isSSLEstablished());
         assertSessionStatusEquals(con.createStatement(), "ssl_version", "TLSv1.2");
         con.close();
+    }
+
+    public static class TestEnableEscapeProcessingQueryInterceptor extends BaseQueryInterceptor {
+
+        @Override
+        public <T extends Resultset> T preProcess(Supplier<String> str, Query interceptedQuery) {
+            String sql = str == null ? null : str.get();
+            if (sql == null) {
+                if (interceptedQuery instanceof ClientPreparedStatement) {
+                    sql = ((PreparedQuery) (ClientPreparedStatement) interceptedQuery).asSql();
+                } else if (interceptedQuery instanceof PreparedQuery) {
+                    sql = ((PreparedQuery) interceptedQuery).asSql();
+                }
+            }
+
+            int p;
+            if (sql != null && (p = sql.indexOf("testEnableEscapeProcessing:")) != -1) {
+                int tst = Integer.parseInt(sql.substring(sql.indexOf('(', p) + 1, sql.indexOf(')', p)));
+                boolean enableEscapeProcessing = (tst & 0x1) != 0;
+                boolean processEscapeCodesForPrepStmts = (tst & 0x2) != 0;
+                boolean useServerPrepStmts = (tst & 0x4) != 0;
+                boolean isPreparedStatement = interceptedQuery instanceof PreparedStatement || interceptedQuery instanceof PreparedQuery;
+
+                String testCase = String.format("Case: %d [ %s | %s | %s ]/%s", tst, enableEscapeProcessing ? "enEscProc" : "-",
+                        processEscapeCodesForPrepStmts ? "procEscProcPS" : "-", useServerPrepStmts ? "useSSPS" : "-",
+                        isPreparedStatement ? "PreparedStatement" : "Statement");
+
+                boolean escapeProcessingDone = sql.indexOf('{') == -1;
+                assertTrue(isPreparedStatement && processEscapeCodesForPrepStmts == escapeProcessingDone
+                        || !isPreparedStatement && enableEscapeProcessing == escapeProcessingDone, testCase);
+            }
+            final String fsql = sql;
+            return super.preProcess(() -> fsql, interceptedQuery);
+        }
+
+    }
+
+    class SpawnedWorkerCounter {
+
+        protected int workerCount = 0;
+
+        synchronized void setWorkerCount(int i) {
+            this.workerCount = i;
+        }
+
+        synchronized void decrementWorkerCount() {
+            this.workerCount--;
+            notify();
+        }
+
+    }
+
+    class LocalSocketAddressCheckThread extends Thread {
+
+        boolean atLeastOneWorked = false;
+        Enumeration<InetAddress> allAddresses = null;
+        SpawnedWorkerCounter counter = null;
+
+        LocalSocketAddressCheckThread(Enumeration<InetAddress> e, SpawnedWorkerCounter c) {
+            this.allAddresses = e;
+            this.counter = c;
+        }
+
+        @Override
+        public void run() {
+            while (this.allAddresses.hasMoreElements()) {
+                InetAddress addr = this.allAddresses.nextElement();
+
+                try {
+                    Properties props = new Properties();
+                    props.setProperty(PropertyKey.sslMode.getKeyName(), SslMode.DISABLED.name());
+                    props.setProperty(PropertyKey.allowPublicKeyRetrieval.getKeyName(), "true");
+                    props.setProperty(PropertyKey.localSocketAddress.getKeyName(), addr.getHostAddress());
+                    props.setProperty(PropertyKey.connectTimeout.getKeyName(), "2000");
+                    getConnectionWithProps(props).close();
+
+                    this.atLeastOneWorked = true;
+
+                    break;
+                } catch (SQLException sqlEx) {
+                    // ignore, we're only seeing if one of these tests succeeds
+                }
+            }
+
+            this.counter.decrementWorkerCount();
+        }
+
     }
 
 }

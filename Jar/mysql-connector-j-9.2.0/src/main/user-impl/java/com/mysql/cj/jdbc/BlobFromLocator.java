@@ -50,7 +50,9 @@ public class BlobFromLocator implements java.sql.Blob {
 
     private List<String> primaryKeyValues = null;
 
-    /** The ResultSet that created this BLOB */
+    /**
+     * The ResultSet that created this BLOB
+     */
     private ResultSetImpl creatorResultSet;
 
     private String blobColumnName = null;
@@ -68,14 +70,10 @@ public class BlobFromLocator implements java.sql.Blob {
     /**
      * Creates an updatable BLOB that can update in-place
      *
-     * @param creatorResultSetToSet
-     *            result set
-     * @param blobColumnIndex
-     *            column index
-     * @param exceptionInterceptor
-     *            exception interceptor
-     * @throws SQLException
-     *             if an error occurs
+     * @param creatorResultSetToSet result set
+     * @param blobColumnIndex       column index
+     * @param exceptionInterceptor  exception interceptor
+     * @throws SQLException if an error occurs
      */
     public BlobFromLocator(ResultSetImpl creatorResultSetToSet, int blobColumnIndex, ExceptionInterceptor exceptionInterceptor) throws SQLException {
         this.exceptionInterceptor = exceptionInterceptor;
@@ -487,6 +485,18 @@ public class BlobFromLocator implements java.sql.Blob {
         }
     }
 
+    @Override
+    public void free() throws SQLException {
+        this.creatorResultSet = null;
+        this.primaryKeyColumns = null;
+        this.primaryKeyValues = null;
+    }
+
+    @Override
+    public InputStream getBinaryStream(long pos, long length) throws SQLException {
+        return new LocatorInputStream(pos, length);
+    }
+
     class LocatorInputStream extends InputStream {
 
         long currentPositionInBlob = 0;
@@ -508,7 +518,7 @@ public class BlobFromLocator implements java.sql.Blob {
 
             if (pos + len > blobLength) {
                 throw SQLError.createSQLException(
-                        Messages.getString("Blob.invalidStreamLength", new Object[] { Long.valueOf(blobLength), Long.valueOf(pos), Long.valueOf(len) }),
+                        Messages.getString("Blob.invalidStreamLength", new Object[]{Long.valueOf(blobLength), Long.valueOf(pos), Long.valueOf(len)}),
                         MysqlErrorNumbers.SQLSTATE_CONNJ_ILLEGAL_ARGUMENT, BlobFromLocator.this.exceptionInterceptor);
             }
 
@@ -596,18 +606,6 @@ public class BlobFromLocator implements java.sql.Blob {
             super.close();
         }
 
-    }
-
-    @Override
-    public void free() throws SQLException {
-        this.creatorResultSet = null;
-        this.primaryKeyColumns = null;
-        this.primaryKeyValues = null;
-    }
-
-    @Override
-    public InputStream getBinaryStream(long pos, long length) throws SQLException {
-        return new LocatorInputStream(pos, length);
     }
 
 }

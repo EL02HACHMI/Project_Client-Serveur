@@ -34,36 +34,29 @@ import com.mysql.cj.result.ValueFactory;
 public abstract class AbstractResultsetRow implements ResultsetRow {
 
     protected ExceptionInterceptor exceptionInterceptor;
+    /**
+     * The metadata of the fields of this result set.
+     */
+    protected ColumnDefinition metadata;
+    protected ValueDecoder valueDecoder;
+    /**
+     * Did the previous value retrieval find a NULL?
+     */
+    protected boolean wasNull;
 
     protected AbstractResultsetRow(ExceptionInterceptor exceptionInterceptor) {
         this.exceptionInterceptor = exceptionInterceptor;
     }
 
     /**
-     * The metadata of the fields of this result set.
-     */
-    protected ColumnDefinition metadata;
-
-    protected ValueDecoder valueDecoder;
-
-    /** Did the previous value retrieval find a NULL? */
-    protected boolean wasNull;
-
-    /**
      * Decode the wire-level result bytes and call the value factory.
      *
-     * @param columnIndex
-     *            column index
-     * @param bytes
-     *            bytes array with result data
-     * @param offset
-     *            offset in array
-     * @param length
-     *            data length
-     * @param vf
-     *            {@link ValueFactory}
-     * @param <T>
-     *            value type
+     * @param columnIndex column index
+     * @param bytes       bytes array with result data
+     * @param offset      offset in array
+     * @param length      data length
+     * @param vf          {@link ValueFactory}
+     * @param <T>         value type
      * @return value
      */
     private <T> T decodeAndCreateReturnValue(int columnIndex, byte[] bytes, int offset, int length, ValueFactory<T> vf) {
@@ -212,18 +205,12 @@ public abstract class AbstractResultsetRow implements ResultsetRow {
      * Get a value from a byte array. The byte array is interpreted by the {@link com.mysql.cj.protocol.ValueDecoder} which uses the value factory create the
      * return value.
      *
-     * @param columnIndex
-     *            The (internal) index of the column
-     * @param bytes
-     *            byte array
-     * @param offset
-     *            offset into byte array
-     * @param length
-     *            length of value in byte array
-     * @param vf
-     *            value factory
-     * @param <T>
-     *            value type
+     * @param columnIndex The (internal) index of the column
+     * @param bytes       byte array
+     * @param offset      offset into byte array
+     * @param length      length of value in byte array
+     * @param vf          value factory
+     * @param <T>         value type
      * @return value
      */
     protected <T> T getValueFromBytes(int columnIndex, byte[] bytes, int offset, int length, ValueFactory<T> vf) {

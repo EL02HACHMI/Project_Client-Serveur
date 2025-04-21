@@ -53,17 +53,14 @@ import com.mysql.cj.util.Util;
  * Provides streaming of Resultset rows. Each next row is consumed from the input stream only on {@link #next()} call. Consumed rows are not cached thus result
  * sets are streamed only when they are forward-only, read-only, and the fetch size has been set to Integer.MIN_VALUE (rows are read one by one).
  *
- * @param <T>
- *            ProtocolEntity type
+ * @param <T> ProtocolEntity type
  */
 public class ResultsetRowsStreaming<T extends ProtocolEntity> extends AbstractResultsetRows implements ResultsetRows {
 
+    private final Lock lock = new ReentrantLock();
     private NativeProtocol protocol;
     private NativeMessageBuilder commandBuilder = null;
     private ProtocolEntityFactory<T, NativePacketPayload> resultSetFactory;
-
-    private final Lock lock = new ReentrantLock();
-
     private Row nextRow;
 
     private boolean isAfterEnd = false;
@@ -76,17 +73,13 @@ public class ResultsetRowsStreaming<T extends ProtocolEntity> extends AbstractRe
     /**
      * Creates a new ResultsetRowsStreaming object.
      *
-     * @param protocol
-     *            the connection to MySQL that this data is coming from
-     * @param columnDefinition
-     *            the metadata that describe this data
-     * @param isBinaryEncoded
-     *            is this data in native format?
-     * @param resultSetFactory
-     *            {@link ProtocolEntityFactory}
+     * @param protocol         the connection to MySQL that this data is coming from
+     * @param columnDefinition the metadata that describe this data
+     * @param isBinaryEncoded  is this data in native format?
+     * @param resultSetFactory {@link ProtocolEntityFactory}
      */
     public ResultsetRowsStreaming(NativeProtocol protocol, ColumnDefinition columnDefinition, boolean isBinaryEncoded,
-            ProtocolEntityFactory<T, NativePacketPayload> resultSetFactory) {
+                                  ProtocolEntityFactory<T, NativePacketPayload> resultSetFactory) {
         this.protocol = protocol;
         this.isBinaryEncoded = isBinaryEncoded;
         this.metadata = columnDefinition;
@@ -150,7 +143,7 @@ public class ResultsetRowsStreaming<T extends ProtocolEntity> extends AbstractRe
                 if (hadMore) {
                     this.owner.getSession().getProfilerEventHandler().processEvent(ProfilerEvent.TYPE_USAGE, this.owner.getSession(),
                             this.owner.getOwningQuery(), null, 0, new Throwable(),
-                            Messages.getString("RowDataDynamic.1", new String[] { String.valueOf(howMuchMore), this.owner.getPointOfOrigin() }));
+                            Messages.getString("RowDataDynamic.1", new String[]{String.valueOf(howMuchMore), this.owner.getPointOfOrigin()}));
                 }
             }
         } finally {
@@ -249,7 +242,7 @@ public class ResultsetRowsStreaming<T extends ProtocolEntity> extends AbstractRe
             throw sqlEx;
         } catch (Exception ex) {
             CJException cjEx = ExceptionFactory.createException(
-                    Messages.getString("RowDataDynamic.2", new String[] { ex.getClass().getName(), ex.getMessage(), Util.stackTraceToString(ex) }), ex,
+                    Messages.getString("RowDataDynamic.2", new String[]{ex.getClass().getName(), ex.getMessage(), Util.stackTraceToString(ex)}), ex,
                     this.exceptionInterceptor);
 
             throw cjEx;

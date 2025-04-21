@@ -43,6 +43,7 @@ import io.opentelemetry.context.Context;
 public class OpenTelemetryHandler implements TelemetryHandler {
 
     private static boolean otelApiAvaliable = true;
+
     static {
         try {
             Class.forName("io.opentelemetry.api.GlobalOpenTelemetry");
@@ -50,14 +51,11 @@ public class OpenTelemetryHandler implements TelemetryHandler {
             otelApiAvaliable = false;
         }
     }
+
     private OpenTelemetry openTelemetry = null;
     private Tracer tracer = null;
     private WeakHashMap<TelemetrySpan, Span> spans = new WeakHashMap<>();
     private List<Span> linkTargets = new ArrayList<>();
-
-    public static boolean isOpenTelemetryApiAvailable() {
-        return otelApiAvaliable;
-    }
 
     public OpenTelemetryHandler() {
         if (!isOpenTelemetryApiAvailable()) {
@@ -66,6 +64,10 @@ public class OpenTelemetryHandler implements TelemetryHandler {
 
         this.openTelemetry = GlobalOpenTelemetry.get();
         this.tracer = this.openTelemetry.getTracer(Constants.CJ_NAME, Constants.CJ_VERSION);
+    }
+
+    public static boolean isOpenTelemetryApiAvailable() {
+        return otelApiAvaliable;
     }
 
     @Override

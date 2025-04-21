@@ -59,16 +59,11 @@ public class HostInfo implements DatabaseUrlContainer {
     /**
      * Constructs a {@link HostInfo} instance initialized with the provided host, port and user info.
      *
-     * @param url
-     *            a reference to the original database URL that produced this host info
-     * @param host
-     *            the host ip or name
-     * @param port
-     *            the port
-     * @param user
-     *            the user name
-     * @param password
-     *            the user's password
+     * @param url      a reference to the original database URL that produced this host info
+     * @param host     the host ip or name
+     * @param port     the port
+     * @param user     the user name
+     * @param password the user's password
      */
     public HostInfo(DatabaseUrlContainer url, String host, int port, String user, String password) {
         this(url, host, port, user, password, null);
@@ -77,18 +72,12 @@ public class HostInfo implements DatabaseUrlContainer {
     /**
      * Constructs a {@link HostInfo} instance initialized with the provided host, port, user, password and connection arguments.
      *
-     * @param url
-     *            a reference to the original database URL that produced this host info
-     * @param host
-     *            the host ip or name
-     * @param port
-     *            the port
-     * @param user
-     *            the user name
-     * @param password
-     *            this user's password
-     * @param properties
-     *            a connection arguments map.
+     * @param url        a reference to the original database URL that produced this host info
+     * @param host       the host ip or name
+     * @param port       the port
+     * @param user       the user name
+     * @param password   this user's password
+     * @param properties a connection arguments map.
      */
     public HostInfo(DatabaseUrlContainer url, String host, int port, String user, String password, Map<String, String> properties) {
         this.originalUrl = url;
@@ -158,9 +147,7 @@ public class HostInfo implements DatabaseUrlContainer {
     /**
      * Returns the connection argument for the given key.
      *
-     * @param key
-     *            key
-     *
+     * @param key key
      * @return the connection argument for the given key
      */
     public String getProperty(String key) {
@@ -210,10 +197,8 @@ public class HostInfo implements DatabaseUrlContainer {
     /**
      * Checks if this {@link HostInfo} has the same host and port pair as the given {@link HostInfo}.
      *
-     * @param hi
-     *            the {@link HostInfo} to compare with.
-     * @return
-     *         <code>true</code> if both objects have equal host and port pairs, <code>false</code> otherwise.
+     * @param hi the {@link HostInfo} to compare with.
+     * @return <code>true</code> if both objects have equal host and port pairs, <code>false</code> otherwise.
      */
     public boolean equalHostPortPair(HostInfo hi) {
         return (getHost() != null && getHost().equals(hi.getHost()) || getHost() == null && hi.getHost() == null) && getPort() == hi.getPort();

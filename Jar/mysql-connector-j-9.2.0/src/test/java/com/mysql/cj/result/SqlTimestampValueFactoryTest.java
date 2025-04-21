@@ -180,7 +180,7 @@ public class SqlTimestampValueFactoryTest extends CommonAsserts {
         assertEquals(Timestamp.valueOf(LocalDateTime.of(1970, 1, 1, 3, 4, 5, 600000000)), this.vf.createFromBytes("03:04:05.6".getBytes(), 0, 10, f));
 
         assertThrows(DataConversionException.class, "Cannot convert string '1' to java.sql.Timestamp value", () -> {
-            SqlTimestampValueFactoryTest.this.vf.createFromBytes(new byte[] { '1' }, 0, 1, f);
+            SqlTimestampValueFactoryTest.this.vf.createFromBytes(new byte[]{'1'}, 0, 1, f);
             return null;
         });
 
@@ -198,7 +198,7 @@ public class SqlTimestampValueFactoryTest extends CommonAsserts {
     @Test
     public void testCreateFromBit() {
         assertThrows(DataConversionException.class, "Unsupported conversion from BIT to java.sql.Timestamp", () -> {
-            SqlTimestampValueFactoryTest.this.vf.createFromBit(new byte[] { 1 }, 0, 2);
+            SqlTimestampValueFactoryTest.this.vf.createFromBit(new byte[]{1}, 0, 2);
             return null;
         });
     }

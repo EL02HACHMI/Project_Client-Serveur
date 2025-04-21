@@ -37,7 +37,7 @@ public class MiniAdminTest extends BaseTestCase {
 
     /**
      * Tests whether or not you can shutdown the server with MiniAdmin.
-     *
+     * <p>
      * Only runs if SHUTDOWN_PROP is defined.
      *
      * @throws Exception

@@ -34,10 +34,8 @@ public class DocFilterParams extends AbstractFilterParams {
     /**
      * Constructor.
      *
-     * @param schemaName
-     *            Schema name
-     * @param collectionName
-     *            Collection name
+     * @param schemaName     Schema name
+     * @param collectionName Collection name
      */
     public DocFilterParams(String schemaName, String collectionName) {
         this(schemaName, collectionName, true);
@@ -46,12 +44,9 @@ public class DocFilterParams extends AbstractFilterParams {
     /**
      * Constructor.
      *
-     * @param schemaName
-     *            Schema name
-     * @param collectionName
-     *            Collection name
-     * @param supportsOffset
-     *            Whether OFFSET is supported or not
+     * @param schemaName     Schema name
+     * @param collectionName Collection name
+     * @param supportsOffset Whether OFFSET is supported or not
      */
     public DocFilterParams(String schemaName, String collectionName, boolean supportsOffset) {
         super(schemaName, collectionName, supportsOffset, false);
@@ -60,8 +55,7 @@ public class DocFilterParams extends AbstractFilterParams {
     /**
      * Parse projection expressions into X Protocol Projection objects.
      *
-     * @param docProjection
-     *            projection expression
+     * @param docProjection projection expression
      */
     public void setFields(Expression docProjection) {
         this.fields = Collections.singletonList(Projection.newBuilder().setSource(new ExprParser(docProjection.getExpressionString(), false).parse()).build());

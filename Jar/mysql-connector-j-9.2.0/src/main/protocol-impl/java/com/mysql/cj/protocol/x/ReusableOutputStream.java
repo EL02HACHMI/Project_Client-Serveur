@@ -35,10 +35,8 @@ public class ReusableOutputStream extends FilterOutputStream {
     /**
      * Sets a new underlying {@link OutputStream} in this {@link ReusableOutputStream}.
      *
-     * @param newOut
-     *            the new {@link OutputStream} to set.
-     * @return
-     *         the previous underlying {@link OutputStream}.
+     * @param newOut the new {@link OutputStream} to set.
+     * @return the previous underlying {@link OutputStream}.
      */
     public OutputStream setOutputStream(OutputStream newOut) {
         OutputStream previousOut = this.out;

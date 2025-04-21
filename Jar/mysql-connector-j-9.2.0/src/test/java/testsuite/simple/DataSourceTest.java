@@ -245,37 +245,37 @@ public class DataSourceTest extends BaseTestCase {
             String gname = "get" + pname.substring(0, 1).toUpperCase() + pname.substring(1);
             String sname = "set" + pname.substring(0, 1).toUpperCase() + pname.substring(1);
 
-            Method getter = ds.getClass().getMethod(gname, new Class<?>[] {});
-            Object res1 = getter.invoke(ds, new Object[] {});
+            Method getter = ds.getClass().getMethod(gname, new Class<?>[]{});
+            Object res1 = getter.invoke(ds, new Object[]{});
             assertEquals(def.getDefaultValue() + "", res1 + "", gname + ": ");
 
             Method setter = null;
 
             if (def instanceof StringPropertyDefinition) {
-                setter = ds.getClass().getMethod(sname, new Class<?>[] { String.class });
-                setter.invoke(ds, new Object[] { testStr });
-                assertEquals(testStr, getter.invoke(ds, new Object[] {}), sname + ": ");
+                setter = ds.getClass().getMethod(sname, new Class<?>[]{String.class});
+                setter.invoke(ds, new Object[]{testStr});
+                assertEquals(testStr, getter.invoke(ds, new Object[]{}), sname + ": ");
 
             } else if (def instanceof BooleanPropertyDefinition) {
                 Boolean testBool = !((Boolean) def.getDefaultValue());
-                setter = ds.getClass().getMethod(sname, new Class<?>[] { Boolean.TYPE });
-                setter.invoke(ds, new Object[] { testBool });
-                assertEquals(testBool, getter.invoke(ds, new Object[] {}), sname + ": ");
+                setter = ds.getClass().getMethod(sname, new Class<?>[]{Boolean.TYPE});
+                setter.invoke(ds, new Object[]{testBool});
+                assertEquals(testBool, getter.invoke(ds, new Object[]{}), sname + ": ");
 
             } else if (def instanceof IntegerPropertyDefinition) {
-                setter = ds.getClass().getMethod(sname, new Class<?>[] { Integer.TYPE });
-                setter.invoke(ds, new Object[] { testInt });
-                assertEquals(testInt, getter.invoke(ds, new Object[] {}), sname + ": ");
+                setter = ds.getClass().getMethod(sname, new Class<?>[]{Integer.TYPE});
+                setter.invoke(ds, new Object[]{testInt});
+                assertEquals(testInt, getter.invoke(ds, new Object[]{}), sname + ": ");
 
             } else if (def instanceof LongPropertyDefinition) {
-                setter = ds.getClass().getMethod(sname, new Class<?>[] { Long.TYPE });
-                setter.invoke(ds, new Object[] { testLong });
-                assertEquals(testLong, getter.invoke(ds, new Object[] {}), sname + ": ");
+                setter = ds.getClass().getMethod(sname, new Class<?>[]{Long.TYPE});
+                setter.invoke(ds, new Object[]{testLong});
+                assertEquals(testLong, getter.invoke(ds, new Object[]{}), sname + ": ");
 
             } else if (def instanceof MemorySizePropertyDefinition) {
-                setter = ds.getClass().getMethod(sname, new Class<?>[] { Integer.TYPE });
-                setter.invoke(ds, new Object[] { testInt });
-                assertEquals(testInt, getter.invoke(ds, new Object[] {}), sname + ": ");
+                setter = ds.getClass().getMethod(sname, new Class<?>[]{Integer.TYPE});
+                setter.invoke(ds, new Object[]{testInt});
+                assertEquals(testInt, getter.invoke(ds, new Object[]{}), sname + ": ");
 
             } else if (def instanceof EnumPropertyDefinition<?>) {
                 String testEnum = null;
@@ -285,9 +285,9 @@ public class DataSourceTest extends BaseTestCase {
                         break;
                     }
                 }
-                setter = ds.getClass().getMethod(sname, new Class<?>[] { String.class });
-                setter.invoke(ds, new Object[] { testEnum });
-                assertEquals(testEnum, getter.invoke(ds, new Object[] {}), sname + ": ");
+                setter = ds.getClass().getMethod(sname, new Class<?>[]{String.class});
+                setter.invoke(ds, new Object[]{testEnum});
+                assertEquals(testEnum, getter.invoke(ds, new Object[]{}), sname + ": ");
 
             } else {
                 fail("Unknown " + def.getName() + " property type.");

@@ -54,8 +54,7 @@ public class SessionFailoverTest extends DevApiBaseTestCase {
     /**
      * Builds a connection string with the given hosts while setting priorities according to their positions.
      *
-     * @param hosts
-     *            the hosts list, 1st has priority=100, 2nd has priority=99, and so on
+     * @param hosts the hosts list, 1st has priority=100, 2nd has priority=99, and so on
      * @return a single host or a multi-host connection string
      */
     private String buildConnectionString(String... hosts) {
@@ -141,61 +140,9 @@ public class SessionFailoverTest extends DevApiBaseTestCase {
         }
     }
 
-    /*
-     * A fake server that counts how many connection attempts were made.
-     */
-    private class ConnectionsCounterFakeServer implements Callable<Void> {
-
-        ExecutorService executor = null;
-        ServerSocket serverSocket = null;
-        int connectionsCounter = 0;
-
-        ConnectionsCounterFakeServer() throws IOException {
-            this.serverSocket = new ServerSocket(0);
-            this.executor = Executors.newSingleThreadExecutor();
-            this.executor.submit(this);
-        }
-
-        String getHostPortPair() throws IOException {
-            return "localhost:" + this.serverSocket.getLocalPort();
-        }
-
-        int getAndResetConnectionsCounter() {
-            int c = this.connectionsCounter;
-            this.connectionsCounter = 0;
-            return c;
-        }
-
-        void shutdownSilently() {
-            try {
-                this.serverSocket.close();
-                this.executor.shutdown();
-            } catch (Exception e) {
-                // Swallow this exception.
-            }
-        }
-
-        @Override
-        public Void call() {
-            try {
-                for (;;) {
-                    Socket clientSocket = this.serverSocket.accept();
-                    this.connectionsCounter++;
-                    InputStream is = clientSocket.getInputStream();
-                    is.read(new byte[100]);
-                    clientSocket.close();
-                }
-            } catch (IOException e) {
-                // Server socket closed.
-            }
-            return null;
-        }
-
-    }
-
     /**
      * Tests xdevapi.connect-timeout and connectTimeout functionality.
-     *
+     * <p>
      * The real socket connect timeout can be revealed only when trying to connect to the unavailable remote host
      * pointed by IP address. Neither localhost IP nor domain names are working, they fail much faster then the timeout
      * is reached.
@@ -300,6 +247,58 @@ public class SessionFailoverTest extends DevApiBaseTestCase {
         this.fact.getSession(url);
         long end = System.currentTimeMillis() - begin;
         assertTrue(end >= expLowLimit && end < expUpLimit, "Expected: " + expLowLimit + ".." + expUpLimit + ". Got " + end);
+    }
+
+    /*
+     * A fake server that counts how many connection attempts were made.
+     */
+    private class ConnectionsCounterFakeServer implements Callable<Void> {
+
+        ExecutorService executor = null;
+        ServerSocket serverSocket = null;
+        int connectionsCounter = 0;
+
+        ConnectionsCounterFakeServer() throws IOException {
+            this.serverSocket = new ServerSocket(0);
+            this.executor = Executors.newSingleThreadExecutor();
+            this.executor.submit(this);
+        }
+
+        String getHostPortPair() throws IOException {
+            return "localhost:" + this.serverSocket.getLocalPort();
+        }
+
+        int getAndResetConnectionsCounter() {
+            int c = this.connectionsCounter;
+            this.connectionsCounter = 0;
+            return c;
+        }
+
+        void shutdownSilently() {
+            try {
+                this.serverSocket.close();
+                this.executor.shutdown();
+            } catch (Exception e) {
+                // Swallow this exception.
+            }
+        }
+
+        @Override
+        public Void call() {
+            try {
+                for (; ; ) {
+                    Socket clientSocket = this.serverSocket.accept();
+                    this.connectionsCounter++;
+                    InputStream is = clientSocket.getInputStream();
+                    is.read(new byte[100]);
+                    clientSocket.close();
+                }
+            } catch (IOException e) {
+                // Server socket closed.
+            }
+            return null;
+        }
+
     }
 
 }

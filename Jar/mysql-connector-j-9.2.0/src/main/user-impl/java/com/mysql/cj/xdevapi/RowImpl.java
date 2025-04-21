@@ -57,14 +57,10 @@ public class RowImpl implements com.mysql.cj.xdevapi.Row {
     /**
      * Constructor.
      *
-     * @param row
-     *            {@link Row} instance provided by c/J core.
-     * @param metadata
-     *            {@link ColumnDefinition} object to use for new rows.
-     * @param defaultTimeZone
-     *            {@link TimeZone} object representing the default time zone
-     * @param pset
-     *            {@link PropertySet}
+     * @param row             {@link Row} instance provided by c/J core.
+     * @param metadata        {@link ColumnDefinition} object to use for new rows.
+     * @param defaultTimeZone {@link TimeZone} object representing the default time zone
+     * @param pset            {@link PropertySet}
      */
     public RowImpl(Row row, ColumnDefinition metadata, TimeZone defaultTimeZone, PropertySet pset) {
         this.row = row;
@@ -76,11 +72,9 @@ public class RowImpl implements com.mysql.cj.xdevapi.Row {
     /**
      * Map a field name to it's index in the row.
      *
-     * @param fieldName
-     *            field name
+     * @param fieldName field name
      * @return field index
-     * @throws DataReadException
-     *             if the field name is not in the row
+     * @throws DataReadException if the field name is not in the row
      */
     private int fieldNameToIndex(String fieldName) {
         int idx = this.metadata.findColumn(fieldName, true, 0);

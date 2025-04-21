@@ -40,10 +40,8 @@ public class SqlStatementImpl implements SqlStatement {
     /**
      * Constructor.
      *
-     * @param mysqlxSession
-     *            {@link com.mysql.cj.Session} instance.
-     * @param sql
-     *            SQL statement string.
+     * @param mysqlxSession {@link com.mysql.cj.Session} instance.
+     * @param sql           SQL statement string.
      */
     public SqlStatementImpl(MysqlxSession mysqlxSession, String sql) {
         this.mysqlxSession = mysqlxSession;

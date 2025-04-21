@@ -123,10 +123,8 @@ public class ContinuousInputStream extends FilterInputStream {
     /**
      * Adds another {@link InputStream} to the {@link InputStream}s queue.
      *
-     * @param newIn
-     *            the {@link InputStream} to add.
-     * @return
-     *         <code>true</code> if the element was added to the {@link InputStream}s queue.
+     * @param newIn the {@link InputStream} to add.
+     * @return <code>true</code> if the element was added to the {@link InputStream}s queue.
      */
     protected boolean addInputStream(InputStream newIn) {
         return this.inputStreams.offer(newIn);
@@ -135,10 +133,8 @@ public class ContinuousInputStream extends FilterInputStream {
     /**
      * Closes the currently active {@link InputStream} and replaces it by the the head of the {@link InputStream}s queue.
      *
-     * @return
-     *         <code>true</code> if the currently active {@link InputStream} was replaced by a new one.
-     * @throws IOException
-     *             if errors occur while closing the currently active {@link InputStream}.
+     * @return <code>true</code> if the currently active {@link InputStream} was replaced by a new one.
+     * @throws IOException if errors occur while closing the currently active {@link InputStream}.
      */
     private boolean nextInLine() throws IOException {
         InputStream nextInputStream = this.inputStreams.poll();
@@ -153,8 +149,7 @@ public class ContinuousInputStream extends FilterInputStream {
     /**
      * Ensures that this {@link InputStream} wasn't closed yet.
      *
-     * @throws IOException
-     *             if this {@link InputStream} was closed.
+     * @throws IOException if this {@link InputStream} was closed.
      */
     private void ensureOpen() throws IOException {
         if (this.closed) {

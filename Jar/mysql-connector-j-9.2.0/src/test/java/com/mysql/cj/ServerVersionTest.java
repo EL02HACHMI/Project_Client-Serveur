@@ -62,13 +62,13 @@ public class ServerVersionTest {
         ServerVersion testVersion = new ServerVersion(5, 7, 5);
 
         // check versions where the test version meets the minimum
-        String[] shouldMeet = new String[] { "5.6.1", "5.6.20", "5.7.1", "5.7.5", "0.0.0" };
+        String[] shouldMeet = new String[]{"5.6.1", "5.6.20", "5.7.1", "5.7.5", "0.0.0"};
         for (String min : shouldMeet) {
             assertTrue(testVersion.meetsMinimum(ServerVersion.parseVersion(min)));
         }
 
         // check versions where the test version does NOT meet the minimum
-        String[] shouldntMeet = new String[] { "5.7.6", "5.8.0", "6.0.0", "99.99.99" };
+        String[] shouldntMeet = new String[]{"5.7.6", "5.8.0", "6.0.0", "99.99.99"};
         for (String min : shouldntMeet) {
             assertFalse(testVersion.meetsMinimum(ServerVersion.parseVersion(min)));
         }
@@ -103,7 +103,7 @@ public class ServerVersionTest {
         ServerVersion v123d = new ServerVersion("1.2.3-something", 1, 2, 3);
         ServerVersion v123e = ServerVersion.parseVersion("1.2.3");
         ServerVersion v123f = ServerVersion.parseVersion("1.2.3-something");
-        ServerVersion[] versions = new ServerVersion[] { v123a, v123b, v123c, v123d, v123e, v123f };
+        ServerVersion[] versions = new ServerVersion[]{v123a, v123b, v123c, v123d, v123e, v123f};
         ServerVersion v321a = new ServerVersion(3, 2, 1);
         ServerVersion v321b = ServerVersion.parseVersion("3.2.1");
 

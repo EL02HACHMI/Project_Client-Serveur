@@ -44,7 +44,7 @@ public class ByteValueFactory extends DefaultValueFactory<Byte> {
     public Byte createFromBigInteger(BigInteger i) {
         if (this.jdbcCompliantTruncationForReads
                 && (i.compareTo(Constants.BIG_INTEGER_MIN_BYTE_VALUE) < 0 || i.compareTo(Constants.BIG_INTEGER_MAX_BYTE_VALUE) > 0)) {
-            throw new NumberOutOfRange(Messages.getString("ResultSet.NumberOutOfRange", new Object[] { i, getTargetTypeName() }));
+            throw new NumberOutOfRange(Messages.getString("ResultSet.NumberOutOfRange", new Object[]{i, getTargetTypeName()}));
         }
         return (byte) i.intValue();
     }
@@ -52,7 +52,7 @@ public class ByteValueFactory extends DefaultValueFactory<Byte> {
     @Override
     public Byte createFromLong(long l) {
         if (this.jdbcCompliantTruncationForReads && (l < Byte.MIN_VALUE || l > Byte.MAX_VALUE)) {
-            throw new NumberOutOfRange(Messages.getString("ResultSet.NumberOutOfRange", new Object[] { Long.valueOf(l).toString(), getTargetTypeName() }));
+            throw new NumberOutOfRange(Messages.getString("ResultSet.NumberOutOfRange", new Object[]{Long.valueOf(l).toString(), getTargetTypeName()}));
         }
         return (byte) l;
     }
@@ -61,7 +61,7 @@ public class ByteValueFactory extends DefaultValueFactory<Byte> {
     public Byte createFromBigDecimal(BigDecimal d) {
         if (this.jdbcCompliantTruncationForReads
                 && (d.compareTo(Constants.BIG_DECIMAL_MIN_BYTE_VALUE) < 0 || d.compareTo(Constants.BIG_DECIMAL_MAX_BYTE_VALUE) > 0)) {
-            throw new NumberOutOfRange(Messages.getString("ResultSet.NumberOutOfRange", new Object[] { d, getTargetTypeName() }));
+            throw new NumberOutOfRange(Messages.getString("ResultSet.NumberOutOfRange", new Object[]{d, getTargetTypeName()}));
         }
         return (byte) d.longValue();
     }
@@ -69,7 +69,7 @@ public class ByteValueFactory extends DefaultValueFactory<Byte> {
     @Override
     public Byte createFromDouble(double d) {
         if (this.jdbcCompliantTruncationForReads && (d < Byte.MIN_VALUE || d > Byte.MAX_VALUE)) {
-            throw new NumberOutOfRange(Messages.getString("ResultSet.NumberOutOfRange", new Object[] { d, getTargetTypeName() }));
+            throw new NumberOutOfRange(Messages.getString("ResultSet.NumberOutOfRange", new Object[]{d, getTargetTypeName()}));
         }
         return (byte) d;
     }
@@ -78,7 +78,7 @@ public class ByteValueFactory extends DefaultValueFactory<Byte> {
     public Byte createFromBit(byte[] bytes, int offset, int length) {
         long l = DataTypeUtil.bitToLong(bytes, offset, length);
         if (this.jdbcCompliantTruncationForReads && l >> 8 != 0) {
-            throw new NumberOutOfRange(Messages.getString("ResultSet.NumberOutOfRange", new Object[] { Long.valueOf(l).toString(), getTargetTypeName() }));
+            throw new NumberOutOfRange(Messages.getString("ResultSet.NumberOutOfRange", new Object[]{Long.valueOf(l).toString(), getTargetTypeName()}));
         }
         return (byte) l;
     }
@@ -102,7 +102,7 @@ public class ByteValueFactory extends DefaultValueFactory<Byte> {
         byte[] newBytes = s.getBytes();
 
         if (this.jdbcCompliantTruncationForReads && newBytes.length != 1) {
-            throw new NumberOutOfRange(Messages.getString("ResultSet.NumberOutOfRange", new Object[] { s, getTargetTypeName() }));
+            throw new NumberOutOfRange(Messages.getString("ResultSet.NumberOutOfRange", new Object[]{s, getTargetTypeName()}));
         }
         return newBytes[0];
     }

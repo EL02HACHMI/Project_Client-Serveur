@@ -34,7 +34,9 @@ public class BaseMetricsHolder {
 
     private long minimumNumberTablesAccessed = Long.MAX_VALUE;
 
-    /** When was the last time we reported metrics? */
+    /**
+     * When was the last time we reported metrics?
+     */
     //private long metricsLastReportedMs;
 
     private long numberOfPreparedExecutes = 0;
@@ -80,7 +82,7 @@ public class BaseMetricsHolder {
     }
 
     private void addToHistogram(int[] histogramCounts, long[] histogramBreakpoints, long value, int numberOfTimes, long currentLowerBound,
-            long currentUpperBound) {
+                                long currentUpperBound) {
         if (histogramCounts == null) {
             createInitialHistogram(histogramBreakpoints, currentLowerBound, currentUpperBound);
         } else {
@@ -129,8 +131,7 @@ public class BaseMetricsHolder {
     }
 
     /**
-     * @param queryTimeMs
-     *            query execution time in milliseconds
+     * @param queryTimeMs query execution time in milliseconds
      */
     public void registerQueryExecutionTime(long queryTimeMs) {
         if (queryTimeMs > this.longestQueryTimeMs) {
@@ -292,7 +293,7 @@ public class BaseMetricsHolder {
         //this.metricsLastReportedMs = System.currentTimeMillis();
     }
 
-    ///**
+    /// **
     // * Reports currently collected metrics if this feature is enabled and the
     // * timeout has passed.
     // */
@@ -304,7 +305,6 @@ public class BaseMetricsHolder {
     //        }
     //    }
     //}
-
     public void reportNumberOfTablesAccessed(int numTablesAccessed) {
         if (numTablesAccessed < this.minimumNumberTablesAccessed) {
             this.minimumNumberTablesAccessed = numTablesAccessed;
@@ -347,8 +347,7 @@ public class BaseMetricsHolder {
      * <p>
      * Used in case autoSlowLog=true.
      *
-     * @param millisOrNanos
-     *            query execution time
+     * @param millisOrNanos query execution time
      * @return true if millisOrNanos is outside the 99th percentile?
      */
     public boolean checkAbonormallyLongQuery(long millisOrNanos) {

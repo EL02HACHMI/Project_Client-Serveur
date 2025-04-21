@@ -171,37 +171,37 @@ public class ShortValueFactoryTest extends CommonAsserts {
 
     @Test
     public void testCreateFromBit() {
-        assertEquals(Short.valueOf((short) 0), this.vf.createFromBit(new byte[] { 0 }, 0, 1));
-        assertEquals(Short.valueOf((short) 1), this.vf.createFromBit(new byte[] { 1 }, 0, 1));
-        assertEquals(Short.valueOf((short) 2), this.vf.createFromBit(new byte[] { 2 }, 0, 1));
-        assertEquals(Short.valueOf((short) 255), this.vf.createFromBit(new byte[] { (byte) 0xff }, 0, 1));
-        assertEquals(Short.valueOf((short) 32767), this.vf.createFromBit(new byte[] { (byte) 0x7f, (byte) 0xff }, 0, 2));
-        assertEquals(Short.valueOf((short) 0xffffL), this.vf.createFromBit(new byte[] { (byte) 0xff, (byte) 0xff }, 0, 2));
+        assertEquals(Short.valueOf((short) 0), this.vf.createFromBit(new byte[]{0}, 0, 1));
+        assertEquals(Short.valueOf((short) 1), this.vf.createFromBit(new byte[]{1}, 0, 1));
+        assertEquals(Short.valueOf((short) 2), this.vf.createFromBit(new byte[]{2}, 0, 1));
+        assertEquals(Short.valueOf((short) 255), this.vf.createFromBit(new byte[]{(byte) 0xff}, 0, 1));
+        assertEquals(Short.valueOf((short) 32767), this.vf.createFromBit(new byte[]{(byte) 0x7f, (byte) 0xff}, 0, 2));
+        assertEquals(Short.valueOf((short) 0xffffL), this.vf.createFromBit(new byte[]{(byte) 0xff, (byte) 0xff}, 0, 2));
 
         assertThrows(NumberOutOfRange.class, "Value .+ is outside of valid range for type java.lang.Short", () -> {
-            ShortValueFactoryTest.this.vf.createFromBit(new byte[] { (byte) 0xff, (byte) 0xff, (byte) 0xff }, 0, 3);
+            ShortValueFactoryTest.this.vf.createFromBit(new byte[]{(byte) 0xff, (byte) 0xff, (byte) 0xff}, 0, 3);
             return null;
         });
         assertThrows(NumberOutOfRange.class, "Value .+ is outside of valid range for type java.lang.Short", () -> {
-            ShortValueFactoryTest.this.vf.createFromBit(new byte[] { (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff }, 0, 4);
+            ShortValueFactoryTest.this.vf.createFromBit(new byte[]{(byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff}, 0, 4);
             return null;
         });
         assertThrows(NumberOutOfRange.class, "Value .+ is outside of valid range for type java.lang.Short", () -> {
-            ShortValueFactoryTest.this.vf.createFromBit(new byte[] { (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff }, 0, 5);
+            ShortValueFactoryTest.this.vf.createFromBit(new byte[]{(byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff}, 0, 5);
             return null;
         });
         assertThrows(NumberOutOfRange.class, "Value .+ is outside of valid range for type java.lang.Short", () -> {
-            ShortValueFactoryTest.this.vf.createFromBit(new byte[] { (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff }, 0, 6);
-            return null;
-        });
-        assertThrows(NumberOutOfRange.class, "Value .+ is outside of valid range for type java.lang.Short", () -> {
-            ShortValueFactoryTest.this.vf
-                    .createFromBit(new byte[] { (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff }, 0, 7);
+            ShortValueFactoryTest.this.vf.createFromBit(new byte[]{(byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff}, 0, 6);
             return null;
         });
         assertThrows(NumberOutOfRange.class, "Value .+ is outside of valid range for type java.lang.Short", () -> {
             ShortValueFactoryTest.this.vf
-                    .createFromBit(new byte[] { (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff }, 0, 8);
+                    .createFromBit(new byte[]{(byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff}, 0, 7);
+            return null;
+        });
+        assertThrows(NumberOutOfRange.class, "Value .+ is outside of valid range for type java.lang.Short", () -> {
+            ShortValueFactoryTest.this.vf
+                    .createFromBit(new byte[]{(byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff}, 0, 8);
             return null;
         });
     }

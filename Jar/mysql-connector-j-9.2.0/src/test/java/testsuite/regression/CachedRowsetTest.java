@@ -54,7 +54,7 @@ public class CachedRowsetTest extends BaseTestCase {
         } catch (ClassNotFoundException e) {
             assumeFalse(true, "Requires: " + implClass);
         }
-        populate = c.getMethod("populate", new Class<?>[] { ResultSet.class });
+        populate = c.getMethod("populate", new Class<?>[]{ResultSet.class});
 
         createTable("testBug5188", "(ID int NOT NULL AUTO_INCREMENT, datafield VARCHAR(64), PRIMARY KEY(ID))");
 
@@ -68,7 +68,7 @@ public class CachedRowsetTest extends BaseTestCase {
         // create a CachedRowSet and populate it
         RowSet cachedRowSet = (RowSet) c.newInstance();
         // cachedRowSet.populate(rs);
-        populate.invoke(cachedRowSet, new Object[] { this.rs });
+        populate.invoke(cachedRowSet, new Object[]{this.rs});
 
         // scroll through CachedRowSet ...
         assertTrue(cachedRowSet.next());

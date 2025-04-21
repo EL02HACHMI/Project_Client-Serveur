@@ -28,13 +28,14 @@ import com.mysql.cj.protocol.ColumnDefinition;
 
 /**
  * Protocol::ColumnDefinition41 object
- *
  */
 public class DefaultColumnDefinition implements ColumnDefinition {
 
     protected Field[] fields;
 
-    /** Map column names (and all of their permutations) to column indices */
+    /**
+     * Map column names (and all of their permutations) to column indices
+     */
     private Map<String, Integer> columnLabelToIndex = null;
 
     /**
@@ -43,10 +44,14 @@ public class DefaultColumnDefinition implements ColumnDefinition {
      */
     private Map<String, Integer> columnToIndexCache = new HashMap<>();
 
-    /** Map of fully-specified column names to column indices */
+    /**
+     * Map of fully-specified column names to column indices
+     */
     private Map<String, Integer> fullColumnNameToIndex = null;
 
-    /** Map column names (and all of their permutations) to column indices */
+    /**
+     * Map column names (and all of their permutations) to column indices
+     */
     private Map<String, Integer> columnNameToIndex = null;
 
     private boolean builtIndexMapping = false;

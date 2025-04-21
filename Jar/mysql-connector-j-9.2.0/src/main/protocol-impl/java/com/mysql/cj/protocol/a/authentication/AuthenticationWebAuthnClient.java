@@ -42,19 +42,14 @@ import com.mysql.cj.util.Util;
 
 /**
  * MySQL 'authentication_webauthn_client' authentication plugin.
- *
+ * <p>
  * This authentication plugin requires a callback handler implemented in the client application that performs all the interactions with the authenticator
  * device. This callback handler is injected into the driver via the connection property 'authenticationWebauthnCallbackHandler'.
  */
 public class AuthenticationWebAuthnClient implements AuthenticationPlugin<NativePacketPayload> {
 
-    public static String PLUGIN_NAME = "authentication_webauthn_client";
     private static final String CLIENT_DATA_JSON = "{\"type\":\"webauthn.get\",\"challenge\":\"%s\",\"origin\":\"https://%s\",\"crossOrigin\":false }";
-
-    private enum AuthStage {
-        INITIAL_DATA, CREDENTIAL_ID, FINISHED;
-    }
-
+    public static String PLUGIN_NAME = "authentication_webauthn_client";
     private String sourceOfAuthData = PLUGIN_NAME;
     private AuthStage stage = AuthStage.INITIAL_DATA;
     private byte[] challenge = null;
@@ -62,7 +57,6 @@ public class AuthenticationWebAuthnClient implements AuthenticationPlugin<Native
     private String clientDataJson = null;
     private byte[] clientDataHash = null;
     private byte[] credentialId = null;
-
     private MysqlCallbackHandler usernameCallbackHandler = null;
     private MysqlCallbackHandler webAuthnAuthenticationCallbackHandler = null;
     private WebAuthnAuthenticationCallback webAuthnAuthCallback = null;
@@ -165,7 +159,7 @@ public class AuthenticationWebAuthnClient implements AuthenticationPlugin<Native
                 // could be avoided if the Authenticator device supports Credentials Management. That information could be passed through
                 // WebAuthnAuthenticationCallback.getSupportsCredentialManagement() and then used to decide whether the FIDO Credential Id request should be
                 // sent or not, however that would add complexity to the MysqlCallbackHandler implementations.
-                packet = new NativePacketPayload(new byte[] { 1 });
+                packet = new NativePacketPayload(new byte[]{1});
                 toServer.add(packet);
 
                 this.stage = AuthStage.CREDENTIAL_ID;
@@ -214,6 +208,10 @@ public class AuthenticationWebAuthnClient implements AuthenticationPlugin<Native
         }
 
         return true;
+    }
+
+    private enum AuthStage {
+        INITIAL_DATA, CREDENTIAL_ID, FINISHED;
     }
 
 }

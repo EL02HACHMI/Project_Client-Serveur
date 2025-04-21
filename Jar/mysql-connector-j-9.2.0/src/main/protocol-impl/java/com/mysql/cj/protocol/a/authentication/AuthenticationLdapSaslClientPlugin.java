@@ -62,55 +62,17 @@ import com.mysql.cj.util.StringUtils;
  */
 public class AuthenticationLdapSaslClientPlugin implements AuthenticationPlugin<NativePacketPayload> {
 
-    public static String PLUGIN_NAME = "authentication_ldap_sasl_client";
-
     private static final String LOGIN_CONFIG_ENTRY = "MySQLConnectorJ";
     private static final String LDAP_SERVICE_NAME = "ldap";
-
-    private enum AuthenticationMechanisms {
-
-        SCRAM_SHA_1(ScramSha1SaslClient.IANA_MECHANISM_NAME, ScramSha1SaslClient.MECHANISM_NAME), //
-        SCRAM_SHA_256(ScramSha256SaslClient.IANA_MECHANISM_NAME, ScramSha256SaslClient.MECHANISM_NAME), //
-        GSSAPI("GSSAPI", "GSSAPI");
-
-        private String mechName = null;
-        private String saslServiceName = null;
-
-        private AuthenticationMechanisms(String mechName, String serviceName) {
-            this.mechName = mechName;
-            this.saslServiceName = serviceName;
-        }
-
-        static AuthenticationMechanisms fromValue(String mechName) {
-            for (AuthenticationMechanisms am : values()) {
-                if (am.mechName.equalsIgnoreCase(mechName)) {
-                    return am;
-                }
-            }
-            throw ExceptionFactory.createException(Messages.getString("AuthenticationLdapSaslClientPlugin.UnsupportedAuthMech", new String[] { mechName }));
-        }
-
-        String getMechName() {
-            return this.mechName;
-        }
-
-        String getSaslServiceName() {
-            return this.saslServiceName;
-        }
-
-    }
-
+    public static String PLUGIN_NAME = "authentication_ldap_sasl_client";
     private Protocol<?> protocol = null;
     private MysqlCallbackHandler usernameCallbackHandler = null;
     private String user = null;
     private String password = null;
-
     private AuthenticationMechanisms authMech = null;
     private SaslClient saslClient = null;
     private Subject subject = null;
-
     private boolean firstPass = true;
-
     private CallbackHandler credentialsCallbackHandler = cbs -> {
         for (Callback cb : cbs) {
             if (NameCallback.class.isAssignableFrom(cb.getClass())) {
@@ -245,8 +207,8 @@ public class AuthenticationLdapSaslClientPlugin implements AuthenticationPlugin<
                                     options.put("renewTGT", "false");
                                     options.put("principal", localUser);
                                     options.put("debug", Boolean.toString(debug)); // Hook debugging on system property 'sun.security.jgss.debug'.
-                                    return new AppConfigurationEntry[] { new AppConfigurationEntry("com.sun.security.auth.module.Krb5LoginModule",
-                                            AppConfigurationEntry.LoginModuleControlFlag.REQUIRED, options) };
+                                    return new AppConfigurationEntry[]{new AppConfigurationEntry("com.sun.security.auth.module.Krb5LoginModule",
+                                            AppConfigurationEntry.LoginModuleControlFlag.REQUIRED, options)};
                                 }
 
                             };
@@ -261,7 +223,7 @@ public class AuthenticationLdapSaslClientPlugin implements AuthenticationPlugin<
                         try {
                             final String localLdapServerHostname = ldapServerHostname;
                             this.saslClient = Subject.doAs(this.subject,
-                                    (PrivilegedExceptionAction<SaslClient>) () -> Sasl.createSaslClient(new String[] { this.authMech.getSaslServiceName() },
+                                    (PrivilegedExceptionAction<SaslClient>) () -> Sasl.createSaslClient(new String[]{this.authMech.getSaslServiceName()},
                                             null, LDAP_SERVICE_NAME, localLdapServerHostname, null, null));
                         } catch (PrivilegedActionException e) {
                             // SaslException is the only checked exception that can be thrown.
@@ -271,18 +233,18 @@ public class AuthenticationLdapSaslClientPlugin implements AuthenticationPlugin<
 
                     case SCRAM_SHA_1:
                     case SCRAM_SHA_256:
-                        this.saslClient = Sasl.createSaslClient(new String[] { this.authMech.getSaslServiceName() }, null, null, null, null,
+                        this.saslClient = Sasl.createSaslClient(new String[]{this.authMech.getSaslServiceName()}, null, null, null, null,
                                 this.credentialsCallbackHandler);
                         break;
                 }
             } catch (LoginException | SaslException e) {
                 throw ExceptionFactory.createException(
-                        Messages.getString("AuthenticationLdapSaslClientPlugin.FailCreateSaslClient", new Object[] { this.authMech.getMechName() }), e);
+                        Messages.getString("AuthenticationLdapSaslClientPlugin.FailCreateSaslClient", new Object[]{this.authMech.getMechName()}), e);
             }
 
             if (this.saslClient == null) {
                 throw ExceptionFactory.createException(
-                        Messages.getString("AuthenticationLdapSaslClientPlugin.FailCreateSaslClient", new Object[] { this.authMech.getMechName() }));
+                        Messages.getString("AuthenticationLdapSaslClientPlugin.FailCreateSaslClient", new Object[]{this.authMech.getMechName()}));
             }
         }
 
@@ -300,11 +262,44 @@ public class AuthenticationLdapSaslClientPlugin implements AuthenticationPlugin<
                 });
             } catch (PrivilegedActionException e) {
                 throw ExceptionFactory.createException(
-                        Messages.getString("AuthenticationLdapSaslClientPlugin.ErrProcessingAuthIter", new Object[] { this.authMech.getMechName() }),
+                        Messages.getString("AuthenticationLdapSaslClientPlugin.ErrProcessingAuthIter", new Object[]{this.authMech.getMechName()}),
                         e.getException());
             }
         }
         return true;
+    }
+
+    private enum AuthenticationMechanisms {
+
+        SCRAM_SHA_1(ScramSha1SaslClient.IANA_MECHANISM_NAME, ScramSha1SaslClient.MECHANISM_NAME), //
+        SCRAM_SHA_256(ScramSha256SaslClient.IANA_MECHANISM_NAME, ScramSha256SaslClient.MECHANISM_NAME), //
+        GSSAPI("GSSAPI", "GSSAPI");
+
+        private String mechName = null;
+        private String saslServiceName = null;
+
+        private AuthenticationMechanisms(String mechName, String serviceName) {
+            this.mechName = mechName;
+            this.saslServiceName = serviceName;
+        }
+
+        static AuthenticationMechanisms fromValue(String mechName) {
+            for (AuthenticationMechanisms am : values()) {
+                if (am.mechName.equalsIgnoreCase(mechName)) {
+                    return am;
+                }
+            }
+            throw ExceptionFactory.createException(Messages.getString("AuthenticationLdapSaslClientPlugin.UnsupportedAuthMech", new String[]{mechName}));
+        }
+
+        String getMechName() {
+            return this.mechName;
+        }
+
+        String getSaslServiceName() {
+            return this.saslServiceName;
+        }
+
     }
 
 }

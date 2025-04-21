@@ -66,14 +66,14 @@ import java.util.Map;
  * "field7" : ["arr1", 3, true, false, null, [], {}]
  * }
  * </pre>
- *
+ * <p>
  * To create {@link DbDoc} from existing string representation you could use the JsonParser.parseDoc(java.io.StringReader) method:
  *
  * <pre>
  *
  * DbDoc doc = JsonParser.parseDoc(new StringReader(&quot;{\&quot;key1\&quot; : \&quot;value1\&quot;}&quot;));
  * </pre>
- *
+ * <p>
  * To construct a JSON document you can use the DbDoc, JsonString, JsonNumber, JsonArray, or JsonLiteral method. To get
  * a JSON string representation use the toString() method. For example, to get the document shown above:
  *
@@ -95,10 +95,8 @@ public interface DbDoc extends JsonValue, Map<String, JsonValue> {
     /**
      * Add {@link JsonValue} to the top-level document hierarchy.
      *
-     * @param key
-     *            field key
-     * @param val
-     *            field value
+     * @param key field key
+     * @param val field value
      * @return {@link DbDoc}
      */
     DbDoc add(String key, JsonValue val);

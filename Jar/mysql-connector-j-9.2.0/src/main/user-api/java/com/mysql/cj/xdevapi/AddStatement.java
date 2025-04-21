@@ -28,8 +28,7 @@ public interface AddStatement extends Statement<AddStatement, AddResult> {
     /**
      * Add a document as a JSON string.
      *
-     * @param jsonString
-     *            document as a JSON string
+     * @param jsonString document as a JSON string
      * @return {@link AddStatement}
      */
     AddStatement add(String jsonString);
@@ -37,8 +36,7 @@ public interface AddStatement extends Statement<AddStatement, AddResult> {
     /**
      * Add a sequence of DbDocs.
      *
-     * @param documents
-     *            one or more {@link DbDoc} documents
+     * @param documents one or more {@link DbDoc} documents
      * @return {@link AddStatement}
      */
     AddStatement add(DbDoc... documents);
@@ -53,8 +51,7 @@ public interface AddStatement extends Statement<AddStatement, AddResult> {
     /**
      * Set upsert flag on this statement. Used internally by the {@link Collection#addOrReplaceOne(String, DbDoc)} method.
      *
-     * @param upsert
-     *            if true then this statement will be executed as an upsert statement
+     * @param upsert if true then this statement will be executed as an upsert statement
      * @return {@link AddStatement}
      */
     AddStatement setUpsert(boolean upsert);

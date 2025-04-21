@@ -165,20 +165,20 @@ public class LongValueFactoryTest extends CommonAsserts {
 
     @Test
     public void testCreateFromBit() {
-        assertEquals(Long.valueOf(0), this.vf.createFromBit(new byte[] { 0 }, 0, 1));
-        assertEquals(Long.valueOf(1), this.vf.createFromBit(new byte[] { 1 }, 0, 1));
-        assertEquals(Long.valueOf(2), this.vf.createFromBit(new byte[] { 2 }, 0, 1));
-        assertEquals(Long.valueOf(0xffL), this.vf.createFromBit(new byte[] { (byte) 0xff }, 0, 1));
-        assertEquals(Long.valueOf(0xffffL), this.vf.createFromBit(new byte[] { (byte) 0xff, (byte) 0xff }, 0, 2));
-        assertEquals(Long.valueOf(0xffffffL), this.vf.createFromBit(new byte[] { (byte) 0xff, (byte) 0xff, (byte) 0xff }, 0, 3));
-        assertEquals(Long.valueOf(0xffffffffL), this.vf.createFromBit(new byte[] { (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff }, 0, 4));
-        assertEquals(Long.valueOf(0xffffffffffL), this.vf.createFromBit(new byte[] { (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff }, 0, 5));
+        assertEquals(Long.valueOf(0), this.vf.createFromBit(new byte[]{0}, 0, 1));
+        assertEquals(Long.valueOf(1), this.vf.createFromBit(new byte[]{1}, 0, 1));
+        assertEquals(Long.valueOf(2), this.vf.createFromBit(new byte[]{2}, 0, 1));
+        assertEquals(Long.valueOf(0xffL), this.vf.createFromBit(new byte[]{(byte) 0xff}, 0, 1));
+        assertEquals(Long.valueOf(0xffffL), this.vf.createFromBit(new byte[]{(byte) 0xff, (byte) 0xff}, 0, 2));
+        assertEquals(Long.valueOf(0xffffffL), this.vf.createFromBit(new byte[]{(byte) 0xff, (byte) 0xff, (byte) 0xff}, 0, 3));
+        assertEquals(Long.valueOf(0xffffffffL), this.vf.createFromBit(new byte[]{(byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff}, 0, 4));
+        assertEquals(Long.valueOf(0xffffffffffL), this.vf.createFromBit(new byte[]{(byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff}, 0, 5));
         assertEquals(Long.valueOf(0xffffffffffffL),
-                this.vf.createFromBit(new byte[] { (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff }, 0, 6));
+                this.vf.createFromBit(new byte[]{(byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff}, 0, 6));
         assertEquals(Long.valueOf(0xffffffffffffffL),
-                this.vf.createFromBit(new byte[] { (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff }, 0, 7));
+                this.vf.createFromBit(new byte[]{(byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff}, 0, 7));
         assertEquals(Long.valueOf(0xffffffffffffffffL), this.vf
-                .createFromBit(new byte[] { (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff }, 0, 8));
+                .createFromBit(new byte[]{(byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff}, 0, 8));
     }
 
     @Test

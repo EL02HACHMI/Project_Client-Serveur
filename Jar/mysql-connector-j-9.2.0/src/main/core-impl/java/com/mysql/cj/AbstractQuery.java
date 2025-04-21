@@ -40,52 +40,63 @@ import com.mysql.cj.protocol.Resultset.Type;
 
 public abstract class AbstractQuery implements Query {
 
-    /** Used to generate IDs when profiling. */
+    /**
+     * Used to generate IDs when profiling.
+     */
     static int statementCounter = 1;
-
-    public NativeSession session = null;
-
-    /** Used to identify this statement when profiling. */
-    protected int statementId;
-
-    protected RuntimeProperty<Integer> maxAllowedPacket;
-
-    /** The character encoding to use (if available) */
-    protected String charEncoding = null;
-
-    /** Lock to prevent race between returning query results and noticing that query has been timed-out or cancelled. */
-    protected Lock cancelTimeoutLock = new ReentrantLock();
-
-    private CancelStatus cancelStatus = CancelStatus.NOT_CANCELED;
-
-    /** The timeout for a query */
-    protected long timeoutInMillis = 0L;
-
-    /** Holds batched commands */
-    protected List<Object> batchedArgs;
-
-    /** The type of this result set (scroll sensitive or in-sensitive) */
-    protected Resultset.Type resultSetType = Type.FORWARD_ONLY;
-
-    /** The number of rows to fetch at a time (currently ignored) */
-    protected int fetchSize = 0;
-
-    /** Currently executing a statement? */
+    /**
+     * Currently executing a statement?
+     */
     protected final AtomicBoolean statementExecuting = new AtomicBoolean(false);
-
-    /** The database in use */
+    protected final Lock lock = new ReentrantLock();
+    public NativeSession session = null;
+    /**
+     * Used to identify this statement when profiling.
+     */
+    protected int statementId;
+    protected RuntimeProperty<Integer> maxAllowedPacket;
+    /**
+     * The character encoding to use (if available)
+     */
+    protected String charEncoding = null;
+    /**
+     * Lock to prevent race between returning query results and noticing that query has been timed-out or cancelled.
+     */
+    protected Lock cancelTimeoutLock = new ReentrantLock();
+    /**
+     * The timeout for a query
+     */
+    protected long timeoutInMillis = 0L;
+    /**
+     * Holds batched commands
+     */
+    protected List<Object> batchedArgs;
+    /**
+     * The type of this result set (scroll sensitive or in-sensitive)
+     */
+    protected Resultset.Type resultSetType = Type.FORWARD_ONLY;
+    /**
+     * The number of rows to fetch at a time (currently ignored)
+     */
+    protected int fetchSize = 0;
+    /**
+     * The database in use
+     */
     protected String currentDb = null;
 
-    /** Has clearWarnings() been called? */
+    /**
+     * Has clearWarnings() been called?
+     */
     protected boolean clearWarningsCalled = false;
-
-    /** Elapsed time of the execution */
-    private long executeTime = -1;
-
-    /** Query attributes bindings */
+    /**
+     * Query attributes bindings
+     */
     protected QueryAttributesBindings queryAttributesBindings;
-
-    protected final Lock lock = new ReentrantLock();
+    private CancelStatus cancelStatus = CancelStatus.NOT_CANCELED;
+    /**
+     * Elapsed time of the execution
+     */
+    private long executeTime = -1;
 
     public AbstractQuery(NativeSession sess) {
         statementCounter++;

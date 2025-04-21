@@ -29,12 +29,12 @@ public class LongPropertyDefinition extends AbstractPropertyDefinition<Long> {
     private static final long serialVersionUID = -5264490959206230852L;
 
     public LongPropertyDefinition(PropertyKey key, long defaultValue, boolean isRuntimeModifiable, String description, String sinceVersion, String category,
-            int orderInCategory) {
+                                  int orderInCategory) {
         super(key, Long.valueOf(defaultValue), isRuntimeModifiable, description, sinceVersion, category, orderInCategory);
     }
 
     public LongPropertyDefinition(PropertyKey key, long defaultValue, boolean isRuntimeModifiable, String description, String sinceVersion, String category,
-            int orderInCategory, long lowerBound, long upperBound) {
+                                  int orderInCategory, long lowerBound, long upperBound) {
         super(key, Long.valueOf(defaultValue), isRuntimeModifiable, description, sinceVersion, category, orderInCategory, (int) lowerBound, (int) upperBound);
     }
 

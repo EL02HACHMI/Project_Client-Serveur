@@ -74,8 +74,7 @@ public class NonRegisteringDriver implements java.sql.Driver {
     /**
      * Construct a new driver and register it with DriverManager.
      *
-     * @throws SQLException
-     *             if a database error occurs.
+     * @throws SQLException if a database error occurs.
      */
     public NonRegisteringDriver() throws SQLException {
         // Required for Class.forName().newInstance().
@@ -121,13 +120,9 @@ public class NonRegisteringDriver implements java.sql.Driver {
      * Typically, drivers will return true if they understand the subprotocol specified in the URL and false if they don't. This driver's protocols start with
      * jdbc:mysql:
      *
-     * @param url
-     *            the URL of the driver.
-     *
+     * @param url the URL of the driver.
      * @return true if this driver accepts the given URL.
-     *
-     * @exception SQLException
-     *                if a database access error occurs or the url is null.
+     * @throws SQLException if a database access error occurs or the url is null.
      */
     @Override
     public boolean acceptsURL(String url) throws SQLException {
@@ -152,15 +147,10 @@ public class NonRegisteringDriver implements java.sql.Driver {
      * MySQL protocol takes the form: jdbc:mysql://host:port/database.
      * </p>
      *
-     * @param url
-     *            the URL of the database to connect to.
-     * @param info
-     *            a list of arbitrary tag/value pairs as connection arguments.
-     *
+     * @param url  the URL of the database to connect to.
+     * @param info a list of arbitrary tag/value pairs as connection arguments.
      * @return a connection to the URL or null if it isn't us.
-     *
-     * @exception SQLException
-     *                if a database access error occurs or the url is {@code null}.
+     * @throws SQLException if a database access error occurs or the url is {@code null}.
      */
     @Override
     public java.sql.Connection connect(String url, Properties info) throws SQLException {
@@ -201,7 +191,7 @@ public class NonRegisteringDriver implements java.sql.Driver {
 
         } catch (CJException ex) {
             throw ExceptionFactory.createException(UnableToConnectException.class,
-                    Messages.getString("NonRegisteringDriver.17", new Object[] { ex.toString() }), ex);
+                    Messages.getString("NonRegisteringDriver.17", new Object[]{ex.toString()}), ex);
         }
     }
 

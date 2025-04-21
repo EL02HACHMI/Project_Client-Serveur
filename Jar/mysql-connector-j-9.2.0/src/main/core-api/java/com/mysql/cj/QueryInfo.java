@@ -55,7 +55,7 @@ public class QueryInfo {
     private static final String OFFSET_CLAUSE = "OFFSET";
     private static final String VALUE_CLAUSE = "VALUE";
     private static final String AS_CLAUSE = "AS";
-    private static final String[] ODKU_CLAUSE = new String[] { "ON", "DUPLICATE", "KEY", "UPDATE" };
+    private static final String[] ODKU_CLAUSE = new String[]{"ON", "DUPLICATE", "KEY", "UPDATE"};
     private static final String LAST_INSERT_ID_FUNC = "LAST_INSERT_ID";
 
     private QueryInfo baseQueryInfo = null;
@@ -81,12 +81,9 @@ public class QueryInfo {
      * Constructs a {@link QueryInfo} object for the given query or multi-query. The parsed result of this query allows to determine the location of the
      * placeholders, the query static parts and whether this query can be rewritten as a multi-values clause query.
      *
-     * @param sql
-     *            the query SQL string to parse and analyze
-     * @param session
-     *            the {@link Session} under which the query analysis must be done.
-     * @param encoding
-     *            the characters encoding to use when extracting the query static parts as byte arrays.
+     * @param sql      the query SQL string to parse and analyze
+     * @param session  the {@link Session} under which the query analysis must be done.
+     * @param encoding the characters encoding to use when extracting the query static parts as byte arrays.
      */
     public QueryInfo(String sql, Session session, String encoding) {
         if (sql == null) {
@@ -440,11 +437,9 @@ public class QueryInfo {
     /**
      * Constructs a {@link QueryInfo} object with a multi-value clause for the specified batch count, that stems from the specified baseQueryInfo.
      *
-     * @param baseQueryInfo
-     *            the {@link QueryInfo} instance that provides the query static parts used to create the new instance now augmented to accommodate the extra
-     *            number of parameters
-     * @param batchCount
-     *            the number of batches, i.e., the number of times the VALUES clause needs to be repeated inside the new query
+     * @param baseQueryInfo the {@link QueryInfo} instance that provides the query static parts used to create the new instance now augmented to accommodate the extra
+     *                      number of parameters
+     * @param batchCount    the number of batches, i.e., the number of times the VALUES clause needs to be repeated inside the new query
      */
     private QueryInfo(QueryInfo baseQueryInfo, int batchCount) {
         this.baseQueryInfo = baseQueryInfo;
@@ -530,165 +525,10 @@ public class QueryInfo {
     }
 
     /**
-     * Returns the number of queries identified in the original SQL string. Different queries are identified by the presence of the query delimiter character,
-     * i.e., a semicolon.
-     *
-     * @return the number of queries identified in the original SQL string
-     */
-    public int getNumberOfQueries() {
-        return this.numberOfQueries;
-    }
-
-    /**
-     * Returns the number of placeholders found in the query.
-     *
-     * @return the number of placeholders in the query
-     */
-    public int getNumberOfPlaceholders() {
-        return this.numberOfPlaceholders;
-    }
-
-    /**
-     * Returns the return type of the parsed query. This operation does not take into consideration the multiplicity of queries in the specified SQL.
-     *
-     * @return the return type of the parsed query
-     */
-    public QueryReturnType getQueryReturnType() {
-        return this.queryReturnType;
-    }
-
-    /**
-     * Returns the first character of the statement from the query used to build this {@link QueryInfo}.
-     *
-     * @return the first character of the statement
-     */
-    public char getFirstStmtChar() {
-        /* TODO: First char based logic is questionable. Consider replacing by statement check. */
-        return this.baseQueryInfo.statementFirstChar;
-    }
-
-    /**
-     * Returns the statement keyword from the query used to build this {@link QueryInfo}.
-     *
-     * @return
-     *         the statement keyword
-     */
-    public String getStatementKeyword() {
-        return this.statementKeyword;
-    }
-
-    /**
-     * If this object represents a query that is re-writable as a multi-values statement and if rewriting batched statements is enabled, then returns the
-     * length of the parsed VALUES clause section, including the placeholder characters themselves, otherwise returns -1.
-     *
-     * @return the length of the parsed VALUES clause section, including the placeholder characters themselves, otherwise returns -1
-     */
-    public int getValuesClauseLength() {
-        return this.baseQueryInfo.valuesClauseLength;
-    }
-
-    /**
-     * Returns a list containing the purpose of each one of the placeholders found according to their positional ordering.
-     *
-     * @return the list of the placeholders purposes.
-     */
-    public List<PlaceholderPurpose> getPlaceholderPurposes() {
-        return Collections.unmodifiableList(this.placeholderPurposes);
-    }
-
-    /**
-     * Does this query info represent a query that contains an ON DUPLICATE KEY UPDATE clause? This operation does not take into consideration the multiplicity
-     * of queries in the original SQL.
-     *
-     * Checking whether the original query contains an ON DUPLICATE KEY UPDATE clause is conditional to how the connection properties
-     * 'dontCheckOnDuplicateKeyUpdateInSQL' and 'rewriteBatchedStatements' are set, with 'rewriteBatchedStatements=true' implicitly disabling
-     * 'dontCheckOnDuplicateKeyUpdateInSQL'.
-     *
-     * @return <code>true</code> if the query or any of the original queries contain an ON DUPLICATE KEY UPDATE clause.
-     */
-    public boolean containsOnDuplicateKeyUpdate() {
-        return this.containsOnDuplicateKeyUpdate;
-    }
-
-    /**
-     * Returns the static sections of the parsed query, as byte arrays, split by the places where the placeholders were located.
-     *
-     * @return the static sections of the parsed query, as byte arrays, split by the places where the placeholders were located
-     */
-    public byte[][] getStaticSqlParts() {
-        return this.staticSqlParts;
-    }
-
-    /**
-     * Can this query be rewritten as a multi-values clause?
-     *
-     * @return <code>true</code> if the query can be rewritten as a multi-values query.
-     */
-    public boolean isRewritableWithMultiValuesClause() {
-        return this.isRewritableWithMultiValuesClause;
-    }
-
-    /**
-     * Returns a {@link QueryInfo} for a multi-values INSERT/REPLACE assembled for the specified batch count, without re-parsing.
-     *
-     * @param count
-     *            the number of parameter batches
-     * @return {@link QueryInfo}
-     */
-    public QueryInfo getQueryInfoForBatch(int count) {
-        if (count == 1) {
-            return this.baseQueryInfo;
-        }
-        if (count == this.batchCount) {
-            return this;
-        }
-
-        if (!this.isRewritableWithMultiValuesClause) {
-            return null;
-        }
-
-        return new QueryInfo(this.baseQueryInfo, count);
-    }
-
-    /**
-     * Returns a preparable query for the batch count of this {@link QueryInfo}.
-     *
-     * @return
-     *         a preparable query string with the appropriate number of placeholders
-     */
-    public String getSqlForBatch() {
-        if (this.batchCount == 1) {
-            return this.baseQueryInfo.sql;
-        }
-
-        int size = this.baseQueryInfo.queryLength + (this.batchCount - 1) * this.baseQueryInfo.valuesClauseLength + this.batchCount - 1;
-        StringBuilder buf = new StringBuilder(size);
-        buf.append(StringUtils.toString(this.staticSqlParts[0], this.encoding));
-        for (int i = 1; i < this.staticSqlParts.length; i++) {
-            buf.append("?").append(StringUtils.toString(this.staticSqlParts[i], this.encoding));
-        }
-        return buf.toString();
-    }
-
-    /**
-     * Returns a preparable query for the specified batch count.
-     *
-     * @param count
-     *            number of parameter batches
-     * @return a preparable query string with the appropriate number of placeholders
-     */
-    public String getSqlForBatch(int count) {
-        QueryInfo batchInfo = getQueryInfoForBatch(count);
-        return batchInfo.getSqlForBatch();
-    }
-
-    /**
      * Finds and returns the position of the first non-whitespace character from the specified SQL, skipping comments and quoted text.
      *
-     * @param sql
-     *            the query to search
-     * @param noBackslashEscapes
-     *            whether backslash escapes are disabled or not
+     * @param sql                the query to search
+     * @param noBackslashEscapes whether backslash escapes are disabled or not
      * @return the position of the first character of the query
      */
     public static int indexOfStatementKeyword(String sql, boolean noBackslashEscapes) {
@@ -699,10 +539,8 @@ public class QueryInfo {
     /**
      * Finds and returns the first non-whitespace character from the specified SQL, skipping comments and quoted text.
      *
-     * @param sql
-     *            the query to search
-     * @param noBackslashEscapes
-     *            whether backslash escapes are disabled or not
+     * @param sql                the query to search
+     * @param noBackslashEscapes whether backslash escapes are disabled or not
      * @return the first character of the query, in upper case
      */
     public static char firstCharOfStatementUc(String sql, boolean noBackslashEscapes) {
@@ -716,10 +554,8 @@ public class QueryInfo {
     /**
      * Finds and returns the statement keyword from the specified SQL, skipping comments and quoted text.
      *
-     * @param sql
-     *            the query to search
-     * @param noBackslashEscapes
-     *            whether backslash escapes are disabled or not
+     * @param sql                the query to search
+     * @param noBackslashEscapes whether backslash escapes are disabled or not
      * @return the statement keyword of the query
      */
     public static String getStatementKeyword(String sql, boolean noBackslashEscapes) {
@@ -743,10 +579,8 @@ public class QueryInfo {
      * Checks whether the given query is safe to run in a read-only session. In case of doubt it is assumed to be safe. This operation does not take into
      * consideration the multiplicity of queries in the specified SQL.
      *
-     * @param sql
-     *            the query to check
-     * @param noBackslashEscapes
-     *            whether backslash escapes are disabled or not
+     * @param sql                the query to check
+     * @param noBackslashEscapes whether backslash escapes are disabled or not
      * @return <code>true</code> if the query is read-only safe, <code>false</code> otherwise.
      */
     public static boolean isReadOnlySafeQuery(String sql, boolean noBackslashEscapes) {
@@ -805,10 +639,8 @@ public class QueryInfo {
      * Returns the type of return that can be expected from executing the given query. This operation does not take into consideration the multiplicity
      * of queries in the specified SQL.
      *
-     * @param sql
-     *            the query to check
-     * @param noBackslashEscapes
-     *            whether backslash escapes are disabled or not
+     * @param sql                the query to check
+     * @param noBackslashEscapes whether backslash escapes are disabled or not
      * @return the return type that can be expected from the given query, one of the elements of {@link QueryReturnType}.
      */
     public static QueryReturnType getQueryReturnType(String sql, boolean noBackslashEscapes) {
@@ -863,7 +695,7 @@ public class QueryInfo {
             } else {
                 return QueryReturnType.MAY_PRODUCE_RESULT_SET;
             }
-        } else if (firstStatementChar == 'X' && StringUtils.indexOfIgnoreCase(statementKeywordPos, sql, new String[] { "XA", "RECOVER" }, OPENING_MARKERS,
+        } else if (firstStatementChar == 'X' && StringUtils.indexOfIgnoreCase(statementKeywordPos, sql, new String[]{"XA", "RECOVER"}, OPENING_MARKERS,
                 CLOSING_MARKERS, noBackslashEscapes ? SearchMode.__MRK_COM_MYM_HNT_WS : SearchMode.__FULL) == statementKeywordPos) {
             return QueryReturnType.PRODUCES_RESULT_SET;
         }
@@ -874,10 +706,8 @@ public class QueryInfo {
      * Returns the context of the WITH statement. The context can be: SELECT, TABLE, VALUES, UPDATE or DELETE. This operation does not take into consideration
      * the multiplicity of queries in the specified SQL.
      *
-     * @param sql
-     *            the query to search
-     * @param noBackslashEscapes
-     *            whether backslash escapes are disabled or not
+     * @param sql                the query to search
+     * @param noBackslashEscapes whether backslash escapes are disabled or not
      * @return the context of the WITH statement or null if failed to find it
      */
     private static String getContextForWithStatement(String sql, boolean noBackslashEscapes) {
@@ -914,15 +744,162 @@ public class QueryInfo {
      * Checks whether the specified SQL contains or not an ON DUPLICATE KEY UPDATE clause. This operation does not take into consideration the multiplicity of
      * queries in the specified SQL.
      *
-     * @param sql
-     *            the query to search
-     * @param noBackslashEscapes
-     *            whether backslash escapes are disabled or not.
+     * @param sql                the query to search
+     * @param noBackslashEscapes whether backslash escapes are disabled or not.
      * @return <code>true</code> if the query contains an ON DUPLICATE KEY UPDATE clause, <code>false</code> otherwise
      */
     public static boolean containsOnDuplicateKeyUpdateClause(String sql, boolean noBackslashEscapes) {
         return StringUtils.indexOfIgnoreCase(0, sql, ODKU_CLAUSE, OPENING_MARKERS, CLOSING_MARKERS,
                 noBackslashEscapes ? SearchMode.__MRK_COM_MYM_HNT_WS : SearchMode.__BSE_MRK_COM_MYM_HNT_WS) != -1;
+    }
+
+    /**
+     * Returns the number of queries identified in the original SQL string. Different queries are identified by the presence of the query delimiter character,
+     * i.e., a semicolon.
+     *
+     * @return the number of queries identified in the original SQL string
+     */
+    public int getNumberOfQueries() {
+        return this.numberOfQueries;
+    }
+
+    /**
+     * Returns the number of placeholders found in the query.
+     *
+     * @return the number of placeholders in the query
+     */
+    public int getNumberOfPlaceholders() {
+        return this.numberOfPlaceholders;
+    }
+
+    /**
+     * Returns the return type of the parsed query. This operation does not take into consideration the multiplicity of queries in the specified SQL.
+     *
+     * @return the return type of the parsed query
+     */
+    public QueryReturnType getQueryReturnType() {
+        return this.queryReturnType;
+    }
+
+    /**
+     * Returns the first character of the statement from the query used to build this {@link QueryInfo}.
+     *
+     * @return the first character of the statement
+     */
+    public char getFirstStmtChar() {
+        /* TODO: First char based logic is questionable. Consider replacing by statement check. */
+        return this.baseQueryInfo.statementFirstChar;
+    }
+
+    /**
+     * Returns the statement keyword from the query used to build this {@link QueryInfo}.
+     *
+     * @return the statement keyword
+     */
+    public String getStatementKeyword() {
+        return this.statementKeyword;
+    }
+
+    /**
+     * If this object represents a query that is re-writable as a multi-values statement and if rewriting batched statements is enabled, then returns the
+     * length of the parsed VALUES clause section, including the placeholder characters themselves, otherwise returns -1.
+     *
+     * @return the length of the parsed VALUES clause section, including the placeholder characters themselves, otherwise returns -1
+     */
+    public int getValuesClauseLength() {
+        return this.baseQueryInfo.valuesClauseLength;
+    }
+
+    /**
+     * Returns a list containing the purpose of each one of the placeholders found according to their positional ordering.
+     *
+     * @return the list of the placeholders purposes.
+     */
+    public List<PlaceholderPurpose> getPlaceholderPurposes() {
+        return Collections.unmodifiableList(this.placeholderPurposes);
+    }
+
+    /**
+     * Does this query info represent a query that contains an ON DUPLICATE KEY UPDATE clause? This operation does not take into consideration the multiplicity
+     * of queries in the original SQL.
+     * <p>
+     * Checking whether the original query contains an ON DUPLICATE KEY UPDATE clause is conditional to how the connection properties
+     * 'dontCheckOnDuplicateKeyUpdateInSQL' and 'rewriteBatchedStatements' are set, with 'rewriteBatchedStatements=true' implicitly disabling
+     * 'dontCheckOnDuplicateKeyUpdateInSQL'.
+     *
+     * @return <code>true</code> if the query or any of the original queries contain an ON DUPLICATE KEY UPDATE clause.
+     */
+    public boolean containsOnDuplicateKeyUpdate() {
+        return this.containsOnDuplicateKeyUpdate;
+    }
+
+    /**
+     * Returns the static sections of the parsed query, as byte arrays, split by the places where the placeholders were located.
+     *
+     * @return the static sections of the parsed query, as byte arrays, split by the places where the placeholders were located
+     */
+    public byte[][] getStaticSqlParts() {
+        return this.staticSqlParts;
+    }
+
+    /**
+     * Can this query be rewritten as a multi-values clause?
+     *
+     * @return <code>true</code> if the query can be rewritten as a multi-values query.
+     */
+    public boolean isRewritableWithMultiValuesClause() {
+        return this.isRewritableWithMultiValuesClause;
+    }
+
+    /**
+     * Returns a {@link QueryInfo} for a multi-values INSERT/REPLACE assembled for the specified batch count, without re-parsing.
+     *
+     * @param count the number of parameter batches
+     * @return {@link QueryInfo}
+     */
+    public QueryInfo getQueryInfoForBatch(int count) {
+        if (count == 1) {
+            return this.baseQueryInfo;
+        }
+        if (count == this.batchCount) {
+            return this;
+        }
+
+        if (!this.isRewritableWithMultiValuesClause) {
+            return null;
+        }
+
+        return new QueryInfo(this.baseQueryInfo, count);
+    }
+
+    /**
+     * Returns a preparable query for the batch count of this {@link QueryInfo}.
+     *
+     * @return a preparable query string with the appropriate number of placeholders
+     */
+    public String getSqlForBatch() {
+        if (this.batchCount == 1) {
+            return this.baseQueryInfo.sql;
+        }
+
+        int size = this.baseQueryInfo.queryLength + (this.batchCount - 1) * this.baseQueryInfo.valuesClauseLength + this.batchCount - 1;
+        StringBuilder buf = new StringBuilder(size);
+        buf.append(StringUtils.toString(this.staticSqlParts[0], this.encoding));
+        for (int i = 1; i < this.staticSqlParts.length; i++) {
+            buf.append("?").append(StringUtils.toString(this.staticSqlParts[i], this.encoding));
+        }
+        return buf.toString();
+    }
+
+    /**
+     * Returns a preparable query for the specified batch count.
+     *
+     * @param count number of parameter batches
+     * @return a preparable query string with the appropriate number of placeholders
+     */
+    public String getSqlForBatch(int count) {
+        QueryInfo batchInfo = getQueryInfoForBatch(count);
+        return batchInfo.getSqlForBatch();
     }
 
 }

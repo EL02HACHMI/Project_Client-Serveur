@@ -31,8 +31,7 @@ public interface InsertStatement extends Statement<InsertStatement, InsertResult
     /**
      * Add a row (sequence of values) to this statement.
      *
-     * @param values
-     *            list of values to insert
+     * @param values list of values to insert
      * @return {@link InsertStatement}
      */
     InsertStatement values(List<Object> values);
@@ -40,8 +39,7 @@ public interface InsertStatement extends Statement<InsertStatement, InsertResult
     /**
      * Add a row (sequence of values) to this statement.
      *
-     * @param values
-     *            one or more values to insert
+     * @param values one or more values to insert
      * @return {@link InsertStatement}
      */
     default InsertStatement values(Object... values) {

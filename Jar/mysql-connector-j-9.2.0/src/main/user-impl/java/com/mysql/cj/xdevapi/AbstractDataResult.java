@@ -40,8 +40,7 @@ import com.mysql.cj.result.RowList;
 /**
  * Base class for data set results.
  *
- * @param <T>
- *            Result entry type
+ * @param <T> Result entry type
  */
 public abstract class AbstractDataResult<T> implements ResultStreamer, Iterator<T>, Result {
 
@@ -51,18 +50,17 @@ public abstract class AbstractDataResult<T> implements ResultStreamer, Iterator<
     protected Supplier<ProtocolEntity> completer;
     protected StatementExecuteOk ok;
     protected ProtocolEntityFactory<T, XMessage> rowToData;
-    /** List of all elements. <code>null</code> until requested via {@link #fetchAll()}. */
+    /**
+     * List of all elements. <code>null</code> until requested via {@link #fetchAll()}.
+     */
     protected List<T> all;
 
     /**
      * Constructor.
      *
-     * @param rows
-     *            {@link RowList} object
-     * @param completer
-     *            Supplier for StatementExecuteOk object
-     * @param rowToData
-     *            {@link ProtocolEntityFactory}
+     * @param rows      {@link RowList} object
+     * @param completer Supplier for StatementExecuteOk object
+     * @param rowToData {@link ProtocolEntityFactory}
      */
     public AbstractDataResult(RowList rows, Supplier<ProtocolEntity> completer, ProtocolEntityFactory<T, XMessage> rowToData) {
         this.rows = rows;

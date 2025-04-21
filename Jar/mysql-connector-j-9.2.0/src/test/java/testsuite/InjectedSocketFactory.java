@@ -42,12 +42,10 @@ import com.mysql.cj.protocol.StandardSocketFactory;
 public class InjectedSocketFactory extends StandardSocketFactory {
 
     static final Set<String> IMMEDIATELY_DOWNED_HOSTS_PORT = new HashSet<>();
-
-    private HostInfo hi;
-    private PropertySet propSet;
-
     public static byte[] injectedBuffer = null;
     protected static int injectedBufferPos = 0;
+    private HostInfo hi;
+    private PropertySet propSet;
 
     public static void flushAllStaticData() {
         IMMEDIATELY_DOWNED_HOSTS_PORT.clear();
@@ -82,210 +80,6 @@ public class InjectedSocketFactory extends StandardSocketFactory {
             throw e;
         }
         return (T) socket;
-    }
-
-    class SocketWrapper extends Socket {
-
-        final Socket underlyingSocket;
-        final PropertySet propSet;
-        final HostInfo hi;
-
-        SocketWrapper(Socket realSocket, PropertySet pset, HostInfo hi) {
-            this.underlyingSocket = realSocket;
-            this.propSet = pset;
-            this.hi = hi;
-        }
-
-        @Override
-        public void bind(SocketAddress bindpoint) throws IOException {
-            this.underlyingSocket.bind(bindpoint);
-        }
-
-        @Override
-        public synchronized void close() throws IOException {
-            this.underlyingSocket.close();
-        }
-
-        @Override
-        public SocketChannel getChannel() {
-            return this.underlyingSocket.getChannel();
-        }
-
-        @Override
-        public InetAddress getInetAddress() {
-            return this.underlyingSocket.getInetAddress();
-        }
-
-        @Override
-        public InputStream getInputStream() throws IOException {
-            return new InjectedInputStream(this.underlyingSocket.getInputStream(), this.propSet, this.hi);
-        }
-
-        @Override
-        public boolean getKeepAlive() throws SocketException {
-            return this.underlyingSocket.getKeepAlive();
-        }
-
-        @Override
-        public InetAddress getLocalAddress() {
-            return this.underlyingSocket.getLocalAddress();
-        }
-
-        @Override
-        public int getLocalPort() {
-            return this.underlyingSocket.getLocalPort();
-        }
-
-        @Override
-        public SocketAddress getLocalSocketAddress() {
-            return this.underlyingSocket.getLocalSocketAddress();
-        }
-
-        @Override
-        public boolean getOOBInline() throws SocketException {
-            return this.underlyingSocket.getOOBInline();
-        }
-
-        @Override
-        public OutputStream getOutputStream() throws IOException {
-            return this.underlyingSocket.getOutputStream();
-        }
-
-        @Override
-        public int getPort() {
-            return this.underlyingSocket.getPort();
-        }
-
-        @Override
-        public synchronized int getReceiveBufferSize() throws SocketException {
-            return this.underlyingSocket.getReceiveBufferSize();
-        }
-
-        @Override
-        public SocketAddress getRemoteSocketAddress() {
-            return this.underlyingSocket.getRemoteSocketAddress();
-        }
-
-        @Override
-        public boolean getReuseAddress() throws SocketException {
-            return this.underlyingSocket.getReuseAddress();
-        }
-
-        @Override
-        public synchronized int getSendBufferSize() throws SocketException {
-            return this.underlyingSocket.getSendBufferSize();
-        }
-
-        @Override
-        public int getSoLinger() throws SocketException {
-            return this.underlyingSocket.getSoLinger();
-        }
-
-        @Override
-        public synchronized int getSoTimeout() throws SocketException {
-            return this.underlyingSocket.getSoTimeout();
-        }
-
-        @Override
-        public boolean getTcpNoDelay() throws SocketException {
-            return this.underlyingSocket.getTcpNoDelay();
-        }
-
-        @Override
-        public int getTrafficClass() throws SocketException {
-            return this.underlyingSocket.getTrafficClass();
-        }
-
-        @Override
-        public boolean isBound() {
-            return this.underlyingSocket.isBound();
-        }
-
-        @Override
-        public boolean isClosed() {
-            return this.underlyingSocket.isClosed();
-        }
-
-        @Override
-        public boolean isConnected() {
-            return this.underlyingSocket.isConnected();
-        }
-
-        @Override
-        public boolean isInputShutdown() {
-            return this.underlyingSocket.isInputShutdown();
-        }
-
-        @Override
-        public boolean isOutputShutdown() {
-            return this.underlyingSocket.isOutputShutdown();
-        }
-
-        @Override
-        public void sendUrgentData(int data) throws IOException {
-            this.underlyingSocket.sendUrgentData(data);
-        }
-
-        @Override
-        public void setKeepAlive(boolean on) throws SocketException {
-            this.underlyingSocket.setKeepAlive(on);
-        }
-
-        @Override
-        public void setOOBInline(boolean on) throws SocketException {
-            this.underlyingSocket.setOOBInline(on);
-        }
-
-        @Override
-        public synchronized void setReceiveBufferSize(int size) throws SocketException {
-            this.underlyingSocket.setReceiveBufferSize(size);
-        }
-
-        @Override
-        public void setReuseAddress(boolean on) throws SocketException {
-            this.underlyingSocket.setReuseAddress(on);
-        }
-
-        @Override
-        public synchronized void setSendBufferSize(int size) throws SocketException {
-            this.underlyingSocket.setSendBufferSize(size);
-        }
-
-        @Override
-        public void setSoLinger(boolean on, int linger) throws SocketException {
-            this.underlyingSocket.setSoLinger(on, linger);
-        }
-
-        @Override
-        public synchronized void setSoTimeout(int timeout) throws SocketException {
-            this.underlyingSocket.setSoTimeout(timeout);
-        }
-
-        @Override
-        public void setTcpNoDelay(boolean on) throws SocketException {
-            this.underlyingSocket.setTcpNoDelay(on);
-        }
-
-        @Override
-        public void setTrafficClass(int tc) throws SocketException {
-            this.underlyingSocket.setTrafficClass(tc);
-        }
-
-        @Override
-        public void shutdownInput() throws IOException {
-            this.underlyingSocket.shutdownInput();
-        }
-
-        @Override
-        public void shutdownOutput() throws IOException {
-            this.underlyingSocket.shutdownOutput();
-        }
-
-        @Override
-        public String toString() {
-            return this.underlyingSocket.toString();
-        }
-
     }
 
     static class InjectedInputStream extends InputStream {
@@ -369,6 +163,210 @@ public class InjectedSocketFactory extends StandardSocketFactory {
         public int read() throws IOException {
             this.loopCount = 0;
             return this.underlyingInputStream.read();
+        }
+
+    }
+
+    class SocketWrapper extends Socket {
+
+        final Socket underlyingSocket;
+        final PropertySet propSet;
+        final HostInfo hi;
+
+        SocketWrapper(Socket realSocket, PropertySet pset, HostInfo hi) {
+            this.underlyingSocket = realSocket;
+            this.propSet = pset;
+            this.hi = hi;
+        }
+
+        @Override
+        public void bind(SocketAddress bindpoint) throws IOException {
+            this.underlyingSocket.bind(bindpoint);
+        }
+
+        @Override
+        public synchronized void close() throws IOException {
+            this.underlyingSocket.close();
+        }
+
+        @Override
+        public SocketChannel getChannel() {
+            return this.underlyingSocket.getChannel();
+        }
+
+        @Override
+        public InetAddress getInetAddress() {
+            return this.underlyingSocket.getInetAddress();
+        }
+
+        @Override
+        public InputStream getInputStream() throws IOException {
+            return new InjectedInputStream(this.underlyingSocket.getInputStream(), this.propSet, this.hi);
+        }
+
+        @Override
+        public boolean getKeepAlive() throws SocketException {
+            return this.underlyingSocket.getKeepAlive();
+        }
+
+        @Override
+        public void setKeepAlive(boolean on) throws SocketException {
+            this.underlyingSocket.setKeepAlive(on);
+        }
+
+        @Override
+        public InetAddress getLocalAddress() {
+            return this.underlyingSocket.getLocalAddress();
+        }
+
+        @Override
+        public int getLocalPort() {
+            return this.underlyingSocket.getLocalPort();
+        }
+
+        @Override
+        public SocketAddress getLocalSocketAddress() {
+            return this.underlyingSocket.getLocalSocketAddress();
+        }
+
+        @Override
+        public boolean getOOBInline() throws SocketException {
+            return this.underlyingSocket.getOOBInline();
+        }
+
+        @Override
+        public void setOOBInline(boolean on) throws SocketException {
+            this.underlyingSocket.setOOBInline(on);
+        }
+
+        @Override
+        public OutputStream getOutputStream() throws IOException {
+            return this.underlyingSocket.getOutputStream();
+        }
+
+        @Override
+        public int getPort() {
+            return this.underlyingSocket.getPort();
+        }
+
+        @Override
+        public synchronized int getReceiveBufferSize() throws SocketException {
+            return this.underlyingSocket.getReceiveBufferSize();
+        }
+
+        @Override
+        public synchronized void setReceiveBufferSize(int size) throws SocketException {
+            this.underlyingSocket.setReceiveBufferSize(size);
+        }
+
+        @Override
+        public SocketAddress getRemoteSocketAddress() {
+            return this.underlyingSocket.getRemoteSocketAddress();
+        }
+
+        @Override
+        public boolean getReuseAddress() throws SocketException {
+            return this.underlyingSocket.getReuseAddress();
+        }
+
+        @Override
+        public void setReuseAddress(boolean on) throws SocketException {
+            this.underlyingSocket.setReuseAddress(on);
+        }
+
+        @Override
+        public synchronized int getSendBufferSize() throws SocketException {
+            return this.underlyingSocket.getSendBufferSize();
+        }
+
+        @Override
+        public synchronized void setSendBufferSize(int size) throws SocketException {
+            this.underlyingSocket.setSendBufferSize(size);
+        }
+
+        @Override
+        public int getSoLinger() throws SocketException {
+            return this.underlyingSocket.getSoLinger();
+        }
+
+        @Override
+        public synchronized int getSoTimeout() throws SocketException {
+            return this.underlyingSocket.getSoTimeout();
+        }
+
+        @Override
+        public synchronized void setSoTimeout(int timeout) throws SocketException {
+            this.underlyingSocket.setSoTimeout(timeout);
+        }
+
+        @Override
+        public boolean getTcpNoDelay() throws SocketException {
+            return this.underlyingSocket.getTcpNoDelay();
+        }
+
+        @Override
+        public void setTcpNoDelay(boolean on) throws SocketException {
+            this.underlyingSocket.setTcpNoDelay(on);
+        }
+
+        @Override
+        public int getTrafficClass() throws SocketException {
+            return this.underlyingSocket.getTrafficClass();
+        }
+
+        @Override
+        public void setTrafficClass(int tc) throws SocketException {
+            this.underlyingSocket.setTrafficClass(tc);
+        }
+
+        @Override
+        public boolean isBound() {
+            return this.underlyingSocket.isBound();
+        }
+
+        @Override
+        public boolean isClosed() {
+            return this.underlyingSocket.isClosed();
+        }
+
+        @Override
+        public boolean isConnected() {
+            return this.underlyingSocket.isConnected();
+        }
+
+        @Override
+        public boolean isInputShutdown() {
+            return this.underlyingSocket.isInputShutdown();
+        }
+
+        @Override
+        public boolean isOutputShutdown() {
+            return this.underlyingSocket.isOutputShutdown();
+        }
+
+        @Override
+        public void sendUrgentData(int data) throws IOException {
+            this.underlyingSocket.sendUrgentData(data);
+        }
+
+        @Override
+        public void setSoLinger(boolean on, int linger) throws SocketException {
+            this.underlyingSocket.setSoLinger(on, linger);
+        }
+
+        @Override
+        public void shutdownInput() throws IOException {
+            this.underlyingSocket.shutdownInput();
+        }
+
+        @Override
+        public void shutdownOutput() throws IOException {
+            this.underlyingSocket.shutdownOutput();
+        }
+
+        @Override
+        public String toString() {
+            return this.underlyingSocket.toString();
         }
 
     }

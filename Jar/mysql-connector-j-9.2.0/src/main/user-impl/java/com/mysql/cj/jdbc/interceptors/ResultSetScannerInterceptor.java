@@ -68,7 +68,7 @@ public class ResultSetScannerInterceptor implements QueryInterceptor {
         // requirement of anonymous class
         final T finalResultSet = originalResultSet;
 
-        return (T) Proxy.newProxyInstance(originalResultSet.getClass().getClassLoader(), new Class<?>[] { Resultset.class, ResultSetInternalMethods.class },
+        return (T) Proxy.newProxyInstance(originalResultSet.getClass().getClassLoader(), new Class<?>[]{Resultset.class, ResultSetInternalMethods.class},
                 new InvocationHandler() {
 
                     @Override

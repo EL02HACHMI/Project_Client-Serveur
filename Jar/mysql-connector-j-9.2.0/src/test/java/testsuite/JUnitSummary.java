@@ -32,13 +32,12 @@ import org.junit.platform.launcher.TestIdentifier;
 
 public class JUnitSummary implements TestExecutionListener {
 
+    PrintStream out = null;
     private AtomicInteger numSkippedInTestSet = new AtomicInteger();
     private AtomicInteger numAbortedInTestSet = new AtomicInteger();
     private AtomicInteger numSucceededInTestSet = new AtomicInteger();
     private AtomicInteger numFailedInTestSet = new AtomicInteger();
     private Instant testSetStartTime;
-
-    PrintStream out = null;
 
     public JUnitSummary() {
         this.out = System.out;

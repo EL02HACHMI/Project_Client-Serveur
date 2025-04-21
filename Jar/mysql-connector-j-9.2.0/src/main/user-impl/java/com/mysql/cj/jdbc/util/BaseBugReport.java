@@ -75,10 +75,9 @@ import com.mysql.cj.jdbc.Driver;
  */
 public abstract class BaseBugReport {
 
-    private Connection conn;
-
-    private Driver driver;
     private final Lock lock = new ReentrantLock();
+    private Connection conn;
+    private Driver driver;
 
     /**
      * Constructor for this BugReport, sets up JDBC driver used to create
@@ -96,8 +95,7 @@ public abstract class BaseBugReport {
      * Override this method with code that sets up the testcase for
      * demonstrating your bug (creating tables, populating data, etc).
      *
-     * @throws Exception
-     *             if an error occurs during the 'setUp' phase.
+     * @throws Exception if an error occurs during the 'setUp' phase.
      */
     public abstract void setUp() throws Exception;
 
@@ -105,8 +103,7 @@ public abstract class BaseBugReport {
      * Override this method with code that cleans up anything created in the
      * setUp() method.
      *
-     * @throws Exception
-     *             if an error occurs during the 'tearDown' phase.
+     * @throws Exception if an error occurs during the 'tearDown' phase.
      */
     public abstract void tearDown() throws Exception;
 
@@ -114,8 +111,7 @@ public abstract class BaseBugReport {
      * Override this method with code that demonstrates the bug. This method
      * will be called after setUp(), and before tearDown().
      *
-     * @throws Exception
-     *             if an error occurs during your test run.
+     * @throws Exception if an error occurs during your test run.
      */
     public abstract void runTest() throws Exception;
 
@@ -124,8 +120,7 @@ public abstract class BaseBugReport {
      * methods. The tearDown() method is run regardless of any errors occuring
      * in the other methods.
      *
-     * @throws Exception
-     *             if an error occurs in any of the aforementioned methods.
+     * @throws Exception if an error occurs in any of the aforementioned methods.
      */
     public final void run() throws Exception {
         try {
@@ -141,12 +136,9 @@ public abstract class BaseBugReport {
      * Throws an exception with the given message if condition evalutates to
      * 'false'.
      *
-     * @param message
-     *            the message to use in the exception
-     * @param condition
-     *            the condition to test for
-     * @throws Exception
-     *             if !condition
+     * @param message   the message to use in the exception
+     * @param condition the condition to test for
+     * @throws Exception if !condition
      */
     protected final void assertTrue(String message, boolean condition) throws Exception {
         if (!condition) {
@@ -157,10 +149,8 @@ public abstract class BaseBugReport {
     /**
      * Throws an exception if condition evalutates to 'false'.
      *
-     * @param condition
-     *            the condition to test for
-     * @throws Exception
-     *             if !condition
+     * @param condition the condition to test for
+     * @throws Exception if !condition
      */
     protected final void assertTrue(boolean condition) throws Exception {
         assertTrue("(no message given)", condition);
@@ -170,7 +160,7 @@ public abstract class BaseBugReport {
      * Provides the JDBC URL to use to demonstrate the bug. The
      * java.sql.Connection that you use to demonstrate this bug will be provided
      * by the getConnection() method using this URL.
-     *
+     * <p>
      * The default value is 'jdbc:mysql:///test'
      *
      * @return URL
@@ -181,14 +171,12 @@ public abstract class BaseBugReport {
 
     /**
      * Provides a connection to the JDBC URL specified in getUrl().
-     *
+     * <p>
      * If a connection already exists, that connection is returned. Otherwise a
      * new connection is created.
      *
      * @return a connection to the JDBC URL specified in getUrl().
-     *
-     * @throws SQLException
-     *             if an error is caused while creating the connection.
+     * @throws SQLException if an error is caused while creating the connection.
      */
     public final Connection getConnection() throws SQLException {
         this.lock.lock();
@@ -208,9 +196,7 @@ public abstract class BaseBugReport {
      * there's more than one connection involved).
      *
      * @return a new connection to the JDBC URL specified in getUrl().
-     *
-     * @throws SQLException
-     *             if an error is caused while creating the connection.
+     * @throws SQLException if an error is caused while creating the connection.
      */
     public final Connection getNewConnection() throws SQLException {
         this.lock.lock();
@@ -224,11 +210,9 @@ public abstract class BaseBugReport {
     /**
      * Returns a connection using the given URL.
      *
-     * @param url
-     *            the JDBC URL to use
+     * @param url the JDBC URL to use
      * @return a new java.sql.Connection to the JDBC URL.
-     * @throws SQLException
-     *             if an error occurs getting the connection.
+     * @throws SQLException if an error occurs getting the connection.
      */
     public final Connection getConnection(String url) throws SQLException {
         this.lock.lock();
@@ -242,13 +226,10 @@ public abstract class BaseBugReport {
     /**
      * Returns a connection using the given URL and properties.
      *
-     * @param url
-     *            the JDBC URL to use
-     * @param props
-     *            the JDBC properties to use
+     * @param url   the JDBC URL to use
+     * @param props the JDBC properties to use
      * @return a new java.sql.Connection to the JDBC URL.
-     * @throws SQLException
-     *             if an error occurs getting the connection.
+     * @throws SQLException if an error occurs getting the connection.
      */
     public final Connection getConnection(String url, Properties props) throws SQLException {
         this.lock.lock();

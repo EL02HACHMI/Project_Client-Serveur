@@ -33,8 +33,7 @@ public interface Row {
     /**
      * Retrieve the value for column `fieldName' as a decimal value.
      *
-     * @param fieldName
-     *            field name
+     * @param fieldName field name
      * @return value
      */
     BigDecimal getBigDecimal(String fieldName);
@@ -42,8 +41,7 @@ public interface Row {
     /**
      * Retrieve the value for column at position `pos' (starting at 0) as a decimal value.
      *
-     * @param pos
-     *            field position
+     * @param pos field position
      * @return value
      */
     BigDecimal getBigDecimal(int pos);
@@ -51,8 +49,7 @@ public interface Row {
     /**
      * Retrieve the value for column `fieldName' as a boolean value.
      *
-     * @param fieldName
-     *            field name
+     * @param fieldName field name
      * @return value
      */
     boolean getBoolean(String fieldName);
@@ -60,8 +57,7 @@ public interface Row {
     /**
      * Retrieve the value for column at position `pos' (starting at 0) as a boolean value.
      *
-     * @param pos
-     *            field position
+     * @param pos field position
      *            field position
      * @return value
      */
@@ -70,8 +66,7 @@ public interface Row {
     /**
      * Retrieve the value for column `fieldName' as a byte value.
      *
-     * @param fieldName
-     *            field name
+     * @param fieldName field name
      * @return value
      */
     byte getByte(String fieldName);
@@ -79,8 +74,7 @@ public interface Row {
     /**
      * Retrieve the value for column at position `pos' (starting at 0) as a byte value.
      *
-     * @param pos
-     *            field position
+     * @param pos field position
      *            field position
      * @return value
      */
@@ -89,8 +83,7 @@ public interface Row {
     /**
      * Retrieve the value for column `fieldName' as a {@link Date} value.
      *
-     * @param fieldName
-     *            field name
+     * @param fieldName field name
      * @return value
      */
     Date getDate(String fieldName);
@@ -98,8 +91,7 @@ public interface Row {
     /**
      * Retrieve the value for column at position `pos' (starting at 0) as a byte value.
      *
-     * @param pos
-     *            field position
+     * @param pos field position
      *            field position
      * @return value
      */
@@ -108,8 +100,7 @@ public interface Row {
     /**
      * Retrieve the value for column `fieldName' as a DbDoc value.
      *
-     * @param fieldName
-     *            field name
+     * @param fieldName field name
      * @return value
      */
     DbDoc getDbDoc(String fieldName);
@@ -117,8 +108,7 @@ public interface Row {
     /**
      * Retrieve the value for column at position `pos' (starting at 0) as a DbDoc value.
      *
-     * @param pos
-     *            field position
+     * @param pos field position
      *            field position
      * @return value
      */
@@ -127,8 +117,7 @@ public interface Row {
     /**
      * Retrieve the value for column `fieldName' as a double value.
      *
-     * @param fieldName
-     *            field name
+     * @param fieldName field name
      * @return value
      */
     double getDouble(String fieldName);
@@ -136,8 +125,7 @@ public interface Row {
     /**
      * Retrieve the value for column at position `pos' (starting at 0) as a double value.
      *
-     * @param pos
-     *            field position
+     * @param pos field position
      *            field position
      * @return value
      */
@@ -146,8 +134,7 @@ public interface Row {
     /**
      * Retrieve the value for column `fieldName' as an integer value.
      *
-     * @param fieldName
-     *            field name
+     * @param fieldName field name
      * @return value
      */
     int getInt(String fieldName);
@@ -155,8 +142,7 @@ public interface Row {
     /**
      * Retrieve the value for column at position `pos' (starting at 0) as an integer value.
      *
-     * @param pos
-     *            field position
+     * @param pos field position
      *            field position
      * @return value
      */
@@ -165,8 +151,7 @@ public interface Row {
     /**
      * Retrieve the value for column `fieldName' as a long value.
      *
-     * @param fieldName
-     *            field name
+     * @param fieldName field name
      * @return value
      */
     long getLong(String fieldName);
@@ -174,8 +159,7 @@ public interface Row {
     /**
      * Retrieve the value for column at position `pos' (starting at 0) as a long value.
      *
-     * @param pos
-     *            field position
+     * @param pos field position
      * @return value
      */
     long getLong(int pos);
@@ -183,8 +167,7 @@ public interface Row {
     /**
      * Retrieve the value for column `fieldName' as a string value.
      *
-     * @param fieldName
-     *            field name
+     * @param fieldName field name
      * @return value
      */
     String getString(String fieldName);
@@ -192,8 +175,7 @@ public interface Row {
     /**
      * Retrieve the value for column at position `pos' (starting at 0) as a string value.
      *
-     * @param pos
-     *            field position
+     * @param pos field position
      * @return value
      */
     String getString(int pos);
@@ -201,8 +183,7 @@ public interface Row {
     /**
      * Retrieve the value for column `fieldName' as a {@link Time} value.
      *
-     * @param fieldName
-     *            field name
+     * @param fieldName field name
      * @return value
      */
     Time getTime(String fieldName);
@@ -210,8 +191,7 @@ public interface Row {
     /**
      * Retrieve the value for column at position `pos' (starting at 0) as a byte value.
      *
-     * @param pos
-     *            field position
+     * @param pos field position
      * @return value
      */
     Time getTime(int pos);
@@ -219,8 +199,7 @@ public interface Row {
     /**
      * Retrieve the value for column `fieldName' as a {@link Timestamp} value.
      *
-     * @param fieldName
-     *            field name
+     * @param fieldName field name
      * @return value
      */
     Timestamp getTimestamp(String fieldName);
@@ -228,8 +207,7 @@ public interface Row {
     /**
      * Retrieve the value for column at position `pos' (starting at 0) as a byte value.
      *
-     * @param pos
-     *            field position
+     * @param pos field position
      * @return value
      */
     Timestamp getTimestamp(int pos);

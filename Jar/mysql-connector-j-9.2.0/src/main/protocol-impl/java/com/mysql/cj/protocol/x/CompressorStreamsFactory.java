@@ -57,14 +57,12 @@ public class CompressorStreamsFactory {
     /**
      * Creates an instance of an {@link InputStream} that wraps around the given {@link InputStream} and knows how to inflate data using the algorithm given in
      * this class' constructor.
-     *
+     * <p>
      * If the compression algorithm operates in steam mode (continuous) then create and reuse one single instance of the compressor {@link InputStream}, else
      * create a new instance every time.
      *
-     * @param in
-     *            the {@link InputStream} to use as source of the bytes to inflate.
-     * @return
-     *         the new inflater {@link InputStream} wrapper instance.
+     * @param in the {@link InputStream} to use as source of the bytes to inflate.
+     * @return the new inflater {@link InputStream} wrapper instance.
      */
     public InputStream getInputStreamInstance(InputStream in) {
         InputStream underlyingIn = in;
@@ -80,11 +78,11 @@ public class CompressorStreamsFactory {
 
         InputStream compressionIn;
         try {
-            compressionIn = Util.getInstance(InputStream.class, this.compressionAlgorithm.getInputStreamClassName(), new Class<?>[] { InputStream.class },
-                    new Object[] { underlyingIn }, null);
+            compressionIn = Util.getInstance(InputStream.class, this.compressionAlgorithm.getInputStreamClassName(), new Class<?>[]{InputStream.class},
+                    new Object[]{underlyingIn}, null);
         } catch (CJException e) {
             throw ExceptionFactory.createException(WrongArgumentException.class, Messages.getString("Protocol.Compression.IoFactory.0",
-                    new Object[] { this.compressionAlgorithm.getInputStreamClassName(), this.compressionAlgorithm.getAlgorithmIdentifier() }), e);
+                    new Object[]{this.compressionAlgorithm.getInputStreamClassName(), this.compressionAlgorithm.getAlgorithmIdentifier()}), e);
         }
 
         if (areCompressedStreamsContinuous()) {
@@ -96,14 +94,12 @@ public class CompressorStreamsFactory {
     /**
      * Creates an instance of an {@link OutputStream} that wraps around the given {@link OutputStream} and knows how to deflate data using the algorithm given
      * in this class' constructor.
-     *
+     * <p>
      * If the compression algorithm operates in steam mode (continuous) then create and reuse one single instance of the compressor {@link OutputStream}, else
      * create a new instance every time.
      *
-     * @param out
-     *            the {@link OutputStream} to use as target of the bytes to deflate.
-     * @return
-     *         the new deflater {@link OutputStream} wrapper instance.
+     * @param out the {@link OutputStream} to use as target of the bytes to deflate.
+     * @return the new deflater {@link OutputStream} wrapper instance.
      */
     public OutputStream getOutputStreamInstance(OutputStream out) {
         OutputStream underlyingOut = out;
@@ -119,11 +115,11 @@ public class CompressorStreamsFactory {
 
         OutputStream compressionOut;
         try {
-            compressionOut = Util.getInstance(OutputStream.class, this.compressionAlgorithm.getOutputStreamClassName(), new Class<?>[] { OutputStream.class },
-                    new Object[] { underlyingOut }, null);
+            compressionOut = Util.getInstance(OutputStream.class, this.compressionAlgorithm.getOutputStreamClassName(), new Class<?>[]{OutputStream.class},
+                    new Object[]{underlyingOut}, null);
         } catch (CJException e) {
             throw ExceptionFactory.createException(WrongArgumentException.class, Messages.getString("Protocol.Compression.IoFactory.1",
-                    new Object[] { this.compressionAlgorithm.getOutputStreamClassName(), this.compressionAlgorithm.getAlgorithmIdentifier() }), e);
+                    new Object[]{this.compressionAlgorithm.getOutputStreamClassName(), this.compressionAlgorithm.getAlgorithmIdentifier()}), e);
         }
 
         if (areCompressedStreamsContinuous()) {

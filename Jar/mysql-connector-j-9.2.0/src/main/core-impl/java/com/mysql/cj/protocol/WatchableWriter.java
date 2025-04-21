@@ -43,8 +43,7 @@ public class WatchableWriter extends CharArrayWriter {
     }
 
     /**
-     * @param watcher
-     *            {@link WriterWatcher}
+     * @param watcher {@link WriterWatcher}
      */
     public void setWatcher(WriterWatcher watcher) {
         this.watcher = watcher;

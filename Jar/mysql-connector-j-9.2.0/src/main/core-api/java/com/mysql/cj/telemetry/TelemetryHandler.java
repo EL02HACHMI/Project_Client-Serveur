@@ -24,7 +24,7 @@ import java.util.function.BiConsumer;
 
 /**
  * A handler for telemetry operations. Implementations must forward each operation to an underlying telemetry API or SDK.
- *
+ * <p>
  * A default no-op implementation is provided so that telemetry may be turned off with minimal impact to the driver code.
  */
 public interface TelemetryHandler {
@@ -43,12 +43,9 @@ public interface TelemetryHandler {
      * }
      * }</pre>
      *
-     * @param spanName
-     *            the span name that identifies this telemetry span
-     * @param args
-     *            arguments used for interpolating the specified span name via {@link String#format(String, Object...)}
-     * @return
-     *         the newly-created span object
+     * @param spanName the span name that identifies this telemetry span
+     * @param args     arguments used for interpolating the specified span name via {@link String#format(String, Object...)}
+     * @return the newly-created span object
      */
     TelemetrySpan startSpan(TelemetrySpanName spanName, Object... args);
 
@@ -56,8 +53,7 @@ public interface TelemetryHandler {
      * Registers the specified {@link TelemetrySpan} as a link target for subsequent new spans. Spans created after will include links to all registered link
      * target spans in the order they were added.
      *
-     * @param span
-     *            the {@link TelemetrySpan} to be registered as a link target for subsequent new spans
+     * @param span the {@link TelemetrySpan} to be registered as a link target for subsequent new spans
      */
     default void addLinkTarget(TelemetrySpan span) {
         // Noop.
@@ -66,8 +62,7 @@ public interface TelemetryHandler {
     /**
      * Removes the specified span from the list of registered link targets.
      *
-     * @param span
-     *            the {@link TelemetrySpan} to be removed from the list of registered link targets
+     * @param span the {@link TelemetrySpan} to be removed from the list of registered link targets
      */
     default void removeLinkTarget(TelemetrySpan span) {
         // Noop.
@@ -76,8 +71,7 @@ public interface TelemetryHandler {
     /**
      * Injects telemetry context propagation information into the specified consumer.
      *
-     * @param traceparentConsumer
-     *            the consumer that will process the telemetry context propagation information
+     * @param traceparentConsumer the consumer that will process the telemetry context propagation information
      */
     default void propagateContext(BiConsumer<String, String> traceparentConsumer) {
         // Noop.
@@ -86,8 +80,7 @@ public interface TelemetryHandler {
     /**
      * The telemetry context propagation default key name.
      *
-     * @return
-     *         the default name of the key used in telemetry context propagation
+     * @return the default name of the key used in telemetry context propagation
      */
     default String getContextPropagationKey() {
         return "traceparent";

@@ -1148,7 +1148,7 @@ public class CollectionModifyTest extends BaseCollectionTestCase {
         assertEquals(maxrec, recCnt);
 
         //  /*
-        res = this.collection.modify("$.F4 = ?").set("$.F4", 1).bind(new Object[] { l2 }).sort("$.F1 asc").execute();
+        res = this.collection.modify("$.F4 = ?").set("$.F4", 1).bind(new Object[]{l2}).sort("$.F1 asc").execute();
         assertEquals(1, res.getAffectedItemsCount());
         //  */
     }

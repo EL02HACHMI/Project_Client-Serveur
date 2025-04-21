@@ -43,22 +43,24 @@ import com.mysql.cj.util.Util;
 
 public abstract class CoreSession implements Session {
 
+    /**
+     * Null logger shared by all connections at startup
+     */
+    protected static final Log NULL_LOGGER = new NullLogger(Log.LOGGER_INSTANCE_NAME);
+    private final Lock lock = new ReentrantLock();
     protected PropertySet propertySet;
     protected ExceptionInterceptor exceptionInterceptor;
-
-    /** The logger we're going to use */
+    /**
+     * The logger we're going to use
+     */
     protected transient Log log;
-
-    /** Null logger shared by all connections at startup */
-    protected static final Log NULL_LOGGER = new NullLogger(Log.LOGGER_INSTANCE_NAME);
-
     protected transient Protocol<? extends Message> protocol;
     protected MessageBuilder<? extends Message> messageBuilder;
-
-    /** The point in time when this connection was created */
+    /**
+     * The point in time when this connection was created
+     */
     protected long connectionCreationTimeMillis = 0;
     protected HostInfo hostInfo = null;
-
     protected RuntimeProperty<Boolean> gatherPerfMetrics;
     protected RuntimeProperty<String> characterEncoding;
     protected RuntimeProperty<Boolean> disconnectOnExpiredPasswords;
@@ -66,16 +68,17 @@ public abstract class CoreSession implements Session {
     protected RuntimeProperty<Boolean> autoReconnect;
     protected RuntimeProperty<Boolean> autoReconnectForPools;
     protected RuntimeProperty<Boolean> maintainTimeStats;
-
-    /** The max-rows setting for current session */
+    /**
+     * The max-rows setting for current session
+     */
     protected int sessionMaxRows = -1;
-
-    /** The event sink to use for profiling */
+    /**
+     * The event sink to use for profiling
+     */
     private ProfilerEventHandler eventSink;
-
-    private final Lock lock = new ReentrantLock();
-
-    /** The telemetry handler to process telemetry operations */
+    /**
+     * The telemetry handler to process telemetry operations
+     */
     private TelemetryHandler telemetryHandler = null;
 
     public CoreSession(HostInfo hostInfo, PropertySet propSet) {
@@ -202,13 +205,13 @@ public abstract class CoreSession implements Session {
     }
 
     @Override
-    public void setTelemetryHandler(TelemetryHandler telemetryHandler) {
-        this.telemetryHandler = telemetryHandler;
+    public TelemetryHandler getTelemetryHandler() {
+        return this.telemetryHandler;
     }
 
     @Override
-    public TelemetryHandler getTelemetryHandler() {
-        return this.telemetryHandler;
+    public void setTelemetryHandler(TelemetryHandler telemetryHandler) {
+        this.telemetryHandler = telemetryHandler;
     }
 
     @Override

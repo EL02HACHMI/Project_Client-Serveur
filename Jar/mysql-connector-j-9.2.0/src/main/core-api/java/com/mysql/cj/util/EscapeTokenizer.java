@@ -41,23 +41,20 @@ public class EscapeTokenizer {
     private static final char CHR_END_TOKEN = '}';
     private static final char CHR_VARIABLE = '@';
     private static final char CHR_SPACE = ' ';
-
+    private final Lock lock = new ReentrantLock();
     private String source = null;
     private int sourceLength = 0;
     private int pos = 0;
-
     private boolean emittingEscapeCode = false;
     private boolean sawVariableUse = false;
     private int bracesLevel = 0;
     private boolean inQuotes = false;
     private char quoteChar = 0;
-    private final Lock lock = new ReentrantLock();
 
     /**
      * Creates a new EscapeTokenizer object.
      *
-     * @param source
-     *            the string to tokenize
+     * @param source the string to tokenize
      */
     public EscapeTokenizer(String source) {
         this.source = source;

@@ -27,11 +27,11 @@ public class NoopTelemetryScope implements TelemetryScope {
 
     private static NoopTelemetryScope INSTANCE = new NoopTelemetryScope();
 
-    public static NoopTelemetryScope getInstance() {
-        return INSTANCE;
+    private NoopTelemetryScope() {
     }
 
-    private NoopTelemetryScope() {
+    public static NoopTelemetryScope getInstance() {
+        return INSTANCE;
     }
 
 }

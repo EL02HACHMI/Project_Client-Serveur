@@ -44,16 +44,6 @@ public enum TelemetryAttribute {
     THREAD_ID("thread.id"), //
     THREAD_NAME("thread.name");
 
-    private String key = null;
-
-    private TelemetryAttribute(String key) {
-        this.key = key;
-    }
-
-    public String getKey() {
-        return this.key;
-    }
-
     /*
      * Most common operation values.
      */
@@ -75,5 +65,13 @@ public enum TelemetryAttribute {
     public static final String OPERATION_SHOW = "SHOW";
     public static final String OPERATION_SHUTDOWN = "SHUTDOWN";
     public static final String OPERATION_USE = "USE";
+    private String key = null;
+    private TelemetryAttribute(String key) {
+        this.key = key;
+    }
+
+    public String getKey() {
+        return this.key;
+    }
 
 }

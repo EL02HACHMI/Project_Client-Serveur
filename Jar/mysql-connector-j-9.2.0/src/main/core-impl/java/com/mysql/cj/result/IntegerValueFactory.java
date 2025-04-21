@@ -42,7 +42,7 @@ public class IntegerValueFactory extends AbstractNumericValueFactory<Integer> {
     public Integer createFromBigInteger(BigInteger i) {
         if (this.jdbcCompliantTruncationForReads
                 && (i.compareTo(Constants.BIG_INTEGER_MIN_INTEGER_VALUE) < 0 || i.compareTo(Constants.BIG_INTEGER_MAX_INTEGER_VALUE) > 0)) {
-            throw new NumberOutOfRange(Messages.getString("ResultSet.NumberOutOfRange", new Object[] { i, getTargetTypeName() }));
+            throw new NumberOutOfRange(Messages.getString("ResultSet.NumberOutOfRange", new Object[]{i, getTargetTypeName()}));
         }
         return i.intValue();
     }
@@ -50,7 +50,7 @@ public class IntegerValueFactory extends AbstractNumericValueFactory<Integer> {
     @Override
     public Integer createFromLong(long l) {
         if (this.jdbcCompliantTruncationForReads && (l < Integer.MIN_VALUE || l > Integer.MAX_VALUE)) {
-            throw new NumberOutOfRange(Messages.getString("ResultSet.NumberOutOfRange", new Object[] { Long.valueOf(l).toString(), getTargetTypeName() }));
+            throw new NumberOutOfRange(Messages.getString("ResultSet.NumberOutOfRange", new Object[]{Long.valueOf(l).toString(), getTargetTypeName()}));
         }
         return (int) l;
     }
@@ -59,7 +59,7 @@ public class IntegerValueFactory extends AbstractNumericValueFactory<Integer> {
     public Integer createFromBigDecimal(BigDecimal d) {
         if (this.jdbcCompliantTruncationForReads
                 && (d.compareTo(Constants.BIG_DECIMAL_MIN_INTEGER_VALUE) < 0 || d.compareTo(Constants.BIG_DECIMAL_MAX_INTEGER_VALUE) > 0)) {
-            throw new NumberOutOfRange(Messages.getString("ResultSet.NumberOutOfRange", new Object[] { d, getTargetTypeName() }));
+            throw new NumberOutOfRange(Messages.getString("ResultSet.NumberOutOfRange", new Object[]{d, getTargetTypeName()}));
         }
         return (int) d.longValue();
     }
@@ -67,7 +67,7 @@ public class IntegerValueFactory extends AbstractNumericValueFactory<Integer> {
     @Override
     public Integer createFromDouble(double d) {
         if (this.jdbcCompliantTruncationForReads && (d < Integer.MIN_VALUE || d > Integer.MAX_VALUE)) {
-            throw new NumberOutOfRange(Messages.getString("ResultSet.NumberOutOfRange", new Object[] { d, getTargetTypeName() }));
+            throw new NumberOutOfRange(Messages.getString("ResultSet.NumberOutOfRange", new Object[]{d, getTargetTypeName()}));
         }
         return (int) d;
     }
@@ -76,7 +76,7 @@ public class IntegerValueFactory extends AbstractNumericValueFactory<Integer> {
     public Integer createFromBit(byte[] bytes, int offset, int length) {
         long l = DataTypeUtil.bitToLong(bytes, offset, length);
         if (this.jdbcCompliantTruncationForReads && l >> 32 != 0) {
-            throw new NumberOutOfRange(Messages.getString("ResultSet.NumberOutOfRange", new Object[] { Long.valueOf(l).toString(), getTargetTypeName() }));
+            throw new NumberOutOfRange(Messages.getString("ResultSet.NumberOutOfRange", new Object[]{Long.valueOf(l).toString(), getTargetTypeName()}));
         }
         return (int) l;
     }

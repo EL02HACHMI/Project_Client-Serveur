@@ -62,12 +62,10 @@ public class InternalXBaseTestCase {
     protected static final String DEFAULT_METADATA_CHARSET = "latin1";
 
     public String baseUrl = System.getProperty(PropertyDefinitions.SYSP_testsuite_url_mysqlx);
-    protected boolean isSetForXTests = this.baseUrl != null && this.baseUrl.length() > 0;
-    protected SessionFactory fact = new SessionFactory();
-
     public HostInfo testHostInfo;
     public Properties testProperties = new Properties();
-
+    protected boolean isSetForXTests = this.baseUrl != null && this.baseUrl.length() > 0;
+    protected SessionFactory fact = new SessionFactory();
     private ServerVersion mysqlVersion;
 
     public InternalXBaseTestCase() {
@@ -87,6 +85,49 @@ public class InternalXBaseTestCase {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    protected static <EX extends Throwable> EX assertThrows(Class<EX> throwable, Callable<?> testRoutine) {
+        return assertThrows("", throwable, null, testRoutine);
+    }
+
+    protected static <EX extends Throwable> EX assertThrows(String message, Class<EX> throwable, Callable<?> testRoutine) {
+        return assertThrows(message, throwable, null, testRoutine);
+    }
+
+    protected static <EX extends Throwable> EX assertThrows(Class<EX> throwable, String msgMatchesRegex, Callable<?> testRoutine) {
+        return assertThrows("", throwable, msgMatchesRegex, testRoutine);
+    }
+
+    protected static <EX extends Throwable> EX assertThrows(String message, Class<EX> throwable, String msgMatchesRegex, Callable<?> testRoutine) {
+        if (message.length() > 0) {
+            message += " ";
+        }
+        try {
+            testRoutine.call();
+        } catch (Throwable t) {
+            assertTrue(throwable.isAssignableFrom(t.getClass()), message + "expected exception of type '" + throwable.getName()
+                    + "' but instead a exception of type '" + t.getClass().getName() + "' was thrown.");
+            assertFalse(msgMatchesRegex != null && !t.getMessage().matches(msgMatchesRegex),
+                    message + "the error message «" + t.getMessage() + "» was expected to match «" + msgMatchesRegex + "».");
+            return throwable.cast(t);
+        }
+        fail(message + "expected exception of type '" + throwable.getName() + "'.");
+
+        // never reaches here
+        return null;
+    }
+
+    protected static void assertSessionStatusEquals(Session sess, String statusVariable, String expected) {
+        SqlResult rs = sess.sql("SHOW SESSION STATUS LIKE '" + statusVariable + "'").execute();
+        String actual = rs.fetchOne().getString(1);
+        assertEquals(expected, actual);
+    }
+
+    protected static void assertSessionStatusNotEquals(Session sess, String statusVariable, String unexpected) {
+        SqlResult rs = sess.sql("SHOW SESSION STATUS LIKE '" + statusVariable + "'").execute();
+        String actual = rs.fetchOne().getString(1);
+        assertNotEquals(unexpected, actual);
     }
 
     public String getTestHost() {
@@ -156,7 +197,6 @@ public class InternalXBaseTestCase {
      * Create a temporary collection for testing.
      *
      * @param protocol
-     *
      * @return the temporary collection name
      */
     public String createTempTestCollection(XProtocol protocol) {
@@ -187,42 +227,10 @@ public class InternalXBaseTestCase {
         }
     }
 
-    protected static <EX extends Throwable> EX assertThrows(Class<EX> throwable, Callable<?> testRoutine) {
-        return assertThrows("", throwable, null, testRoutine);
-    }
-
-    protected static <EX extends Throwable> EX assertThrows(String message, Class<EX> throwable, Callable<?> testRoutine) {
-        return assertThrows(message, throwable, null, testRoutine);
-    }
-
-    protected static <EX extends Throwable> EX assertThrows(Class<EX> throwable, String msgMatchesRegex, Callable<?> testRoutine) {
-        return assertThrows("", throwable, msgMatchesRegex, testRoutine);
-    }
-
-    protected static <EX extends Throwable> EX assertThrows(String message, Class<EX> throwable, String msgMatchesRegex, Callable<?> testRoutine) {
-        if (message.length() > 0) {
-            message += " ";
-        }
-        try {
-            testRoutine.call();
-        } catch (Throwable t) {
-            assertTrue(throwable.isAssignableFrom(t.getClass()), message + "expected exception of type '" + throwable.getName()
-                    + "' but instead a exception of type '" + t.getClass().getName() + "' was thrown.");
-            assertFalse(msgMatchesRegex != null && !t.getMessage().matches(msgMatchesRegex),
-                    message + "the error message «" + t.getMessage() + "» was expected to match «" + msgMatchesRegex + "».");
-            return throwable.cast(t);
-        }
-        fail(message + "expected exception of type '" + throwable.getName() + "'.");
-
-        // never reaches here
-        return null;
-    }
-
     /**
      * Checks if the MySQL version we are connected to meets the minimum {@link ServerVersion} provided.
      *
-     * @param version
-     *            the minimum {@link ServerVersion} accepted
+     * @param version the minimum {@link ServerVersion} accepted
      * @return true or false according to versions comparison
      */
     protected boolean mysqlVersionMeetsMinimum(ServerVersion version) {
@@ -240,10 +248,8 @@ public class InternalXBaseTestCase {
     /**
      * Checks if the MySQL version we are connected to meets the minimum {@link ServerVersion} provided.
      *
-     * @param url
-     *            server URL
-     * @param version
-     *            the minimum {@link ServerVersion} accepted
+     * @param url     server URL
+     * @param version the minimum {@link ServerVersion} accepted
      * @return true or false according to versions comparison
      */
     protected boolean mysqlVersionMeetsMinimum(String url, ServerVersion version) {
@@ -256,18 +262,6 @@ public class InternalXBaseTestCase {
             return this.mysqlVersion.meetsMinimum(version);
         }
         return false;
-    }
-
-    protected static void assertSessionStatusEquals(Session sess, String statusVariable, String expected) {
-        SqlResult rs = sess.sql("SHOW SESSION STATUS LIKE '" + statusVariable + "'").execute();
-        String actual = rs.fetchOne().getString(1);
-        assertEquals(expected, actual);
-    }
-
-    protected static void assertSessionStatusNotEquals(Session sess, String statusVariable, String unexpected) {
-        SqlResult rs = sess.sql("SHOW SESSION STATUS LIKE '" + statusVariable + "'").execute();
-        String actual = rs.fetchOne().getString(1);
-        assertNotEquals(unexpected, actual);
     }
 
     protected boolean isPluginActive(String plugin) {

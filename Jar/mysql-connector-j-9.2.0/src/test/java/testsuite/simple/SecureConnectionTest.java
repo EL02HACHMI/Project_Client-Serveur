@@ -143,7 +143,7 @@ public class SecureConnectionTest extends BaseTestCase {
 
     /**
      * Test authentication with a user that requires an SSL connection.
-     *
+     * <p>
      * This test requires the CA truststore and the client keystore available in src/test/config/ssl-test-certs.
      * The server needs to be configured with the CA and server certificates from src/test/config/ssl-test-certs.
      *
@@ -233,7 +233,7 @@ public class SecureConnectionTest extends BaseTestCase {
 
     /**
      * Test authentication with a user that requires an SSL connection and an authorized client certificate.
-     *
+     * <p>
      * This test requires the CA truststore and the client keystore available in src/test/config/ssl-test-certs.
      * The server needs to be configured with the CA and server certificates from src/test/config/ssl-test-certs.
      *

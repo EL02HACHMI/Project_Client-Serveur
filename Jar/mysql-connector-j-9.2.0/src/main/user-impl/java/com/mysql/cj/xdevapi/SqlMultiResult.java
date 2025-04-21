@@ -40,8 +40,7 @@ public class SqlMultiResult implements SqlResult, ResultStreamer {
     /**
      * Constructor.
      *
-     * @param resultStream
-     *            Supplies the result stream depending on query type. Could be {@link SqlSingleResult}, {@link SqlUpdateResult} etc.
+     * @param resultStream Supplies the result stream depending on query type. Could be {@link SqlSingleResult}, {@link SqlUpdateResult} etc.
      */
     public SqlMultiResult(Supplier<SqlResult> resultStream) {
         this.resultStream = resultStream;

@@ -57,7 +57,7 @@ public class InstantValueEncoder extends AbstractValueEncoder {
                 sb = new StringBuilder("'");
                 sb.append(adjustLocalTime(((Instant) binding.getValue()).atOffset(ZoneOffset.UTC)
                         .atZoneSameInstant(this.serverSession.getDefaultTimeZone().toZoneId()).toLocalTime(), binding.getField())
-                                .format(TimeUtil.TIME_FORMATTER_WITH_OPTIONAL_MICROS));
+                        .format(TimeUtil.TIME_FORMATTER_WITH_OPTIONAL_MICROS));
                 sb.append("'");
                 return sb.toString();
             case DATETIME:
@@ -70,8 +70,8 @@ public class InstantValueEncoder extends AbstractValueEncoder {
                 sb = new StringBuilder();
 
                 sb.append(TimeUtil.getSimpleDateFormat(null, "''yyyy-MM-dd HH:mm:ss",
-                        binding.getMysqlType() == MysqlType.TIMESTAMP && this.preserveInstants.getValue() ? this.serverSession.getSessionTimeZone()
-                                : this.serverSession.getDefaultTimeZone())
+                                binding.getMysqlType() == MysqlType.TIMESTAMP && this.preserveInstants.getValue() ? this.serverSession.getSessionTimeZone()
+                                        : this.serverSession.getDefaultTimeZone())
                         .format(x));
 
                 if (this.serverSession.getCapabilities().serverSupportsFracSecs() && x.getNanos() > 0) {
@@ -103,7 +103,7 @@ public class InstantValueEncoder extends AbstractValueEncoder {
 
             default:
                 throw ExceptionFactory.createException(WrongArgumentException.class,
-                        Messages.getString("PreparedStatement.67", new Object[] { binding.getValue().getClass().getName(), binding.getMysqlType().toString() }),
+                        Messages.getString("PreparedStatement.67", new Object[]{binding.getValue().getClass().getName(), binding.getMysqlType().toString()}),
                         this.exceptionInterceptor);
         }
     }
@@ -144,14 +144,14 @@ public class InstantValueEncoder extends AbstractValueEncoder {
             case LONGTEXT:
                 intoPacket.writeBytes(StringSelfDataType.STRING_LENENC,
                         StringUtils.getBytes(((Instant) binding.getValue()).atOffset(ZoneOffset.UTC)
-                                .format(this.sendFractionalSeconds.getValue() && ((Instant) binding.getValue()).getNano() > 0
-                                        ? TimeUtil.DATETIME_FORMATTER_WITH_NANOS_WITH_OFFSET
-                                        : TimeUtil.DATETIME_FORMATTER_NO_FRACT_WITH_OFFSET),
+                                        .format(this.sendFractionalSeconds.getValue() && ((Instant) binding.getValue()).getNano() > 0
+                                                ? TimeUtil.DATETIME_FORMATTER_WITH_NANOS_WITH_OFFSET
+                                                : TimeUtil.DATETIME_FORMATTER_NO_FRACT_WITH_OFFSET),
                                 this.charEncoding.getValue()));
                 return;
             default:
                 throw ExceptionFactory.createException(WrongArgumentException.class,
-                        Messages.getString("PreparedStatement.67", new Object[] { binding.getValue().getClass().getName(), binding.getMysqlType().toString() }),
+                        Messages.getString("PreparedStatement.67", new Object[]{binding.getValue().getClass().getName(), binding.getMysqlType().toString()}),
                         this.exceptionInterceptor);
         }
     }

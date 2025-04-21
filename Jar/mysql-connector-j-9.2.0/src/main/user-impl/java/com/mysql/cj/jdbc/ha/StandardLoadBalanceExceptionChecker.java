@@ -48,7 +48,7 @@ public class StandardLoadBalanceExceptionChecker implements LoadBalanceException
             }
             if (this.sqlStateList != null) {
                 // check against SQLState list
-                for (Iterator<String> i = this.sqlStateList.iterator(); i.hasNext();) {
+                for (Iterator<String> i = this.sqlStateList.iterator(); i.hasNext(); ) {
                     if (sqlState.startsWith(i.next().toString())) {
                         return true;
                     }
@@ -63,7 +63,7 @@ public class StandardLoadBalanceExceptionChecker implements LoadBalanceException
 
         if (this.sqlExClassList != null) {
             // check against configured class lists
-            for (Iterator<Class<?>> i = this.sqlExClassList.iterator(); i.hasNext();) {
+            for (Iterator<Class<?>> i = this.sqlExClassList.iterator(); i.hasNext(); ) {
                 if (i.next().isInstance(ex)) {
                     return true;
                 }

@@ -59,15 +59,27 @@ import testsuite.BaseTestCase;
 
 public class AuthenticationTest extends BaseTestCase {
 
+    private static final String WL16490_ID_TOKEN = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJteXN1YmoiLCJpc3MiOiJodHRwczovL215aXNzdWVyLmNvbSIsImV4cCI6Mj"
+            + "EzNDgyOTc4Mn0.RTeEvRQsA_P3CDMyS3Q-cH9D9fioWZel5RVPygE9EzGGE94URT_EeyasayAamCIdo8f9_G5q3TAqiyGANZcnPG0prayJONVjGuu6AXCtkk43v7MvGDRVGx-Cn1clekts4z"
+            + "09wdHdAGNak8SgVSq5WxKlo00uvNlPQjlh5927B38xBvEg8fISi0yVljpQT8SUCcBlcJL0Kk9uww3aF03qQIKB_TXaMIqsJM_Bm7llE3MtqzxMA8LoP7Weg1sblEMr-gSCPnrJ3HcKYXjFlF"
+            + "DPnq6qOLw4tR-o87SFuFUD0D6cgdWieh2rvTjv1dpl9mI0MArRZuVaiCmpreZUxdyrio3dXCkNVg_mWNmrBoCPrM0D_Wr4X22YHiChLb4F8UHU6H6l_YgQCw8jr727LOccYSiEyc4xe5dHeQ"
+            + "rsRf4sexQ37_yjnYszvWulIOFLSxbV1HJHuvPPG76Cwe_fUvwxsHqX14JvXcGRSW3QfYN3edqXUu3cIHKgddcWWbO4E52xODHWz8IPpR_LfVttn4lsEJB8ELcSE_dR77fo59kWj-TOTLNXDR"
+            + "C6W5X1QoLBrOQn1PDpA3KL7UvWHHKP7FyqoSi64UYGrAvzZCo_zhRoHjsW-gX7FsgRPs_Xujls6j8kGupJ7f8svTlpiPZt832OmxxUPabE52rgxFqDirSkFa8";
+    private static final String WL16490_OPENID_SERVER_CONFIG = "JSON://{\"myissuer\":\"{\\\\\"kty\\\\\":\\\\\"RSA\\\\\",\\\\\"n\\\\\":\\\\\"26unngWQbtxxQr7kASZ"
+            + "zd1mSAF5fHTIvkcqOqRGc1dEaaZBETuVnLZFiaG8C3fQf-_9J7NwcN42EueDJOLf8SJ_qeFdT1wdMLZNzvlmZVspeIlNlH2YRXw7zYZt5MxVH4kgHkXF9vW4f3QzujP1I7ogva_YAue2GFYF"
+            + "tYpeHGMzGsyNrvvRfQoVMPR3yaZDvaH-6A5PHP5nnKoLzYZqKz4nTrXh9c4ZjGSQLdAj3Pe_jkgXgqOrXoQPwKPsE_m8PT5kRJvnKIWqWXFILIFn4s7rNySM6nXNmF1c0_EFx8MBo-I6j9Js"
+            + "d5NxbXDVopyuNVJfO-cj_QXBGFNBl1AosfS1MvA-Wej3Nuf_mOwAiDCx7yZIdLkL_IvmHFEhBBUeTn0QB_SxGzinEK6BzVxNK5RlrxOkPSRF_0voXI_9Sa9jJDCnR7rhcfTCmbrVaEPkREU6"
+            + "vCVEVHKCC7lQoHCfp5wSM0jEyCBi7P8wDqvpWfk8g8sqZkPjIAQRht84GsMQ5ifBuB-p4ed_v8X3Z_aKsSz4zVai8O4RCnbE-JgP2tzY7eaCqNpIByl8DopDVpJjMF4rFxuxSCD_dNi4UDEf"
+            + "Yz9RrUgXRNQ_bxpcxCCwL0t0u95JyJs5IN5YD4b9NV0p1nmuuK8_03q1ZBrd7ODWDqU8DtQ_vav4PbI9tpeknH78\\\\\",\\\\\"e\\\\\":\\\\\"AQAB\\\\\","
+            + "\\\\\"alg\\\\\":\\\\\"RS256\\\\\",\\\\\"use\\\\\":\\\\\"sig\\\\\",\\\\\"name\\\\\":\\\\\"https://myissuer.com\\\\\"}\"}";
+
     /**
      * Overrides the random parts of the SCRAM-SHA-1 or SCRAM-SHA-256 authentication elements (<code>cnonce</code> and <code>clientFirstMessageBare</code>) with
      * the given values from the official test vector specified in <a href="https://tools.ietf.org/html/rfc5802#section-5">RFC 5802, Section 5</a> and <a
      * href="https://tools.ietf.org/html/rfc7677#section-3">RFC 7677, Section 3</a>.
      *
-     * @param authPlugin
-     *            the {@link AuthenticationPlugin} where to override the internal randomly generated values.
-     * @param nonce
-     *            the nonce to inject into the authentication plugin object.
+     * @param authPlugin the {@link AuthenticationPlugin} where to override the internal randomly generated values.
+     * @param nonce      the nonce to inject into the authentication plugin object.
      */
     private void overrideSaslClientData(AuthenticationPlugin<NativePacketPayload> authPlugin, String nonce) {
         try {
@@ -729,20 +741,6 @@ public class AuthenticationTest extends BaseTestCase {
             }
         }
     }
-
-    private static final String WL16490_ID_TOKEN = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJteXN1YmoiLCJpc3MiOiJodHRwczovL215aXNzdWVyLmNvbSIsImV4cCI6Mj"
-            + "EzNDgyOTc4Mn0.RTeEvRQsA_P3CDMyS3Q-cH9D9fioWZel5RVPygE9EzGGE94URT_EeyasayAamCIdo8f9_G5q3TAqiyGANZcnPG0prayJONVjGuu6AXCtkk43v7MvGDRVGx-Cn1clekts4z"
-            + "09wdHdAGNak8SgVSq5WxKlo00uvNlPQjlh5927B38xBvEg8fISi0yVljpQT8SUCcBlcJL0Kk9uww3aF03qQIKB_TXaMIqsJM_Bm7llE3MtqzxMA8LoP7Weg1sblEMr-gSCPnrJ3HcKYXjFlF"
-            + "DPnq6qOLw4tR-o87SFuFUD0D6cgdWieh2rvTjv1dpl9mI0MArRZuVaiCmpreZUxdyrio3dXCkNVg_mWNmrBoCPrM0D_Wr4X22YHiChLb4F8UHU6H6l_YgQCw8jr727LOccYSiEyc4xe5dHeQ"
-            + "rsRf4sexQ37_yjnYszvWulIOFLSxbV1HJHuvPPG76Cwe_fUvwxsHqX14JvXcGRSW3QfYN3edqXUu3cIHKgddcWWbO4E52xODHWz8IPpR_LfVttn4lsEJB8ELcSE_dR77fo59kWj-TOTLNXDR"
-            + "C6W5X1QoLBrOQn1PDpA3KL7UvWHHKP7FyqoSi64UYGrAvzZCo_zhRoHjsW-gX7FsgRPs_Xujls6j8kGupJ7f8svTlpiPZt832OmxxUPabE52rgxFqDirSkFa8";
-    private static final String WL16490_OPENID_SERVER_CONFIG = "JSON://{\"myissuer\":\"{\\\\\"kty\\\\\":\\\\\"RSA\\\\\",\\\\\"n\\\\\":\\\\\"26unngWQbtxxQr7kASZ"
-            + "zd1mSAF5fHTIvkcqOqRGc1dEaaZBETuVnLZFiaG8C3fQf-_9J7NwcN42EueDJOLf8SJ_qeFdT1wdMLZNzvlmZVspeIlNlH2YRXw7zYZt5MxVH4kgHkXF9vW4f3QzujP1I7ogva_YAue2GFYF"
-            + "tYpeHGMzGsyNrvvRfQoVMPR3yaZDvaH-6A5PHP5nnKoLzYZqKz4nTrXh9c4ZjGSQLdAj3Pe_jkgXgqOrXoQPwKPsE_m8PT5kRJvnKIWqWXFILIFn4s7rNySM6nXNmF1c0_EFx8MBo-I6j9Js"
-            + "d5NxbXDVopyuNVJfO-cj_QXBGFNBl1AosfS1MvA-Wej3Nuf_mOwAiDCx7yZIdLkL_IvmHFEhBBUeTn0QB_SxGzinEK6BzVxNK5RlrxOkPSRF_0voXI_9Sa9jJDCnR7rhcfTCmbrVaEPkREU6"
-            + "vCVEVHKCC7lQoHCfp5wSM0jEyCBi7P8wDqvpWfk8g8sqZkPjIAQRht84GsMQ5ifBuB-p4ed_v8X3Z_aKsSz4zVai8O4RCnbE-JgP2tzY7eaCqNpIByl8DopDVpJjMF4rFxuxSCD_dNi4UDEf"
-            + "Yz9RrUgXRNQ_bxpcxCCwL0t0u95JyJs5IN5YD4b9NV0p1nmuuK8_03q1ZBrd7ODWDqU8DtQ_vav4PbI9tpeknH78\\\\\",\\\\\"e\\\\\":\\\\\"AQAB\\\\\","
-            + "\\\\\"alg\\\\\":\\\\\"RS256\\\\\",\\\\\"use\\\\\":\\\\\"sig\\\\\",\\\\\"name\\\\\":\\\\\"https://myissuer.com\\\\\"}\"}";
 
     /**
      * Test for WL#16490 - OpenID Connect authentication support.

@@ -45,7 +45,6 @@ import com.mysql.cj.telemetry.TelemetryHandler;
  * {@link Session} exposes logical level which user API uses internally to call {@link Protocol} methods.
  * It's a higher-level abstraction than MySQL server session ({@link ServerSession}). {@link Protocol} and {@link ServerSession} methods
  * should never be used directly from user API.
- *
  */
 public interface Session {
 
@@ -58,13 +57,9 @@ public interface Session {
     /**
      * Re-authenticates as the given user and password
      *
-     * @param userName
-     *            DB user name
-     * @param password
-     *            DB user password
-     * @param database
-     *            database name
-     *
+     * @param userName DB user name
+     * @param password DB user password
+     * @param database database name
      */
     void changeUser(String userName, String password, String database);
 
@@ -74,7 +69,6 @@ public interface Session {
 
     /**
      * Log-off of the MySQL server and close the socket.
-     *
      */
     void quit();
 
@@ -87,12 +81,9 @@ public interface Session {
      * Does the version of the MySQL server we are connected to meet the given
      * minimums?
      *
-     * @param major
-     *            major version number
-     * @param minor
-     *            minor version number
-     * @param subminor
-     *            sub-minor version number
+     * @param major    major version number
+     * @param minor    minor version number
+     * @param subminor sub-minor version number
      * @return true if current server version equal or higher than provided one
      */
     boolean versionMeetsMinimum(int major, int minor, int subminor);
@@ -126,14 +117,13 @@ public interface Session {
      * Sets the comment that will be prepended to all statements sent to the server. Do not use slash-star or star-slash tokens in the comment as these will be
      * added by the driver itself.
      *
-     * @param comment
-     *            query comment string
+     * @param comment query comment string
      */
     void setQueryComment(String comment);
 
-    void setTelemetryHandler(TelemetryHandler telemetryHandler);
-
     TelemetryHandler getTelemetryHandler();
+
+    void setTelemetryHandler(TelemetryHandler telemetryHandler);
 
     HostInfo getHostInfo();
 
@@ -150,28 +140,16 @@ public interface Session {
     /**
      * Add listener for this session status changes.
      *
-     * @param l
-     *            {@link SessionEventListener} instance.
+     * @param l {@link SessionEventListener} instance.
      */
     void addListener(SessionEventListener l);
 
     /**
      * Remove session listener.
      *
-     * @param l
-     *            {@link SessionEventListener} instance.
+     * @param l {@link SessionEventListener} instance.
      */
     void removeListener(SessionEventListener l);
-
-    public static interface SessionEventListener {
-
-        void handleNormalClose();
-
-        void handleReconnect();
-
-        void handleCleanup(Throwable whyCleanedUp);
-
-    }
 
     boolean isClosed();
 
@@ -182,20 +160,13 @@ public interface Session {
     /**
      * Synchronously query database with applying rows filtering and mapping.
      *
-     * @param message
-     *            query message
-     * @param rowFilter
-     *            row filter function
-     * @param rowMapper
-     *            row map function
-     * @param collector
-     *            result collector
-     * @param <M>
-     *            Message type
-     * @param <R>
-     *            Row type
-     * @param <RES>
-     *            Result type
+     * @param message   query message
+     * @param rowFilter row filter function
+     * @param rowMapper row map function
+     * @param collector result collector
+     * @param <M>       Message type
+     * @param <R>       Row type
+     * @param <RES>     Result type
      * @return List of rows
      */
     default <M extends Message, R, RES> RES query(M message, Predicate<Row> rowFilter, Function<Row, R> rowMapper, Collector<R, ?, RES> collector) {
@@ -205,14 +176,10 @@ public interface Session {
     /**
      * Synchronously query database.
      *
-     * @param message
-     *            query message
-     * @param resultBuilder
-     *            ResultBuilder instance
-     * @param <M>
-     *            Message type
-     * @param <R>
-     *            Result type
+     * @param message       query message
+     * @param resultBuilder ResultBuilder instance
+     * @param <M>           Message type
+     * @param <R>           Result type
      * @return {@link QueryResult} object
      */
     default <M extends Message, R extends QueryResult> R query(M message, ResultBuilder<R> resultBuilder) {
@@ -222,18 +189,24 @@ public interface Session {
     /**
      * Asynchronously query database.
      *
-     * @param message
-     *            query message
-     * @param resultBuilder
-     *            ResultBuilder instance
-     * @param <M>
-     *            Message type
-     * @param <R>
-     *            Result type
+     * @param message       query message
+     * @param resultBuilder ResultBuilder instance
+     * @param <M>           Message type
+     * @param <R>           Result type
      * @return CompletableFuture providing a {@link QueryResult} object
      */
     default <M extends Message, R extends QueryResult> CompletableFuture<R> queryAsync(M message, ResultBuilder<R> resultBuilder) {
         throw ExceptionFactory.createException(CJOperationNotSupportedException.class, "Not supported");
+    }
+
+    public static interface SessionEventListener {
+
+        void handleNormalClose();
+
+        void handleReconnect();
+
+        void handleCleanup(Throwable whyCleanedUp);
+
     }
 
 }

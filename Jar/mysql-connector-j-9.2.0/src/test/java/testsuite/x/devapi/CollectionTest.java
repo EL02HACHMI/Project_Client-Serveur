@@ -363,10 +363,10 @@ public class CollectionTest extends BaseCollectionTestCase {
         }
 
         // MySQL 8.0.17 and above.
-        String[] supArrTypes = new String[] { "BINARY(100)", "CHAR(100)", "DATE", "DATETIME", "TIME", "DECIMAL(10,2)", "SIGNED", "SIGNED INTEGER", "UNSIGNED",
-                "UNSIGNED INTEGER" };
-        String[] expArrTypes = new String[] { "binary(100)", "char(100)", "date", "datetime", "time", "decimal(10, 2)", "signed", "signed", "unsigned",
-                "unsigned" };
+        String[] supArrTypes = new String[]{"BINARY(100)", "CHAR(100)", "DATE", "DATETIME", "TIME", "DECIMAL(10,2)", "SIGNED", "SIGNED INTEGER", "UNSIGNED",
+                "UNSIGNED INTEGER"};
+        String[] expArrTypes = new String[]{"binary(100)", "char(100)", "date", "datetime", "time", "decimal(10, 2)", "signed", "signed", "unsigned",
+                "unsigned"};
         for (int i = 0; i < supArrTypes.length; i++) {
             String supArrType = supArrTypes[i];
             String expArrType = expArrTypes[i];
@@ -438,9 +438,9 @@ public class CollectionTest extends BaseCollectionTestCase {
                         + "{\"field\": \"$.myField2\", \"type\": \"CHAR(100)\", \"array\": true}]}"));
 
         // TS_6 - supported index types that aren't supported in array fields; empty collection.
-        String[] unsupArrTypes = new String[] { "INT", "INT UNSIGNED", "TINYINT", "TINYINT UNSIGNED", "SMALLINT", "SMALLINT UNSIGNED", "MEDIUMINT",
+        String[] unsupArrTypes = new String[]{"INT", "INT UNSIGNED", "TINYINT", "TINYINT UNSIGNED", "SMALLINT", "SMALLINT UNSIGNED", "MEDIUMINT",
                 "MEDIUMINT UNSIGNED", "INTEGER", "INTEGER UNSIGNED", "BIGINT", "BIGINT UNSIGNED", "REAL", "REAL UNSIGNED", "FLOAT", "FLOAT UNSIGNED", "DOUBLE",
-                "DOUBLE UNSIGNED", "DECIMAL UNSIGNED", "NUMERIC", "NUMERIC UNSIGNED", "TIMESTAMP", "TEXT(100)", "GEOJSON" };
+                "DOUBLE UNSIGNED", "DECIMAL UNSIGNED", "NUMERIC", "NUMERIC UNSIGNED", "TIMESTAMP", "TEXT(100)", "GEOJSON"};
         for (int i = 0; i < unsupArrTypes.length; i++) {
             String unsupArrType = unsupArrTypes[i];
 
@@ -460,8 +460,8 @@ public class CollectionTest extends BaseCollectionTestCase {
 
         // TS_7 - supported index types in array indexes for numeric data; collection with numeric data.
         this.collection.add("{\"myField\": 1.23}").add("{\"myField\": [1, 2, 3]}").execute();
-        supArrTypes = new String[] { "BINARY(100)", "CHAR(100)", "TIME", "DECIMAL(10,2)", "SIGNED", "SIGNED INTEGER", "UNSIGNED", "UNSIGNED INTEGER" };
-        expArrTypes = new String[] { "binary(100)", "char(100)", "time", "decimal(10, 2)", "signed", "signed", "unsigned", "unsigned" };
+        supArrTypes = new String[]{"BINARY(100)", "CHAR(100)", "TIME", "DECIMAL(10,2)", "SIGNED", "SIGNED INTEGER", "UNSIGNED", "UNSIGNED INTEGER"};
+        expArrTypes = new String[]{"binary(100)", "char(100)", "time", "decimal(10, 2)", "signed", "signed", "unsigned", "unsigned"};
         for (int i = 0; i < supArrTypes.length; i++) {
             String supArrType = supArrTypes[i];
             String expArrType = expArrTypes[i];
@@ -475,7 +475,7 @@ public class CollectionTest extends BaseCollectionTestCase {
             validateIndex("myIndex", this.collectionName, 1, false, false, true, expArrType);
             this.collection.dropIndex("myIndex");
         }
-        unsupArrTypes = new String[] { "DATE", "DATETIME" };
+        unsupArrTypes = new String[]{"DATE", "DATETIME"};
         for (int i = 0; i < unsupArrTypes.length; i++) {
             String unsupArrType = unsupArrTypes[i];
 
@@ -491,8 +491,8 @@ public class CollectionTest extends BaseCollectionTestCase {
 
         // TS_8 - supported index types in array indexes for string data; collection with string data.
         this.collection.add("{\"myField\": \"myData\"}").add("{\"myField\": [\"myData1\", \"myData2\", \"myData3\"]}").execute();
-        supArrTypes = new String[] { "BINARY(100)", "CHAR(100)" };
-        expArrTypes = new String[] { "binary(100)", "char(100)" };
+        supArrTypes = new String[]{"BINARY(100)", "CHAR(100)"};
+        expArrTypes = new String[]{"binary(100)", "char(100)"};
         for (int i = 0; i < supArrTypes.length; i++) {
             String supArrType = supArrTypes[i];
             String expArrType = expArrTypes[i];
@@ -506,7 +506,7 @@ public class CollectionTest extends BaseCollectionTestCase {
             validateIndex("myIndex", this.collectionName, 1, false, false, true, expArrType);
             this.collection.dropIndex("myIndex");
         }
-        unsupArrTypes = new String[] { "DATE", "DATETIME", "TIME", "DECIMAL(10,2)", "SIGNED", "SIGNED INTEGER", "UNSIGNED", "UNSIGNED INTEGER" };
+        unsupArrTypes = new String[]{"DATE", "DATETIME", "TIME", "DECIMAL(10,2)", "SIGNED", "SIGNED INTEGER", "UNSIGNED", "UNSIGNED INTEGER"};
         for (int i = 0; i < unsupArrTypes.length; i++) {
             String unsupArrType = unsupArrTypes[i];
 
@@ -525,8 +525,8 @@ public class CollectionTest extends BaseCollectionTestCase {
         // TS_9 - supported index types in array indexes for datetime data; collection with datetime data.
         this.collection.add("{\"myField\": \"2019-01-01 05:20:50\"}").add("{\"myField\": [\"2019-01-01\", \"2018-12-31 22:33:44\", \"2018-01-01 01:02:03\"]}")
                 .execute();
-        supArrTypes = new String[] { "BINARY(100)", "CHAR(100)", "DATE", "DATETIME" };
-        expArrTypes = new String[] { "binary(100)", "char(100)", "date", "datetime" };
+        supArrTypes = new String[]{"BINARY(100)", "CHAR(100)", "DATE", "DATETIME"};
+        expArrTypes = new String[]{"binary(100)", "char(100)", "date", "datetime"};
         for (int i = 0; i < supArrTypes.length; i++) {
             String supArrType = supArrTypes[i];
             String expArrType = expArrTypes[i];
@@ -540,7 +540,7 @@ public class CollectionTest extends BaseCollectionTestCase {
             validateIndex("myIndex", this.collectionName, 1, false, false, true, expArrType);
             this.collection.dropIndex("myIndex");
         }
-        unsupArrTypes = new String[] { "TIME", "DECIMAL(10,2)", "SIGNED", "SIGNED INTEGER", "UNSIGNED", "UNSIGNED INTEGER" };
+        unsupArrTypes = new String[]{"TIME", "DECIMAL(10,2)", "SIGNED", "SIGNED INTEGER", "UNSIGNED", "UNSIGNED INTEGER"};
         for (int i = 0; i < unsupArrTypes.length; i++) {
             String unsupArrType = unsupArrTypes[i];
 
@@ -558,8 +558,8 @@ public class CollectionTest extends BaseCollectionTestCase {
 
         // TS_10 - supported index types in array indexes for time data; collection with time data.
         this.collection.add("{\"myField\": \"05:20:50\"}").add("{\"myField\": [\"01:01:01.555\", \"22:33:44.000000001\", \"23:59:59\"]}").execute();
-        supArrTypes = new String[] { "BINARY(100)", "CHAR(100)", "TIME" };
-        expArrTypes = new String[] { "binary(100)", "char(100)", "time" };
+        supArrTypes = new String[]{"BINARY(100)", "CHAR(100)", "TIME"};
+        expArrTypes = new String[]{"binary(100)", "char(100)", "time"};
         for (int i = 0; i < supArrTypes.length; i++) {
             String supArrType = supArrTypes[i];
             String expArrType = expArrTypes[i];
@@ -573,7 +573,7 @@ public class CollectionTest extends BaseCollectionTestCase {
             validateIndex("myIndex", this.collectionName, 1, false, false, true, expArrType);
             this.collection.dropIndex("myIndex");
         }
-        unsupArrTypes = new String[] { "DATE", "DATETIME", "DECIMAL(10,2)", "SIGNED", "SIGNED INTEGER", "UNSIGNED", "UNSIGNED INTEGER" };
+        unsupArrTypes = new String[]{"DATE", "DATETIME", "DECIMAL(10,2)", "SIGNED", "SIGNED INTEGER", "UNSIGNED", "UNSIGNED INTEGER"};
         for (int i = 0; i < unsupArrTypes.length; i++) {
             String unsupArrType = unsupArrTypes[i];
 
@@ -606,7 +606,7 @@ public class CollectionTest extends BaseCollectionTestCase {
     }
 
     private void validateIndex(String keyName, String collName, int sequence, boolean unique, boolean required, boolean array, String dataType,
-            boolean unsigned, Integer length) throws Exception {
+                               boolean unsigned, Integer length) throws Exception {
         boolean indexFound = false;
 
         SqlResult res = this.session.sql("show index from `" + collName + "`").execute();
@@ -722,18 +722,18 @@ public class CollectionTest extends BaseCollectionTestCase {
             coll.remove("true").execute();
 
             coll.add(
-                    "{\"intField\" : [1,2,3], \"uintField\" : [51,52,53], \"dateField\" : [\"2019-1-1\", \"2019-2-1\", \"2019-3-1\"], \"datetimeField\" : [\"9999-12-30 23:59:59\", \"9999-12-31 23:59:59\", \"9999-12-31 23:59:59\"], \"charField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"binaryField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"],\"timeField\" : [\"10.30\", \"11.30\", \"12.30\"], \"floatField\" : [51.2,52.4,53.6]}")
+                            "{\"intField\" : [1,2,3], \"uintField\" : [51,52,53], \"dateField\" : [\"2019-1-1\", \"2019-2-1\", \"2019-3-1\"], \"datetimeField\" : [\"9999-12-30 23:59:59\", \"9999-12-31 23:59:59\", \"9999-12-31 23:59:59\"], \"charField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"binaryField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"],\"timeField\" : [\"10.30\", \"11.30\", \"12.30\"], \"floatField\" : [51.2,52.4,53.6]}")
                     .execute();
             coll.add(
-                    "{\"intField\" : [11,12,3], \"uintField\" : [51,52,53], \"dateField\" : [\"2019-1-1\", \"2019-2-1\", \"2019-3-1\"], \"datetimeField\" : [\"9999-12-30 23:59:59\", \"9999-12-29 23:59:59\", \"9999-12-31 23:59:59\"], \"charField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"binaryField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"timeField\" : [\"10.30\", \"11.30\", \"12.30\"], \"floatField\" : [51.1,52.9,53.0]}")
+                            "{\"intField\" : [11,12,3], \"uintField\" : [51,52,53], \"dateField\" : [\"2019-1-1\", \"2019-2-1\", \"2019-3-1\"], \"datetimeField\" : [\"9999-12-30 23:59:59\", \"9999-12-29 23:59:59\", \"9999-12-31 23:59:59\"], \"charField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"binaryField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"timeField\" : [\"10.30\", \"11.30\", \"12.30\"], \"floatField\" : [51.1,52.9,53.0]}")
                     .execute();
             coll.add(
-                    "{\"intField\" : [12,23,34], \"uintField\" : [51,52,53], \"dateField\" : [\"2019-1-1\", \"2019-2-1\", \"2019-3-1\"], \"datetimeField\" : [\"9999-12-31 23:59:59\", \"9999-12-31 23:59:59\", \"9999-12-7 23:59:59\"], \"charField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"binaryField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"timeField\" : [\"10.30\", \"11.30\", \"12.30\"], \"floatField\" : [51.2,52.7,53.6]}")
+                            "{\"intField\" : [12,23,34], \"uintField\" : [51,52,53], \"dateField\" : [\"2019-1-1\", \"2019-2-1\", \"2019-3-1\"], \"datetimeField\" : [\"9999-12-31 23:59:59\", \"9999-12-31 23:59:59\", \"9999-12-7 23:59:59\"], \"charField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"binaryField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"timeField\" : [\"10.30\", \"11.30\", \"12.30\"], \"floatField\" : [51.2,52.7,53.6]}")
                     .execute();
 
             try {
                 coll.add(
-                        "{\"intField\" : \"[1,2,3]\", \"uintField\" : [51,52,53], \"dateField\" : [\"2019-1-1\", \"2019-2-1\", \"2019-3-1\"], \"datetimeField\" : [\"9999-12-30 23:59:59\", \"9999-12-31 23:59:59\", \"9999-12-31 23:59:59\"], \"charField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"binaryField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"],\"timeField\" : [\"10.30\", \"11.30\", \"12.30\"], \"floatField\" : [51.2,52.4,53.6]}")
+                                "{\"intField\" : \"[1,2,3]\", \"uintField\" : [51,52,53], \"dateField\" : [\"2019-1-1\", \"2019-2-1\", \"2019-3-1\"], \"datetimeField\" : [\"9999-12-30 23:59:59\", \"9999-12-31 23:59:59\", \"9999-12-31 23:59:59\"], \"charField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"binaryField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"],\"timeField\" : [\"10.30\", \"11.30\", \"12.30\"], \"floatField\" : [51.2,52.4,53.6]}")
                         .execute();
                 assertTrue(false);
             } catch (Exception e) {
@@ -817,18 +817,18 @@ public class CollectionTest extends BaseCollectionTestCase {
             validateArrayIndex("timeArrayIndex", "coll1", 1);
 
             coll.add(
-                    "{\"intField\" : [1,2,3], \"dateField\" : [\"2019-1-1\", \"2019-2-1\", \"2019-3-1\"], \"charField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"timeField\" : [\"10.30\", \"11.30\", \"12.30\"]}")
+                            "{\"intField\" : [1,2,3], \"dateField\" : [\"2019-1-1\", \"2019-2-1\", \"2019-3-1\"], \"charField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"timeField\" : [\"10.30\", \"11.30\", \"12.30\"]}")
                     .execute();
             coll.add(
-                    "{\"intField\" : [11,12,3], \"dateField\" : [\"2019-1-1\", \"2019-2-1\", \"2019-3-1\"], \"charField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"timeField\" : [\"10.30\", \"11.30\", \"12.30\"]}")
+                            "{\"intField\" : [11,12,3], \"dateField\" : [\"2019-1-1\", \"2019-2-1\", \"2019-3-1\"], \"charField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"timeField\" : [\"10.30\", \"11.30\", \"12.30\"]}")
                     .execute();
             coll.add(
-                    "{\"intField\" : [12,23,34], \"dateField\" : [\"2019-1-1\", \"2019-2-1\", \"2019-3-1\"], \"charField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"timeField\" : [\"10.30\", \"11.30\", \"12.30\"]}")
+                            "{\"intField\" : [12,23,34], \"dateField\" : [\"2019-1-1\", \"2019-2-1\", \"2019-3-1\"], \"charField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"timeField\" : [\"10.30\", \"11.30\", \"12.30\"]}")
                     .execute();
 
             try {
                 coll.add(
-                        "{\"dateField\" : [\"2019-1-1\", \"2019-2-1\", \"2019-3-1\"], \"charField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"timeField\" : [\"10.30\", \"11.30\", \"12.30\"]}")
+                                "{\"dateField\" : [\"2019-1-1\", \"2019-2-1\", \"2019-3-1\"], \"charField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"timeField\" : [\"10.30\", \"11.30\", \"12.30\"]}")
                         .execute();
                 assertTrue(false);
             } catch (Exception e) {
@@ -838,7 +838,7 @@ public class CollectionTest extends BaseCollectionTestCase {
 
             try {
                 coll.add(
-                        "{\"intField\" : [1,2,3], \"charField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"timeField\" : [\"10.30\", \"11.30\", \"12.30\"]}")
+                                "{\"intField\" : [1,2,3], \"charField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"timeField\" : [\"10.30\", \"11.30\", \"12.30\"]}")
                         .execute();
                 assertTrue(false);
             } catch (Exception e) {
@@ -848,7 +848,7 @@ public class CollectionTest extends BaseCollectionTestCase {
 
             try {
                 coll.add(
-                        "{\"intField\" : [11,12,3], \"dateField\" : [\"2019-1-1\", \"2019-2-1\", \"2019-3-1\"], \"timeField\" : [\"10.30\", \"11.30\", \"12.30\"]}")
+                                "{\"intField\" : [11,12,3], \"dateField\" : [\"2019-1-1\", \"2019-2-1\", \"2019-3-1\"], \"timeField\" : [\"10.30\", \"11.30\", \"12.30\"]}")
                         .execute();
                 assertTrue(false);
             } catch (Exception e) {
@@ -858,7 +858,7 @@ public class CollectionTest extends BaseCollectionTestCase {
 
             try {
                 coll.add(
-                        "{\"intField\" : [11,12,3], \"dateField\" : [\"2019-1-1\", \"2019-2-1\", \"2019-3-1\"], \"charField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"]}")
+                                "{\"intField\" : [11,12,3], \"dateField\" : [\"2019-1-1\", \"2019-2-1\", \"2019-3-1\"], \"charField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"]}")
                         .execute();
                 assertTrue(false);
             } catch (Exception e) {
@@ -868,7 +868,7 @@ public class CollectionTest extends BaseCollectionTestCase {
 
             try {
                 coll.add(
-                        "{\"intField\" : \"[12,23,34]\", \"dateField\" : [\"2019-1-1\", \"2019-2-1\", \"2019-3-1\"], \"charField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"timeField\" : [\"10.30\", \"11.30\", \"12.30\"]}")
+                                "{\"intField\" : \"[12,23,34]\", \"dateField\" : [\"2019-1-1\", \"2019-2-1\", \"2019-3-1\"], \"charField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"timeField\" : [\"10.30\", \"11.30\", \"12.30\"]}")
                         .execute();
                 assertTrue(false);
             } catch (Exception e) {
@@ -878,7 +878,7 @@ public class CollectionTest extends BaseCollectionTestCase {
 
             try {
                 coll.add(
-                        "{\"intField\" : 12, \"dateField\" : [\"2019-1-1\", \"2019-2-1\", \"2019-3-1\"], \"charField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"timeField\" : [\"10.30\", \"11.30\", \"12.30\"]}")
+                                "{\"intField\" : 12, \"dateField\" : [\"2019-1-1\", \"2019-2-1\", \"2019-3-1\"], \"charField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"timeField\" : [\"10.30\", \"11.30\", \"12.30\"]}")
                         .execute();
                 assertTrue(false);
             } catch (Exception e) {
@@ -953,21 +953,21 @@ public class CollectionTest extends BaseCollectionTestCase {
             validateArrayIndex("multiArrayIndex", "coll1", 6);
 
             coll.add(
-                    "{\"intField\" : [12,23,34], \"uintField\" : [51,52,53], \"dateField\" : \"2019-1-1\", \"datetimeField\" : \"9999-12-31 23:59:59\", \"charField\" : \"abcd1\", \"binaryField\" : \"abcd1\", \"timeField\" : \"10.30\", \"decimalField\" : 51.2}")
+                            "{\"intField\" : [12,23,34], \"uintField\" : [51,52,53], \"dateField\" : \"2019-1-1\", \"datetimeField\" : \"9999-12-31 23:59:59\", \"charField\" : \"abcd1\", \"binaryField\" : \"abcd1\", \"timeField\" : \"10.30\", \"decimalField\" : 51.2}")
                     .execute();
             coll.add(
-                    "{\"intField\" : [12,25,34], \"uintField\" : [51,52,53], \"dateField\" : \"2019-1-1\", \"datetimeField\" : \"9999-12-31 23:59:59\", \"charField\" : \"abcd1\", \"binaryField\" : \"abcd1\", \"timeField\" : \"10.30\", \"decimalField\" : 51.2}")
+                            "{\"intField\" : [12,25,34], \"uintField\" : [51,52,53], \"dateField\" : \"2019-1-1\", \"datetimeField\" : \"9999-12-31 23:59:59\", \"charField\" : \"abcd1\", \"binaryField\" : \"abcd1\", \"timeField\" : \"10.30\", \"decimalField\" : 51.2}")
                     .execute();
             coll.add(
-                    "{\"intField\" : [12,23,35], \"uintField\" : [51,52,53], \"dateField\" : \"2019-1-1\", \"datetimeField\" : \"9999-12-31 23:59:59\", \"charField\" : \"abcd1\", \"binaryField\" : \"abcd1\", \"timeField\" : \"10.30\", \"decimalField\" : 51.2}")
+                            "{\"intField\" : [12,23,35], \"uintField\" : [51,52,53], \"dateField\" : \"2019-1-1\", \"datetimeField\" : \"9999-12-31 23:59:59\", \"charField\" : \"abcd1\", \"binaryField\" : \"abcd1\", \"timeField\" : \"10.30\", \"decimalField\" : 51.2}")
                     .execute();
             coll.add(
-                    "{\"intField\" : [18,23,34], \"uintField\" : [51,52,53], \"dateField\" : \"2019-1-1\", \"datetimeField\" : \"9999-12-31 23:59:59\", \"charField\" : \"abcd1\", \"binaryField\" : \"abcd1\", \"timeField\" : \"10.30\", \"decimalField\" : 51.2}")
+                            "{\"intField\" : [18,23,34], \"uintField\" : [51,52,53], \"dateField\" : \"2019-1-1\", \"datetimeField\" : \"9999-12-31 23:59:59\", \"charField\" : \"abcd1\", \"binaryField\" : \"abcd1\", \"timeField\" : \"10.30\", \"decimalField\" : 51.2}")
                     .execute();
 
             try {
                 coll.add(
-                        "{\"intField\" : [12,23,34], \"dateField\" : [\"2019-1-1\", \"2019-2-1\", \"2019-3-1\"], \"charField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"timeField\" : \"10.30\"}")
+                                "{\"intField\" : [12,23,34], \"dateField\" : [\"2019-1-1\", \"2019-2-1\", \"2019-3-1\"], \"charField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"timeField\" : \"10.30\"}")
                         .execute();
                 assertTrue(false);
             } catch (Exception e) {
@@ -977,7 +977,7 @@ public class CollectionTest extends BaseCollectionTestCase {
 
             try {
                 coll.add(
-                        "{\"intField\" : 35, \"dateField\" : \"2019-1-1\", \"charField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"timeField\" : [\"10.30\", \"11.30\", \"12.30\"]}")
+                                "{\"intField\" : 35, \"dateField\" : \"2019-1-1\", \"charField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"timeField\" : [\"10.30\", \"11.30\", \"12.30\"]}")
                         .execute();
                 assertTrue(false);
             } catch (Exception e) {
@@ -1019,21 +1019,21 @@ public class CollectionTest extends BaseCollectionTestCase {
             validateArrayIndex("multiArrayIndex", "coll1", 6);
 
             coll.add(
-                    "{\"intField\" : 12, \"uintField\" : [51,52,53], \"dateField\" : \"2019-1-1\", \"datetimeField\" : \"9999-12-31 23:59:59\", \"charField\" : [\"abcd1\", \"abcd2\", \"abcd3\", \"abcd4\"], \"binaryField\" : \"abcd1\", \"timeField\" : \"10.30\", \"decimalField\" : 51.2}")
+                            "{\"intField\" : 12, \"uintField\" : [51,52,53], \"dateField\" : \"2019-1-1\", \"datetimeField\" : \"9999-12-31 23:59:59\", \"charField\" : [\"abcd1\", \"abcd2\", \"abcd3\", \"abcd4\"], \"binaryField\" : \"abcd1\", \"timeField\" : \"10.30\", \"decimalField\" : 51.2}")
                     .execute();
             coll.add(
-                    "{\"intField\" : 12, \"uintField\" : [51,52,53], \"dateField\" : \"2019-1-1\", \"datetimeField\" : \"9999-12-31 23:59:59\", \"charField\" : [\"abcd1\", \"abcd2\", \"abcd3\", \"abcd4\"], \"binaryField\" : \"abcd1\", \"timeField\" : \"10.30\", \"decimalField\" : 51.2}")
+                            "{\"intField\" : 12, \"uintField\" : [51,52,53], \"dateField\" : \"2019-1-1\", \"datetimeField\" : \"9999-12-31 23:59:59\", \"charField\" : [\"abcd1\", \"abcd2\", \"abcd3\", \"abcd4\"], \"binaryField\" : \"abcd1\", \"timeField\" : \"10.30\", \"decimalField\" : 51.2}")
                     .execute();
             coll.add(
-                    "{\"intField\" : 12, \"uintField\" : [51,52,53], \"dateField\" : \"2019-1-1\", \"datetimeField\" : \"9999-12-31 23:59:59\", \"charField\" : [\"abcd1\", \"abcd2\", \"abcd3\", \"abcd4\"], \"binaryField\" : \"abcd1\", \"timeField\" : \"10.30\", \"decimalField\" : 51.2}")
+                            "{\"intField\" : 12, \"uintField\" : [51,52,53], \"dateField\" : \"2019-1-1\", \"datetimeField\" : \"9999-12-31 23:59:59\", \"charField\" : [\"abcd1\", \"abcd2\", \"abcd3\", \"abcd4\"], \"binaryField\" : \"abcd1\", \"timeField\" : \"10.30\", \"decimalField\" : 51.2}")
                     .execute();
             coll.add(
-                    "{\"intField\" : 18, \"uintField\" : [51,52,53], \"dateField\" : \"2019-1-1\", \"datetimeField\" : \"9999-12-31 23:59:59\", \"charField\" : [\"abcd1\", \"abcd2\", \"abcd3\", \"abcd4\"], \"binaryField\" : \"abcd1\", \"timeField\" : \"10.30\", \"decimalField\" : 51.2}")
+                            "{\"intField\" : 18, \"uintField\" : [51,52,53], \"dateField\" : \"2019-1-1\", \"datetimeField\" : \"9999-12-31 23:59:59\", \"charField\" : [\"abcd1\", \"abcd2\", \"abcd3\", \"abcd4\"], \"binaryField\" : \"abcd1\", \"timeField\" : \"10.30\", \"decimalField\" : 51.2}")
                     .execute();
 
             try {
                 coll.add(
-                        "{\"intField\" : \"[12,23,34]\", \"dateField\" : [\"2019-1-1\", \"2019-2-1\", \"2019-3-1\"], \"charField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"timeField\" : [\"10.30\", \"11.30\", \"12.30\"]}")
+                                "{\"intField\" : \"[12,23,34]\", \"dateField\" : [\"2019-1-1\", \"2019-2-1\", \"2019-3-1\"], \"charField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"timeField\" : [\"10.30\", \"11.30\", \"12.30\"]}")
                         .execute();
                 assertTrue(false);
             } catch (Exception e) {
@@ -1043,7 +1043,7 @@ public class CollectionTest extends BaseCollectionTestCase {
 
             try {
                 coll.add(
-                        "{\"intField\" : 12, \"dateField\" : \"2019-1-1\", \"charField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"timeField\" : \"10.30\"}")
+                                "{\"intField\" : 12, \"dateField\" : \"2019-1-1\", \"charField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"timeField\" : \"10.30\"}")
                         .execute();
                 // Behavior documented : assertTrue(false);
             } catch (Exception e) {
@@ -1085,21 +1085,21 @@ public class CollectionTest extends BaseCollectionTestCase {
             validateArrayIndex("multiArrayIndex", "coll1", 6);
 
             coll.add(
-                    "{\"intField\" : 12, \"uintField\" : [51,52,53], \"dateField\" : \"2019-1-1\", \"datetimeField\" : \"9999-12-31 23:59:59\", \"charField\" : \"abcd1\", \"binaryField\" : \"abcd1\", \"timeField\" : \"10.30\", \"decimalField\" : [51.2, 57.6, 55.8]}")
+                            "{\"intField\" : 12, \"uintField\" : [51,52,53], \"dateField\" : \"2019-1-1\", \"datetimeField\" : \"9999-12-31 23:59:59\", \"charField\" : \"abcd1\", \"binaryField\" : \"abcd1\", \"timeField\" : \"10.30\", \"decimalField\" : [51.2, 57.6, 55.8]}")
                     .execute();
             coll.add(
-                    "{\"intField\" : 12, \"uintField\" : [51,52,53], \"dateField\" : \"2019-1-1\", \"datetimeField\" : \"9999-12-31 23:59:59\", \"charField\" : \"abcd1\", \"binaryField\" : \"abcd1\", \"timeField\" : \"10.30\", \"decimalField\" : [51.2, 57.6, 55.8]}")
+                            "{\"intField\" : 12, \"uintField\" : [51,52,53], \"dateField\" : \"2019-1-1\", \"datetimeField\" : \"9999-12-31 23:59:59\", \"charField\" : \"abcd1\", \"binaryField\" : \"abcd1\", \"timeField\" : \"10.30\", \"decimalField\" : [51.2, 57.6, 55.8]}")
                     .execute();
             coll.add(
-                    "{\"intField\" : 12, \"uintField\" : [51,52,53], \"dateField\" : \"2019-1-1\", \"datetimeField\" : \"9999-12-31 23:59:59\", \"charField\" : \"abcd1\", \"binaryField\" : \"abcd1\", \"timeField\" : \"10.30\", \"decimalField\" : [51.2, 57.6, 55.8]}")
+                            "{\"intField\" : 12, \"uintField\" : [51,52,53], \"dateField\" : \"2019-1-1\", \"datetimeField\" : \"9999-12-31 23:59:59\", \"charField\" : \"abcd1\", \"binaryField\" : \"abcd1\", \"timeField\" : \"10.30\", \"decimalField\" : [51.2, 57.6, 55.8]}")
                     .execute();
             coll.add(
-                    "{\"intField\" : 18, \"uintField\" : [51,52,53], \"dateField\" : \"2019-1-1\", \"datetimeField\" : \"9999-12-31 23:59:59\", \"charField\" : \"abcd1\", \"binaryField\" : \"abcd1\", \"timeField\" : \"10.30\", \"decimalField\" : [51.2, 57.6, 55.8]}")
+                            "{\"intField\" : 18, \"uintField\" : [51,52,53], \"dateField\" : \"2019-1-1\", \"datetimeField\" : \"9999-12-31 23:59:59\", \"charField\" : \"abcd1\", \"binaryField\" : \"abcd1\", \"timeField\" : \"10.30\", \"decimalField\" : [51.2, 57.6, 55.8]}")
                     .execute();
 
             try {
                 coll.add(
-                        "{\"intField\" : \"[12,23,34]\", \"dateField\" : [\"2019-1-1\", \"2019-2-1\", \"2019-3-1\"], \"charField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"timeField\" : [\"10.30\", \"11.30\", \"12.30\"]}")
+                                "{\"intField\" : \"[12,23,34]\", \"dateField\" : [\"2019-1-1\", \"2019-2-1\", \"2019-3-1\"], \"charField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"timeField\" : [\"10.30\", \"11.30\", \"12.30\"]}")
                         .execute();
                 assertTrue(false);
             } catch (Exception e) {
@@ -1109,7 +1109,7 @@ public class CollectionTest extends BaseCollectionTestCase {
 
             try {
                 coll.add(
-                        "{\"intField\" : 12, \"dateField\" : \"2019-1-1\", \"charField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"timeField\" : [\"10.30\", \"11.30\", \"12.30\"]}")
+                                "{\"intField\" : 12, \"dateField\" : \"2019-1-1\", \"charField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"timeField\" : [\"10.30\", \"11.30\", \"12.30\"]}")
                         .execute();
                 assertTrue(false);
             } catch (Exception e) {
@@ -1151,21 +1151,21 @@ public class CollectionTest extends BaseCollectionTestCase {
             validateArrayIndex("multiArrayIndex", "coll1", 6);
 
             coll.add(
-                    "{\"intField\" : 12, \"uintField\" : [51,52,53], \"dateField\" : \"2019-1-1\", \"datetimeField\" : [\"9999-12-31 23:59:59\", \"9999-12-31 23:59:59\", \"9999-12-31 23:59:59\"], \"charField\" : \"abcd1\", \"binaryField\" : \"abcd1\", \"timeField\" : \"10.30\", \"decimalField\" : 51.2}")
+                            "{\"intField\" : 12, \"uintField\" : [51,52,53], \"dateField\" : \"2019-1-1\", \"datetimeField\" : [\"9999-12-31 23:59:59\", \"9999-12-31 23:59:59\", \"9999-12-31 23:59:59\"], \"charField\" : \"abcd1\", \"binaryField\" : \"abcd1\", \"timeField\" : \"10.30\", \"decimalField\" : 51.2}")
                     .execute();
             coll.add(
-                    "{\"intField\" : 12, \"uintField\" : [51,52,53], \"dateField\" : \"2019-1-1\", \"datetimeField\" : [\"9999-12-31 23:59:59\", \"9999-12-31 23:59:59\", \"9999-12-31 23:59:59\"], \"charField\" : \"abcd1\", \"binaryField\" : \"abcd1\", \"timeField\" : \"10.30\", \"decimalField\" : 51.2}")
+                            "{\"intField\" : 12, \"uintField\" : [51,52,53], \"dateField\" : \"2019-1-1\", \"datetimeField\" : [\"9999-12-31 23:59:59\", \"9999-12-31 23:59:59\", \"9999-12-31 23:59:59\"], \"charField\" : \"abcd1\", \"binaryField\" : \"abcd1\", \"timeField\" : \"10.30\", \"decimalField\" : 51.2}")
                     .execute();
             coll.add(
-                    "{\"intField\" : 12, \"uintField\" : [51,52,53], \"dateField\" : \"2019-1-1\", \"datetimeField\" : [\"9999-12-31 23:59:59\", \"9999-12-31 23:59:59\", \"9999-12-31 23:59:59\"], \"charField\" : \"abcd1\", \"binaryField\" : \"abcd1\", \"timeField\" : \"10.30\", \"decimalField\" : 51.2}")
+                            "{\"intField\" : 12, \"uintField\" : [51,52,53], \"dateField\" : \"2019-1-1\", \"datetimeField\" : [\"9999-12-31 23:59:59\", \"9999-12-31 23:59:59\", \"9999-12-31 23:59:59\"], \"charField\" : \"abcd1\", \"binaryField\" : \"abcd1\", \"timeField\" : \"10.30\", \"decimalField\" : 51.2}")
                     .execute();
             coll.add(
-                    "{\"intField\" : 18, \"uintField\" : [51,52,53], \"dateField\" : \"2019-1-1\", \"datetimeField\" : [\"9999-12-31 23:59:59\", \"9999-12-31 23:59:59\", \"9999-12-31 23:59:59\"], \"charField\" : \"abcd1\", \"binaryField\" : \"abcd1\", \"timeField\" : \"10.30\", \"decimalField\" : 51.2}")
+                            "{\"intField\" : 18, \"uintField\" : [51,52,53], \"dateField\" : \"2019-1-1\", \"datetimeField\" : [\"9999-12-31 23:59:59\", \"9999-12-31 23:59:59\", \"9999-12-31 23:59:59\"], \"charField\" : \"abcd1\", \"binaryField\" : \"abcd1\", \"timeField\" : \"10.30\", \"decimalField\" : 51.2}")
                     .execute();
 
             try {
                 coll.add(
-                        "{\"intField\" : \"[12,23,34]\", \"dateField\" : [\"2019-1-1\", \"2019-2-1\", \"2019-3-1\"], \"charField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"timeField\" : [\"10.30\", \"11.30\", \"12.30\"]}")
+                                "{\"intField\" : \"[12,23,34]\", \"dateField\" : [\"2019-1-1\", \"2019-2-1\", \"2019-3-1\"], \"charField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"timeField\" : [\"10.30\", \"11.30\", \"12.30\"]}")
                         .execute();
                 assertTrue(false);
             } catch (Exception e) {
@@ -1175,7 +1175,7 @@ public class CollectionTest extends BaseCollectionTestCase {
 
             try {
                 coll.add(
-                        "{\"intField\" : 12, \"dateField\" : [\"2019-1-1\", \"2019-2-1\", \"2019-3-1\"], \"charField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"timeField\" : [\"10.30\", \"11.30\", \"12.30\"]}")
+                                "{\"intField\" : 12, \"dateField\" : [\"2019-1-1\", \"2019-2-1\", \"2019-3-1\"], \"charField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"timeField\" : [\"10.30\", \"11.30\", \"12.30\"]}")
                         .execute();
                 assertTrue(false);
             } catch (Exception e) {
@@ -1271,30 +1271,30 @@ public class CollectionTest extends BaseCollectionTestCase {
             validateArrayIndex("timeArrayIndex", "coll1", 1);
 
             coll.add(
-                    "{\"intField\" : [1,2,3], \"dateField\" : [\"2019-1-1\", \"2019-2-1\", \"2019-3-1\"], \"charField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"timeField\" : [\"10.30\", \"11.30\", \"12.30\"]}")
+                            "{\"intField\" : [1,2,3], \"dateField\" : [\"2019-1-1\", \"2019-2-1\", \"2019-3-1\"], \"charField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"timeField\" : [\"10.30\", \"11.30\", \"12.30\"]}")
                     .execute();
             coll.add(
-                    "{\"intField\" : [11,12,3], \"dateField\" : [\"2019-1-1\", \"2019-2-1\", \"2019-3-1\"], \"charField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"timeField\" : [\"10.30\", \"11.30\", \"12.30\"]}")
+                            "{\"intField\" : [11,12,3], \"dateField\" : [\"2019-1-1\", \"2019-2-1\", \"2019-3-1\"], \"charField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"timeField\" : [\"10.30\", \"11.30\", \"12.30\"]}")
                     .execute();
             coll.add(
-                    "{\"intField\" : [12,23,34], \"dateField\" : [\"2019-1-1\", \"2019-2-1\", \"2019-3-1\"], \"charField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"timeField\" : [\"10.30\", \"11.30\", \"12.30\"]}")
+                            "{\"intField\" : [12,23,34], \"dateField\" : [\"2019-1-1\", \"2019-2-1\", \"2019-3-1\"], \"charField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"timeField\" : [\"10.30\", \"11.30\", \"12.30\"]}")
                     .execute();
             coll.add(
-                    "{\"dateField\" : [\"2019-1-1\", \"2019-2-1\", \"2019-3-1\"], \"charField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"timeField\" : [\"10.30\", \"11.30\", \"12.30\"]}")
+                            "{\"dateField\" : [\"2019-1-1\", \"2019-2-1\", \"2019-3-1\"], \"charField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"timeField\" : [\"10.30\", \"11.30\", \"12.30\"]}")
                     .execute();
             coll.add(
-                    "{\"intField\" : [1,2,3], \"charField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"timeField\" : [\"10.30\", \"11.30\", \"12.30\"]}")
+                            "{\"intField\" : [1,2,3], \"charField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"timeField\" : [\"10.30\", \"11.30\", \"12.30\"]}")
                     .execute();
             coll.add(
-                    "{\"intField\" : [11,12,3], \"dateField\" : [\"2019-1-1\", \"2019-2-1\", \"2019-3-1\"], \"timeField\" : [\"10.30\", \"11.30\", \"12.30\"]}")
+                            "{\"intField\" : [11,12,3], \"dateField\" : [\"2019-1-1\", \"2019-2-1\", \"2019-3-1\"], \"timeField\" : [\"10.30\", \"11.30\", \"12.30\"]}")
                     .execute();
             coll.add(
-                    "{\"intField\" : [11,12,3], \"dateField\" : [\"2019-1-1\", \"2019-2-1\", \"2019-3-1\"], \"charField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"]}")
+                            "{\"intField\" : [11,12,3], \"dateField\" : [\"2019-1-1\", \"2019-2-1\", \"2019-3-1\"], \"charField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"]}")
                     .execute();
 
             try {
                 coll.add(
-                        "{\"intField\" : \"[12,23,34]\", \"dateField\" : [\"2019-1-1\", \"2019-2-1\", \"2019-3-1\"], \"charField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"timeField\" : [\"10.30\", \"11.30\", \"12.30\"]}")
+                                "{\"intField\" : \"[12,23,34]\", \"dateField\" : [\"2019-1-1\", \"2019-2-1\", \"2019-3-1\"], \"charField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"timeField\" : [\"10.30\", \"11.30\", \"12.30\"]}")
                         .execute();
                 assertTrue(false);
             } catch (Exception e) {
@@ -1385,36 +1385,36 @@ public class CollectionTest extends BaseCollectionTestCase {
             validateArrayIndex("binaryArrayIndex", "coll1", 1);
 
             coll.add(
-                    "{\"intField\" : [], \"uintField\" : [], \"dateField\" : [], \"datetimeField\" : [], \"charField\" : [], \"binaryField\" : [],\"timeField\" : [], \"floatField\" : []}")
+                            "{\"intField\" : [], \"uintField\" : [], \"dateField\" : [], \"datetimeField\" : [], \"charField\" : [], \"binaryField\" : [],\"timeField\" : [], \"floatField\" : []}")
                     .execute();
             coll.add(
-                    "{\"intField\" : [], \"uintField\" : [51,52,53], \"dateField\" : [\"2019-1-1\", \"2019-2-1\", \"2019-3-1\"], \"datetimeField\" : [\"9999-12-30 23:59:59\", \"9999-12-29 23:59:59\", \"9999-12-31 23:59:59\"], \"charField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"binaryField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"timeField\" : [\"10.30\", \"11.30\", \"12.30\"], \"floatField\" : [51.1,52.9,53.0]}")
+                            "{\"intField\" : [], \"uintField\" : [51,52,53], \"dateField\" : [\"2019-1-1\", \"2019-2-1\", \"2019-3-1\"], \"datetimeField\" : [\"9999-12-30 23:59:59\", \"9999-12-29 23:59:59\", \"9999-12-31 23:59:59\"], \"charField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"binaryField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"timeField\" : [\"10.30\", \"11.30\", \"12.30\"], \"floatField\" : [51.1,52.9,53.0]}")
                     .execute();
             coll.add(
-                    "{\"intField\" : [12,23,34], \"uintField\" : [], \"dateField\" : [\"2019-1-1\", \"2019-2-1\", \"2019-3-1\"], \"datetimeField\" : [\"9999-12-31 23:59:59\", \"9999-12-31 23:59:59\", \"9999-12-7 23:59:59\"], \"charField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"binaryField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"timeField\" : [\"10.30\", \"11.30\", \"12.30\"], \"floatField\" : [51.2,52.7,53.6]}")
+                            "{\"intField\" : [12,23,34], \"uintField\" : [], \"dateField\" : [\"2019-1-1\", \"2019-2-1\", \"2019-3-1\"], \"datetimeField\" : [\"9999-12-31 23:59:59\", \"9999-12-31 23:59:59\", \"9999-12-7 23:59:59\"], \"charField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"binaryField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"timeField\" : [\"10.30\", \"11.30\", \"12.30\"], \"floatField\" : [51.2,52.7,53.6]}")
                     .execute();
             coll.add(
-                    "{\"intField\" : [12,23,34], \"uintField\" : [51,52,53], \"dateField\" : [], \"datetimeField\" : [\"9999-12-31 23:59:59\", \"9999-12-31 23:59:59\", \"9999-12-7 23:59:59\"], \"charField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"binaryField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"timeField\" : [\"10.30\", \"11.30\", \"12.30\"], \"floatField\" : [51.2,52.7,53.6]}")
+                            "{\"intField\" : [12,23,34], \"uintField\" : [51,52,53], \"dateField\" : [], \"datetimeField\" : [\"9999-12-31 23:59:59\", \"9999-12-31 23:59:59\", \"9999-12-7 23:59:59\"], \"charField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"binaryField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"timeField\" : [\"10.30\", \"11.30\", \"12.30\"], \"floatField\" : [51.2,52.7,53.6]}")
                     .execute();
             coll.add(
-                    "{\"intField\" : [12,23,34], \"uintField\" : [51,52,53], \"dateField\" : [\"2019-1-1\", \"2019-2-1\", \"2019-3-1\"], \"datetimeField\" : [], \"charField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"binaryField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"timeField\" : [\"10.30\", \"11.30\", \"12.30\"], \"floatField\" : [51.2,52.7,53.6]}")
+                            "{\"intField\" : [12,23,34], \"uintField\" : [51,52,53], \"dateField\" : [\"2019-1-1\", \"2019-2-1\", \"2019-3-1\"], \"datetimeField\" : [], \"charField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"binaryField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"timeField\" : [\"10.30\", \"11.30\", \"12.30\"], \"floatField\" : [51.2,52.7,53.6]}")
                     .execute();
             coll.add(
-                    "{\"intField\" : [12,23,34], \"uintField\" : [51,52,53], \"dateField\" : [\"2019-1-1\", \"2019-2-1\", \"2019-3-1\"], \"datetimeField\" : [\"9999-12-31 23:59:59\", \"9999-12-31 23:59:59\", \"9999-12-7 23:59:59\"], \"charField\" : [], \"binaryField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"timeField\" : [\"10.30\", \"11.30\", \"12.30\"], \"floatField\" : [51.2,52.7,53.6]}")
+                            "{\"intField\" : [12,23,34], \"uintField\" : [51,52,53], \"dateField\" : [\"2019-1-1\", \"2019-2-1\", \"2019-3-1\"], \"datetimeField\" : [\"9999-12-31 23:59:59\", \"9999-12-31 23:59:59\", \"9999-12-7 23:59:59\"], \"charField\" : [], \"binaryField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"timeField\" : [\"10.30\", \"11.30\", \"12.30\"], \"floatField\" : [51.2,52.7,53.6]}")
                     .execute();
             coll.add(
-                    "{\"intField\" : [12,23,34], \"uintField\" : [51,52,53], \"dateField\" : [\"2019-1-1\", \"2019-2-1\", \"2019-3-1\"], \"datetimeField\" : [\"9999-12-31 23:59:59\", \"9999-12-31 23:59:59\", \"9999-12-7 23:59:59\"], \"charField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"binaryField\" : [], \"timeField\" : [\"10.30\", \"11.30\", \"12.30\"], \"floatField\" : [51.2,52.7,53.6]}")
+                            "{\"intField\" : [12,23,34], \"uintField\" : [51,52,53], \"dateField\" : [\"2019-1-1\", \"2019-2-1\", \"2019-3-1\"], \"datetimeField\" : [\"9999-12-31 23:59:59\", \"9999-12-31 23:59:59\", \"9999-12-7 23:59:59\"], \"charField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"binaryField\" : [], \"timeField\" : [\"10.30\", \"11.30\", \"12.30\"], \"floatField\" : [51.2,52.7,53.6]}")
                     .execute();
             coll.add(
-                    "{\"intField\" : [12,23,34], \"uintField\" : [51,52,53], \"dateField\" : [\"2019-1-1\", \"2019-2-1\", \"2019-3-1\"], \"datetimeField\" : [\"9999-12-31 23:59:59\", \"9999-12-31 23:59:59\", \"9999-12-7 23:59:59\"], \"charField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"binaryField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"timeField\" : [], \"floatField\" : [51.2,52.7,53.6]}")
+                            "{\"intField\" : [12,23,34], \"uintField\" : [51,52,53], \"dateField\" : [\"2019-1-1\", \"2019-2-1\", \"2019-3-1\"], \"datetimeField\" : [\"9999-12-31 23:59:59\", \"9999-12-31 23:59:59\", \"9999-12-7 23:59:59\"], \"charField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"binaryField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"timeField\" : [], \"floatField\" : [51.2,52.7,53.6]}")
                     .execute();
             coll.add(
-                    "{\"intField\" : [12,23,34], \"uintField\" : [51,52,53], \"dateField\" : [\"2019-1-1\", \"2019-2-1\", \"2019-3-1\"], \"datetimeField\" : [\"9999-12-31 23:59:59\", \"9999-12-31 23:59:59\", \"9999-12-7 23:59:59\"], \"charField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"binaryField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"timeField\" : [\"10.30\", \"11.30\", \"12.30\"], \"floatField\" : []}")
+                            "{\"intField\" : [12,23,34], \"uintField\" : [51,52,53], \"dateField\" : [\"2019-1-1\", \"2019-2-1\", \"2019-3-1\"], \"datetimeField\" : [\"9999-12-31 23:59:59\", \"9999-12-31 23:59:59\", \"9999-12-7 23:59:59\"], \"charField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"binaryField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"timeField\" : [\"10.30\", \"11.30\", \"12.30\"], \"floatField\" : []}")
                     .execute();
 
             try {
                 coll.add(
-                        "{\"intField\" : [1,[2, 3],4], \"uintField\" : [51,[52, 53],54], \"dateField\" : [\"2019-1-1\", [\"2019-2-1\", \"2019-3-1\"], \"2019-4-1\"], \"datetimeField\" : [\"9999-12-30 23:59:59\", [\"9999-12-31 23:59:59\"], \"9999-12-31 23:59:59\"], \"charField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"binaryField\" : [\"abcd1\", [\"abcd1\", \"abcd2\"], \"abcd4\"],\"timeField\" : [\"10.30\", \"11.30\", \"12.30\"], \"floatField\" : [51.2,[52.4],53.6]}")
+                                "{\"intField\" : [1,[2, 3],4], \"uintField\" : [51,[52, 53],54], \"dateField\" : [\"2019-1-1\", [\"2019-2-1\", \"2019-3-1\"], \"2019-4-1\"], \"datetimeField\" : [\"9999-12-30 23:59:59\", [\"9999-12-31 23:59:59\"], \"9999-12-31 23:59:59\"], \"charField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"binaryField\" : [\"abcd1\", [\"abcd1\", \"abcd2\"], \"abcd4\"],\"timeField\" : [\"10.30\", \"11.30\", \"12.30\"], \"floatField\" : [51.2,[52.4],53.6]}")
                         .execute();
                 assertTrue(false);
             } catch (Exception e) {
@@ -1424,7 +1424,7 @@ public class CollectionTest extends BaseCollectionTestCase {
 
             try {
                 coll.add(
-                        "{\"intField\" : \"\", \"uintField\" : [51,[52, 53],54], \"dateField\" : [\"2019-1-1\", [\"2019-2-1\", \"2019-3-1\"], \"2019-4-1\"], \"datetimeField\" : [\"9999-12-30 23:59:59\", \"9999-12-31 23:59:59\", \"9999-12-31 23:59:59\"], \"charField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"binaryField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"],\"timeField\" : [\"10.30\", \"11.30\", \"12.30\"], \"floatField\" : [51.2,52.4,53.6]}")
+                                "{\"intField\" : \"\", \"uintField\" : [51,[52, 53],54], \"dateField\" : [\"2019-1-1\", [\"2019-2-1\", \"2019-3-1\"], \"2019-4-1\"], \"datetimeField\" : [\"9999-12-30 23:59:59\", \"9999-12-31 23:59:59\", \"9999-12-31 23:59:59\"], \"charField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"binaryField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"],\"timeField\" : [\"10.30\", \"11.30\", \"12.30\"], \"floatField\" : [51.2,52.4,53.6]}")
                         .execute();
                 assertTrue(false);
             } catch (Exception e) {
@@ -1438,7 +1438,7 @@ public class CollectionTest extends BaseCollectionTestCase {
 
             try {
                 coll.add(
-                        "{\"intField\" : [1,5,4], \"dateField\" : \"\", \"datetimeField\" : \"\", \"charField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"binaryField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"],\"timeField\" : \"\", \"floatField\" : [51.2,52.4,53.6]}")
+                                "{\"intField\" : [1,5,4], \"dateField\" : \"\", \"datetimeField\" : \"\", \"charField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"binaryField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"],\"timeField\" : \"\", \"floatField\" : [51.2,52.4,53.6]}")
                         .execute();
                 assertTrue(false);
             } catch (Exception e) {
@@ -1448,7 +1448,7 @@ public class CollectionTest extends BaseCollectionTestCase {
 
             try {
                 coll.add(
-                        "{\"intField\" : [1,5,4], \"dateField\" : [\"2019-1-1\", \"2019-2-1\", \"2019-3-1\", \"2019-4-1\"], \"datetimeField\" : [\"9999-12-30 23:59:59\", \"9999-12-31 23:59:59\", \"9999-12-31 23:59:59\"], \"charField\" : \"\", \"binaryField\" : \"\", \"timeField\" : [\"10.30\", \"11.30\", \"12.30\"], \"floatField\" : [51.2,52.4,53.6]}")
+                                "{\"intField\" : [1,5,4], \"dateField\" : [\"2019-1-1\", \"2019-2-1\", \"2019-3-1\", \"2019-4-1\"], \"datetimeField\" : [\"9999-12-30 23:59:59\", \"9999-12-31 23:59:59\", \"9999-12-31 23:59:59\"], \"charField\" : \"\", \"binaryField\" : \"\", \"timeField\" : [\"10.30\", \"11.30\", \"12.30\"], \"floatField\" : [51.2,52.4,53.6]}")
                         .execute();
             } catch (Exception e) {
                 System.out.println("ERROR : " + e.getMessage());
@@ -1673,13 +1673,13 @@ public class CollectionTest extends BaseCollectionTestCase {
             Collection coll = sch.createCollection(collname, true);
 
             coll.add(
-                    "{\"intField\" : [1,2,3], \"uintField\" : [51,52,53], \"dateField\" : [\"2019-1-1\", \"2019-2-1\", \"2019-3-1\"], \"datetimeField\" : [\"9999-12-30 23:59:59\", \"9999-12-31 23:59:59\", \"9999-12-31 23:59:59\"], \"charField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"binaryField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"],\"timeField\" : [\"10.30\", \"11.30\", \"12.30\"], \"floatField\" : [51.2,52.4,53.6]}")
+                            "{\"intField\" : [1,2,3], \"uintField\" : [51,52,53], \"dateField\" : [\"2019-1-1\", \"2019-2-1\", \"2019-3-1\"], \"datetimeField\" : [\"9999-12-30 23:59:59\", \"9999-12-31 23:59:59\", \"9999-12-31 23:59:59\"], \"charField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"binaryField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"],\"timeField\" : [\"10.30\", \"11.30\", \"12.30\"], \"floatField\" : [51.2,52.4,53.6]}")
                     .execute();
             coll.add(
-                    "{\"intField\" : [11,12,3], \"uintField\" : [51,52,53], \"dateField\" : [\"2019-1-1\", \"2019-2-1\", \"2019-3-1\"], \"datetimeField\" : [\"9999-12-30 23:59:59\", \"9999-12-29 23:59:59\", \"9999-12-31 23:59:59\"], \"charField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"binaryField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"timeField\" : [\"10.30\", \"11.30\", \"12.30\"], \"floatField\" : [51.1,52.9,53.0]}")
+                            "{\"intField\" : [11,12,3], \"uintField\" : [51,52,53], \"dateField\" : [\"2019-1-1\", \"2019-2-1\", \"2019-3-1\"], \"datetimeField\" : [\"9999-12-30 23:59:59\", \"9999-12-29 23:59:59\", \"9999-12-31 23:59:59\"], \"charField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"binaryField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"timeField\" : [\"10.30\", \"11.30\", \"12.30\"], \"floatField\" : [51.1,52.9,53.0]}")
                     .execute();
             coll.add(
-                    "{\"intField\" : [12,23,34], \"uintField\" : [51,52,53], \"dateField\" : [\"2019-1-1\", \"2019-2-1\", \"2019-3-1\"], \"datetimeField\" : [\"9999-12-31 23:59:59\", \"9999-12-31 23:59:59\", \"9999-12-7 23:59:59\"], \"charField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"binaryField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"timeField\" : [\"10.30\", \"11.30\", \"12.30\"], \"floatField\" : [51.2,52.7,53.6]}")
+                            "{\"intField\" : [12,23,34], \"uintField\" : [51,52,53], \"dateField\" : [\"2019-1-1\", \"2019-2-1\", \"2019-3-1\"], \"datetimeField\" : [\"9999-12-31 23:59:59\", \"9999-12-31 23:59:59\", \"9999-12-7 23:59:59\"], \"charField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"binaryField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"timeField\" : [\"10.30\", \"11.30\", \"12.30\"], \"floatField\" : [51.2,52.7,53.6]}")
                     .execute();
 
             /* create basic index */
@@ -1705,18 +1705,18 @@ public class CollectionTest extends BaseCollectionTestCase {
             coll.remove("true").execute();
 
             coll.add(
-                    "{\"intField\" : [1,2,3], \"uintField\" : [51,52,53], \"dateField\" : [\"2019-1-1\", \"2019-2-1\", \"2019-3-1\"], \"datetimeField\" : [\"9999-12-30 23:59:59\", \"9999-12-31 23:59:59\", \"9999-12-31 23:59:59\"], \"charField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"binaryField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"],\"timeField\" : [\"10.30\", \"11.30\", \"12.30\"], \"floatField\" : [51.2,52.4,53.6]}")
+                            "{\"intField\" : [1,2,3], \"uintField\" : [51,52,53], \"dateField\" : [\"2019-1-1\", \"2019-2-1\", \"2019-3-1\"], \"datetimeField\" : [\"9999-12-30 23:59:59\", \"9999-12-31 23:59:59\", \"9999-12-31 23:59:59\"], \"charField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"binaryField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"],\"timeField\" : [\"10.30\", \"11.30\", \"12.30\"], \"floatField\" : [51.2,52.4,53.6]}")
                     .execute();
             coll.add(
-                    "{\"intField\" : [11,12,3], \"uintField\" : [51,52,53], \"dateField\" : [\"2019-1-1\", \"2019-2-1\", \"2019-3-1\"], \"datetimeField\" : [\"9999-12-30 23:59:59\", \"9999-12-29 23:59:59\", \"9999-12-31 23:59:59\"], \"charField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"binaryField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"timeField\" : [\"10.30\", \"11.30\", \"12.30\"], \"floatField\" : [51.1,52.9,53.0]}")
+                            "{\"intField\" : [11,12,3], \"uintField\" : [51,52,53], \"dateField\" : [\"2019-1-1\", \"2019-2-1\", \"2019-3-1\"], \"datetimeField\" : [\"9999-12-30 23:59:59\", \"9999-12-29 23:59:59\", \"9999-12-31 23:59:59\"], \"charField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"binaryField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"timeField\" : [\"10.30\", \"11.30\", \"12.30\"], \"floatField\" : [51.1,52.9,53.0]}")
                     .execute();
             coll.add(
-                    "{\"intField\" : [12,23,34], \"uintField\" : [51,52,53], \"dateField\" : [\"2019-1-1\", \"2019-2-1\", \"2019-3-1\"], \"datetimeField\" : [\"9999-12-31 23:59:59\", \"9999-12-31 23:59:59\", \"9999-12-7 23:59:59\"], \"charField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"binaryField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"timeField\" : [\"10.30\", \"11.30\", \"12.30\"], \"floatField\" : [51.2,52.7,53.6]}")
+                            "{\"intField\" : [12,23,34], \"uintField\" : [51,52,53], \"dateField\" : [\"2019-1-1\", \"2019-2-1\", \"2019-3-1\"], \"datetimeField\" : [\"9999-12-31 23:59:59\", \"9999-12-31 23:59:59\", \"9999-12-7 23:59:59\"], \"charField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"binaryField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"timeField\" : [\"10.30\", \"11.30\", \"12.30\"], \"floatField\" : [51.2,52.7,53.6]}")
                     .execute();
 
             try {
                 coll.add(
-                        "{\"intField\" : \"[1,2,3]\", \"uintField\" : [51,52,53], \"dateField\" : [\"2019-1-1\", \"2019-2-1\", \"2019-3-1\"], \"datetimeField\" : [\"9999-12-30 23:59:59\", \"9999-12-31 23:59:59\", \"9999-12-31 23:59:59\"], \"charField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"binaryField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"],\"timeField\" : [\"10.30\", \"11.30\", \"12.30\"], \"floatField\" : [51.2,52.4,53.6]}")
+                                "{\"intField\" : \"[1,2,3]\", \"uintField\" : [51,52,53], \"dateField\" : [\"2019-1-1\", \"2019-2-1\", \"2019-3-1\"], \"datetimeField\" : [\"9999-12-30 23:59:59\", \"9999-12-31 23:59:59\", \"9999-12-31 23:59:59\"], \"charField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"binaryField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"],\"timeField\" : [\"10.30\", \"11.30\", \"12.30\"], \"floatField\" : [51.2,52.4,53.6]}")
                         .execute();
                 assertTrue(false);
             } catch (Exception e) {
@@ -1769,18 +1769,18 @@ public class CollectionTest extends BaseCollectionTestCase {
             coll.remove("true").execute();
 
             coll.add(
-                    "{\"intField\" : [1,2,3], \"uintField\" : [51,52,53], \"dateField\" : [\"2019-1-1\", \"2019-2-1\", \"2019-3-1\"], \"datetimeField\" : [\"9999-12-30 23:59:59\", \"9999-12-31 23:59:59\", \"9999-12-31 23:59:59\"], \"charField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"binaryField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"],\"timeField\" : [\"10.30\", \"11.30\", \"12.30\"], \"floatField\" : [51.2,52.4,53.6],\"dateFieldWOI\" : \"2019-1-1\"}")
+                            "{\"intField\" : [1,2,3], \"uintField\" : [51,52,53], \"dateField\" : [\"2019-1-1\", \"2019-2-1\", \"2019-3-1\"], \"datetimeField\" : [\"9999-12-30 23:59:59\", \"9999-12-31 23:59:59\", \"9999-12-31 23:59:59\"], \"charField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"binaryField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"],\"timeField\" : [\"10.30\", \"11.30\", \"12.30\"], \"floatField\" : [51.2,52.4,53.6],\"dateFieldWOI\" : \"2019-1-1\"}")
                     .execute();
             coll.add(
-                    "{\"intField\" : [11,12,3], \"uintField\" : [51,52,53], \"dateField\" : [\"2019-1-1\", \"2019-2-1\", \"2019-3-1\"], \"datetimeField\" : [\"9999-12-30 23:59:59\", \"9999-12-29 23:59:59\", \"9999-12-31 23:59:59\"], \"charField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"binaryField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"timeField\" : [\"10.30\", \"11.30\", \"12.30\"], \"floatField\" : [51.1,52.9,53.0],\"dateFieldWOI\" : \"2019-1-1\"}")
+                            "{\"intField\" : [11,12,3], \"uintField\" : [51,52,53], \"dateField\" : [\"2019-1-1\", \"2019-2-1\", \"2019-3-1\"], \"datetimeField\" : [\"9999-12-30 23:59:59\", \"9999-12-29 23:59:59\", \"9999-12-31 23:59:59\"], \"charField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"binaryField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"timeField\" : [\"10.30\", \"11.30\", \"12.30\"], \"floatField\" : [51.1,52.9,53.0],\"dateFieldWOI\" : \"2019-1-1\"}")
                     .execute();
             coll.add(
-                    "{\"intField\" : [12,23,34], \"uintField\" : [51,52,53], \"dateField\" : [\"2019-1-1\", \"2019-2-1\", \"2019-3-1\"], \"datetimeField\" : [\"9999-12-31 23:59:59\", \"9999-12-31 23:59:59\", \"9999-12-7 23:59:59\"], \"charField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"binaryField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"timeField\" : [\"10.30\", \"7.30\", \"12.30\"], \"floatField\" : [51.2,52.7,53.6],\"dateFieldWOI\" : \"2019-2-1\"}")
+                            "{\"intField\" : [12,23,34], \"uintField\" : [51,52,53], \"dateField\" : [\"2019-1-1\", \"2019-2-1\", \"2019-3-1\"], \"datetimeField\" : [\"9999-12-31 23:59:59\", \"9999-12-31 23:59:59\", \"9999-12-7 23:59:59\"], \"charField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"binaryField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"timeField\" : [\"10.30\", \"7.30\", \"12.30\"], \"floatField\" : [51.2,52.7,53.6],\"dateFieldWOI\" : \"2019-2-1\"}")
                     .execute();
 
             try {
                 coll.add(
-                        "{\"intField\" : \"[1,2,3]\", \"uintField\" : [51,52,53], \"dateField\" : [\"2019-1-1\", \"2019-2-1\", \"2019-3-1\"], \"datetimeField\" : [\"9999-12-30 23:59:59\", \"9999-12-31 23:59:59\", \"9999-12-31 23:59:59\"], \"charField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"binaryField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"],\"timeField\" : [\"10.30\", \"11.30\", \"12.30\"], \"floatField\" : [51.2,52.4,53.6]}")
+                                "{\"intField\" : \"[1,2,3]\", \"uintField\" : [51,52,53], \"dateField\" : [\"2019-1-1\", \"2019-2-1\", \"2019-3-1\"], \"datetimeField\" : [\"9999-12-30 23:59:59\", \"9999-12-31 23:59:59\", \"9999-12-31 23:59:59\"], \"charField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"], \"binaryField\" : [\"abcd1\", \"abcd1\", \"abcd2\", \"abcd4\"],\"timeField\" : [\"10.30\", \"11.30\", \"12.30\"], \"floatField\" : [51.2,52.4,53.6]}")
                         .execute();
                 assertTrue(false);
             } catch (Exception e) {
@@ -2026,40 +2026,40 @@ public class CollectionTest extends BaseCollectionTestCase {
             coll.remove("true").execute();
 
             coll.add(
-                    "{\"_id\":1,\"name\":\"decimalArray1\",\"decimalField1\":[835975.76,87349829932749.67,89248481498149882498141.12],\"decimalField2\":[835975.76,87349829932.839],\"decimalField3\":[835977.76,87349829932.839]}")
+                            "{\"_id\":1,\"name\":\"decimalArray1\",\"decimalField1\":[835975.76,87349829932749.67,89248481498149882498141.12],\"decimalField2\":[835975.76,87349829932.839],\"decimalField3\":[835977.76,87349829932.839]}")
                     .execute();
             coll.add(
-                    "{\"_id\":2,\"name\":\"dateArray1\",\"dateField1\" : [\"2017-12-12\",\"2018-12-12\",\"2019-12-12\"],\"dateField2\" : [\"2017-12-12\",\"2018-11-11\",\"2019-11-11\"],\"dateField3\" : [\"2017-12-12\",\"2018-10-10\",\"2019-10-10\"]}")
+                            "{\"_id\":2,\"name\":\"dateArray1\",\"dateField1\" : [\"2017-12-12\",\"2018-12-12\",\"2019-12-12\"],\"dateField2\" : [\"2017-12-12\",\"2018-11-11\",\"2019-11-11\"],\"dateField3\" : [\"2017-12-12\",\"2018-10-10\",\"2019-10-10\"]}")
                     .execute();
             coll.add(
-                    "{\"_id\":3,\"name\":\"timeArray1\",\"timeField1\" : [\"12:20\",\"11:20\",\"10:20\"], \"timeField2\" : [\"12:00\",\"11:00\",\"10:20\"], \"timeField3\" : [\"12:10\",\"11:10\",\"10:00\"]}")
+                            "{\"_id\":3,\"name\":\"timeArray1\",\"timeField1\" : [\"12:20\",\"11:20\",\"10:20\"], \"timeField2\" : [\"12:00\",\"11:00\",\"10:20\"], \"timeField3\" : [\"12:10\",\"11:10\",\"10:00\"]}")
                     .execute();
             coll.add(
-                    "{\"_id\":4,\"name\":\"timestampArray1\",\"timestampField1\" : [\"2017-12-12 20:12:07\", \"2018-12-12 20:12:07\",\"2019-12-12 20:12:07\"], \"timestampField2\" : [\"2017-12-12 20:12:07\", \"2018-11-11 20:12:07\",\"2019-11-11 20:12:07\"], \"timestampField3\" : [\"2017-12-12 20:12:07\", \"2018-10-11 20:12:07\",\"2019-12-12 20:12:07\"]}")
+                            "{\"_id\":4,\"name\":\"timestampArray1\",\"timestampField1\" : [\"2017-12-12 20:12:07\", \"2018-12-12 20:12:07\",\"2019-12-12 20:12:07\"], \"timestampField2\" : [\"2017-12-12 20:12:07\", \"2018-11-11 20:12:07\",\"2019-11-11 20:12:07\"], \"timestampField3\" : [\"2017-12-12 20:12:07\", \"2018-10-11 20:12:07\",\"2019-12-12 20:12:07\"]}")
                     .execute();
             coll.add(
-                    "{\"_id\":5,\"name\":\"datetimeArray1\", \"datetimeField1\" : [\"2017-12-12 20:12:07\", \"2018-12-12 20:12:07\",\"2019-12-12 20:12:07\"], \"datetimeField2\" : [\"2017-12-12 20:12:07\", \"2018-11-11 20:12:07\",\"2019-11-11 20:12:07\"],\"datetimeField3\" : [\"2017-10-10 20:12:07\", \"2018-10-10 20:12:07\",\"2019-10-10 20:12:07\"]}")
+                            "{\"_id\":5,\"name\":\"datetimeArray1\", \"datetimeField1\" : [\"2017-12-12 20:12:07\", \"2018-12-12 20:12:07\",\"2019-12-12 20:12:07\"], \"datetimeField2\" : [\"2017-12-12 20:12:07\", \"2018-11-11 20:12:07\",\"2019-11-11 20:12:07\"],\"datetimeField3\" : [\"2017-10-10 20:12:07\", \"2018-10-10 20:12:07\",\"2019-10-10 20:12:07\"]}")
                     .execute();
             coll.add(
-                    "{\"_id\":6,\"name\":\"binaryArray1\", \"binaryField1\":[\"0xe240\",\"0x0001e240\"],\"binaryField2\":[\"0xe240\",\"0x0001e240\"],\"binaryField3\":[\"0xe240\",\"0x0001e240\"]}")
+                            "{\"_id\":6,\"name\":\"binaryArray1\", \"binaryField1\":[\"0xe240\",\"0x0001e240\"],\"binaryField2\":[\"0xe240\",\"0x0001e240\"],\"binaryField3\":[\"0xe240\",\"0x0001e240\"]}")
                     .execute();
             coll.add(
-                    "{\"_id\":7,\"name\":\"dateArray2\",\"dateField1\" : [\"2017-12-12\",\"2018-12-12\",\"2019-12-12\"],\"dateField2\" : [\"2017-11-11\",\"2018-11-11\",\"2019-11-11\"],\"dateField3\" : [\"2017-10-10\",\"2018-10-10\",\"2019-10-10\"]}")
+                            "{\"_id\":7,\"name\":\"dateArray2\",\"dateField1\" : [\"2017-12-12\",\"2018-12-12\",\"2019-12-12\"],\"dateField2\" : [\"2017-11-11\",\"2018-11-11\",\"2019-11-11\"],\"dateField3\" : [\"2017-10-10\",\"2018-10-10\",\"2019-10-10\"]}")
                     .execute();
             coll.add(
-                    "{\"_id\":8,\"name\":\"timeArray2\",\"timeField1\" : [\"12:20\",\"11:20\",\"10:20\"], \"timeField2\" : [\"12:00\",\"11:00\",\"10:00\"], \"timeField3\" : [\"12:10\",\"11:10\",\"10:10\"]}")
+                            "{\"_id\":8,\"name\":\"timeArray2\",\"timeField1\" : [\"12:20\",\"11:20\",\"10:20\"], \"timeField2\" : [\"12:00\",\"11:00\",\"10:00\"], \"timeField3\" : [\"12:10\",\"11:10\",\"10:10\"]}")
                     .execute();
             coll.add(
-                    "{\"_id\":9,\"name\":\"datetimeArray2\", \"datetimeField1\" : [\"2017-12-12 20:12:07\", \"2018-12-12 20:12:07\",\"2019-12-12 20:12:07\"], \"datetimeField2\" : [\"2017-11-11 20:12:07\", \"2018-11-11 20:12:07\",\"2019-11-11 20:12:07\"],\"datetimeField3\" : [\"2017-10-10 20:12:07\", \"2018-10-10 20:12:07\",\"2019-10-10 20:12:07\"]}")
+                            "{\"_id\":9,\"name\":\"datetimeArray2\", \"datetimeField1\" : [\"2017-12-12 20:12:07\", \"2018-12-12 20:12:07\",\"2019-12-12 20:12:07\"], \"datetimeField2\" : [\"2017-11-11 20:12:07\", \"2018-11-11 20:12:07\",\"2019-11-11 20:12:07\"],\"datetimeField3\" : [\"2017-10-10 20:12:07\", \"2018-10-10 20:12:07\",\"2019-10-10 20:12:07\"]}")
                     .execute();
             coll.add(
-                    "{\"_id\":10,\"name\":\"binaryArray2\", \"binaryField1\":[\"0xe240\",\"0x0001e240\"],\"binaryField2\":[\"0xe2040\",\"0x0001e2040\"],\"binaryField3\":[\"0xe02040\",\"0x0001e02040\"]}")
+                            "{\"_id\":10,\"name\":\"binaryArray2\", \"binaryField1\":[\"0xe240\",\"0x0001e240\"],\"binaryField2\":[\"0xe2040\",\"0x0001e2040\"],\"binaryField3\":[\"0xe02040\",\"0x0001e02040\"]}")
                     .execute();
             coll.add(
-                    "{\"_id\":11,\"name\":\"charArray1\", \"charField1\":[\"char1\",\"char2\"],\"charField2\":[\"char1\",\"char3\"],\"charField3\":[\"char1\",\"char2\"]}")
+                            "{\"_id\":11,\"name\":\"charArray1\", \"charField1\":[\"char1\",\"char2\"],\"charField2\":[\"char1\",\"char3\"],\"charField3\":[\"char1\",\"char2\"]}")
                     .execute();
             coll.add(
-                    "{\"_id\":12,\"name\":\"charArray2\", \"charField1\":[\"char1\",\"char2\"],\"charField2\":[\"char3\",\"char4\"],\"charField3\":[\"char5\",\"char6\"]}")
+                            "{\"_id\":12,\"name\":\"charArray2\", \"charField1\":[\"char1\",\"char2\"],\"charField2\":[\"char3\",\"char4\"],\"charField3\":[\"char5\",\"char6\"]}")
                     .execute();
             coll.add("{\"_id\":13,\"name\":\"intArray1\", \"intField1\":[-15,-25],\"intField2\":[-15,-20],\"intField3\":[-10,-20]}").execute();
             coll.add("{\"_id\":14,\"name\":\"intArray2\", \"intField1\":[-10,-20],\"intField2\":[-30,-40],\"intField3\":[-50,-60]}").execute();
@@ -2395,7 +2395,7 @@ public class CollectionTest extends BaseCollectionTestCase {
         doc = docs.fetchOne();
     }
 
-    @SuppressWarnings({ "deprecation", "unchecked" })
+    @SuppressWarnings({"deprecation", "unchecked"})
     @Test
     public void testCollectionAddModifyRemoveAsync() throws Exception {
         int i = 0;
@@ -2433,8 +2433,8 @@ public class CollectionTest extends BaseCollectionTestCase {
                 futures.add(this.collection.remove("NON_EXISTING_FUNCTION3()=:PARAM").bind("PARAM", 1000).orderBy("$.F3 desc").executeAsync());//Error
             } else if (i % 10 == 7) {
                 futures.add(this.session.sql(
-                        "SELECT JSON_OBJECT('_id', JSON_EXTRACT(doc,'$._id'),'F1', JSON_EXTRACT(doc,'$.F1'),'F2', JSON_EXTRACT(doc,'$.F2'),'T', JSON_EXTRACT(doc,'$.T')) AS doc FROM `"
-                                + this.collectionName + "` WHERE (JSON_EXTRACT(doc,'$.F2') = 1000) ")
+                                "SELECT JSON_OBJECT('_id', JSON_EXTRACT(doc,'$._id'),'F1', JSON_EXTRACT(doc,'$.F1'),'F2', JSON_EXTRACT(doc,'$.F2'),'T', JSON_EXTRACT(doc,'$.T')) AS doc FROM `"
+                                        + this.collectionName + "` WHERE (JSON_EXTRACT(doc,'$.F2') = 1000) ")
                         .executeAsync());
             } else if (i % 10 == 8) {
                 futures.add(this.session.sql("select non_existingfun() /* loop : " + i + "*/").executeAsync());//Error

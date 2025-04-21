@@ -35,7 +35,7 @@ import testsuite.BaseTestCase;
 /**
  * Tests new StringUtils functions in the driver: public static String sanitizeProcOrFuncName(String src) and public static List splitDBdotName(String src,
  * String cat, String quotId, boolean isNoBslashEscSet)
- *
+ * <p>
  * By the time sanitizeProcOrFuncName is called we should only have DB.SP as src, ie. SP/FUNC name is already sanitized during the process!
  */
 public class SplitDBdotNameTest extends BaseTestCase {

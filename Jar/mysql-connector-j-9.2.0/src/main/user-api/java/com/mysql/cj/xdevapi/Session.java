@@ -77,8 +77,7 @@ public interface Session extends AutoCloseable {
     /**
      * Retrieve the Schema corresponding to name.
      *
-     * @param schemaName
-     *            name of schema to retrieve
+     * @param schemaName name of schema to retrieve
      * @return {@link Schema}
      */
     Schema getSchema(String schemaName);
@@ -101,8 +100,7 @@ public interface Session extends AutoCloseable {
     /**
      * Create and return a new schema with the name given by name.
      *
-     * @param schemaName
-     *            name of schema to create
+     * @param schemaName name of schema to create
      * @return {@link Schema} created
      */
     Schema createSchema(String schemaName);
@@ -110,10 +108,8 @@ public interface Session extends AutoCloseable {
     /**
      * Create and return a new schema with the name given by name. If the schema already exists, a reference to it is returned.
      *
-     * @param schemaName
-     *            name of schema to create
-     * @param reuseExistingObject
-     *            true to reuse
+     * @param schemaName          name of schema to create
+     * @param reuseExistingObject true to reuse
      * @return {@link Schema} created
      */
     Schema createSchema(String schemaName, boolean reuseExistingObject);
@@ -121,8 +117,7 @@ public interface Session extends AutoCloseable {
     /**
      * Drop the existing schema with the name given by name.
      *
-     * @param schemaName
-     *            name of schema to drop
+     * @param schemaName name of schema to drop
      */
     void dropSchema(String schemaName);
 
@@ -172,8 +167,7 @@ public interface Session extends AutoCloseable {
     /**
      * Creates or replaces a transaction savepoint with the given name. Calling this method more than once should always work.
      *
-     * @param name
-     *            savepoint name
+     * @param name savepoint name
      * @return savepoint name
      */
     String setSavepoint(String name);
@@ -182,8 +176,7 @@ public interface Session extends AutoCloseable {
      * Rolls back the transaction to the named savepoint. This method will succeed as long as the given save point has not been already rolled back or
      * released. Rolling back to a savepoint prior to the one named will release or rollback any that came after.
      *
-     * @param name
-     *            savepoint name
+     * @param name savepoint name
      */
     void rollbackTo(String name);
 
@@ -191,16 +184,14 @@ public interface Session extends AutoCloseable {
      * Releases the named savepoint. This method will succeed as long as the given save point has not been already rolled back or
      * released. Rolling back to a savepoint prior to the one named will release or rollback any that came after.
      *
-     * @param name
-     *            savepoint name
+     * @param name savepoint name
      */
     void releaseSavepoint(String name);
 
     /**
      * Create a native SQL command. Placeholders are supported using the native "?" syntax.
      *
-     * @param sql
-     *            native SQL statement
+     * @param sql native SQL statement
      * @return {@link SqlStatement}
      */
     SqlStatement sql(String sql);

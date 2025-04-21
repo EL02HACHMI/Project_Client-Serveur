@@ -36,6 +36,7 @@ import com.mysql.cj.exceptions.WrongArgumentException;
 public class CompressionAlgorithm {
 
     private static final Map<String, String> ALIASES = new HashMap<>();
+
     static {
         ALIASES.put("deflate", "deflate_stream");
         ALIASES.put("lz4", "lz4_message");
@@ -46,6 +47,36 @@ public class CompressionAlgorithm {
     private CompressionMode compressionMode;
     private String inputStreamClassFqn;
     private String outputStreamClassFqn;
+
+    public CompressionAlgorithm(String name, String inputStreamClassFqn, String outputStreamClassFqn) {
+        this.algorithmIdentifier = getNormalizedAlgorithmName(name);
+        String[] nameMode = this.algorithmIdentifier.split("_");
+        if (nameMode.length != 2) {
+            throw ExceptionFactory.createException(WrongArgumentException.class, Messages.getString("Protocol.Compression.3", new Object[]{name}));
+        }
+        try {
+            CompressionMode mode = CompressionMode.valueOf(nameMode[1].toUpperCase());
+            this.compressionMode = mode;
+        } catch (IllegalArgumentException e) {
+            throw ExceptionFactory.createException(WrongArgumentException.class, Messages.getString("Protocol.Compression.4", new Object[]{nameMode[1]}));
+        }
+
+        try {
+            Class.forName(inputStreamClassFqn, false, this.getClass().getClassLoader());
+        } catch (ClassNotFoundException e) {
+            throw ExceptionFactory.createException(WrongArgumentException.class,
+                    Messages.getString("Protocol.Compression.5", new Object[]{inputStreamClassFqn}), e);
+        }
+        this.inputStreamClassFqn = inputStreamClassFqn;
+
+        try {
+            Class.forName(outputStreamClassFqn, false, this.getClass().getClassLoader());
+        } catch (ClassNotFoundException e) {
+            throw ExceptionFactory.createException(WrongArgumentException.class,
+                    Messages.getString("Protocol.Compression.5", new Object[]{outputStreamClassFqn}), e);
+        }
+        this.outputStreamClassFqn = outputStreamClassFqn;
+    }
 
     /**
      * Returns a list of the compression algorithms supported natively. Additional algorithms can be registered by user.
@@ -63,44 +94,12 @@ public class CompressionAlgorithm {
      * Returns the normalized compression algorithm identifier. A normalized identifier is composed by a compression algorithm name followed by '_' and then the
      * the compression operation mode ("stream" vs "message").
      *
-     * @param name
-     *            the non-normalized compression algorithm identifier.
-     * @return
-     *         if {@code name} is an already normalized identifier or an unknown alias then the returned value is the same as the input, otherwise the
-     *         normalized algorithm identifier is returned.
+     * @param name the non-normalized compression algorithm identifier.
+     * @return if {@code name} is an already normalized identifier or an unknown alias then the returned value is the same as the input, otherwise the
+     * normalized algorithm identifier is returned.
      */
     public static String getNormalizedAlgorithmName(String name) {
         return ALIASES.getOrDefault(name, name);
-    }
-
-    public CompressionAlgorithm(String name, String inputStreamClassFqn, String outputStreamClassFqn) {
-        this.algorithmIdentifier = getNormalizedAlgorithmName(name);
-        String[] nameMode = this.algorithmIdentifier.split("_");
-        if (nameMode.length != 2) {
-            throw ExceptionFactory.createException(WrongArgumentException.class, Messages.getString("Protocol.Compression.3", new Object[] { name }));
-        }
-        try {
-            CompressionMode mode = CompressionMode.valueOf(nameMode[1].toUpperCase());
-            this.compressionMode = mode;
-        } catch (IllegalArgumentException e) {
-            throw ExceptionFactory.createException(WrongArgumentException.class, Messages.getString("Protocol.Compression.4", new Object[] { nameMode[1] }));
-        }
-
-        try {
-            Class.forName(inputStreamClassFqn, false, this.getClass().getClassLoader());
-        } catch (ClassNotFoundException e) {
-            throw ExceptionFactory.createException(WrongArgumentException.class,
-                    Messages.getString("Protocol.Compression.5", new Object[] { inputStreamClassFqn }), e);
-        }
-        this.inputStreamClassFqn = inputStreamClassFqn;
-
-        try {
-            Class.forName(outputStreamClassFqn, false, this.getClass().getClassLoader());
-        } catch (ClassNotFoundException e) {
-            throw ExceptionFactory.createException(WrongArgumentException.class,
-                    Messages.getString("Protocol.Compression.5", new Object[] { outputStreamClassFqn }), e);
-        }
-        this.outputStreamClassFqn = outputStreamClassFqn;
     }
 
     /**

@@ -63,18 +63,15 @@ public interface ServerSession {
     /**
      * Sets new server status (from response) without saving it's old state
      *
-     * @param statusFlags
-     *            server status flags
+     * @param statusFlags server status flags
      */
     void setStatusFlags(int statusFlags);
 
     /**
      * Sets new server status (from response)
      *
-     * @param statusFlags
-     *            new server status flags
-     * @param saveOldStatusFlags
-     *            true if old server status flags should be preserved
+     * @param statusFlags        new server status flags
+     * @param saveOldStatusFlags true if old server status flags should be preserved
      */
     void setStatusFlags(int statusFlags, boolean saveOldStatusFlags);
 
@@ -120,11 +117,11 @@ public interface ServerSession {
 
     Map<String, String> getServerVariables();
 
+    void setServerVariables(Map<String, String> serverVariables);
+
     String getServerVariable(String name);
 
     int getServerVariable(String variableName, int fallbackValue);
-
-    void setServerVariables(Map<String, String> serverVariables);
 
     /**
      * Get the version of the MySQL server we are talking to.
@@ -137,11 +134,9 @@ public interface ServerSession {
      * Is the version of the MySQL server we are connected to the given
      * version?
      *
-     * @param version
-     *            the version to check for
-     *
+     * @param version the version to check for
      * @return true if the version of the MySQL server we are connected is the
-     *         given version
+     * given version
      */
     boolean isVersion(ServerVersion version);
 

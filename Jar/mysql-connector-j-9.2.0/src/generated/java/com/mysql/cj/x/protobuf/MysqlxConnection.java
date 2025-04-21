@@ -148,7 +148,7 @@ public final class MysqlxConnection {
       if (ref instanceof java.lang.String) {
         return (java.lang.String) ref;
       } else {
-        com.google.protobuf.ByteString bs = 
+        com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
         if (bs.isValidUtf8()) {
@@ -166,7 +166,7 @@ public final class MysqlxConnection {
         getNameBytes() {
       java.lang.Object ref = name_;
       if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
+        com.google.protobuf.ByteString b =
             com.google.protobuf.ByteString.copyFromUtf8(
                 (java.lang.String) ref);
         name_ = b;
@@ -609,7 +609,7 @@ public final class MysqlxConnection {
           getNameBytes() {
         java.lang.Object ref = name_;
         if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
+          com.google.protobuf.ByteString b =
               com.google.protobuf.ByteString.copyFromUtf8(
                   (java.lang.String) ref);
           name_ = b;
@@ -763,7 +763,7 @@ public final class MysqlxConnection {
        * <code>required .Mysqlx.Datatypes.Any value = 2;</code>
        */
       private com.google.protobuf.SingleFieldBuilder<
-          com.mysql.cj.x.protobuf.MysqlxDatatypes.Any, com.mysql.cj.x.protobuf.MysqlxDatatypes.Any.Builder, com.mysql.cj.x.protobuf.MysqlxDatatypes.AnyOrBuilder> 
+          com.mysql.cj.x.protobuf.MysqlxDatatypes.Any, com.mysql.cj.x.protobuf.MysqlxDatatypes.Any.Builder, com.mysql.cj.x.protobuf.MysqlxDatatypes.AnyOrBuilder>
           getValueFieldBuilder() {
         if (valueBuilder_ == null) {
           valueBuilder_ = new com.google.protobuf.SingleFieldBuilder<
@@ -834,7 +834,7 @@ public final class MysqlxConnection {
     /**
      * <code>repeated .Mysqlx.Connection.Capability capabilities = 1;</code>
      */
-    java.util.List<com.mysql.cj.x.protobuf.MysqlxConnection.Capability> 
+    java.util.List<com.mysql.cj.x.protobuf.MysqlxConnection.Capability>
         getCapabilitiesList();
     /**
      * <code>repeated .Mysqlx.Connection.Capability capabilities = 1;</code>
@@ -847,7 +847,7 @@ public final class MysqlxConnection {
     /**
      * <code>repeated .Mysqlx.Connection.Capability capabilities = 1;</code>
      */
-    java.util.List<? extends com.mysql.cj.x.protobuf.MysqlxConnection.CapabilityOrBuilder> 
+    java.util.List<? extends com.mysql.cj.x.protobuf.MysqlxConnection.CapabilityOrBuilder>
         getCapabilitiesOrBuilderList();
     /**
      * <code>repeated .Mysqlx.Connection.Capability capabilities = 1;</code>
@@ -914,7 +914,7 @@ public final class MysqlxConnection {
      * <code>repeated .Mysqlx.Connection.Capability capabilities = 1;</code>
      */
     @java.lang.Override
-    public java.util.List<? extends com.mysql.cj.x.protobuf.MysqlxConnection.CapabilityOrBuilder> 
+    public java.util.List<? extends com.mysql.cj.x.protobuf.MysqlxConnection.CapabilityOrBuilder>
         getCapabilitiesOrBuilderList() {
       return capabilities_;
     }
@@ -1232,7 +1232,7 @@ public final class MysqlxConnection {
               capabilitiesBuilder_ = null;
               capabilities_ = other.capabilities_;
               bitField0_ = (bitField0_ & ~0x00000001);
-              capabilitiesBuilder_ = 
+              capabilitiesBuilder_ =
                 com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
                    getCapabilitiesFieldBuilder() : null;
             } else {
@@ -1496,7 +1496,7 @@ public final class MysqlxConnection {
       /**
        * <code>repeated .Mysqlx.Connection.Capability capabilities = 1;</code>
        */
-      public java.util.List<? extends com.mysql.cj.x.protobuf.MysqlxConnection.CapabilityOrBuilder> 
+      public java.util.List<? extends com.mysql.cj.x.protobuf.MysqlxConnection.CapabilityOrBuilder>
            getCapabilitiesOrBuilderList() {
         if (capabilitiesBuilder_ != null) {
           return capabilitiesBuilder_.getMessageOrBuilderList();
@@ -1522,12 +1522,12 @@ public final class MysqlxConnection {
       /**
        * <code>repeated .Mysqlx.Connection.Capability capabilities = 1;</code>
        */
-      public java.util.List<com.mysql.cj.x.protobuf.MysqlxConnection.Capability.Builder> 
+      public java.util.List<com.mysql.cj.x.protobuf.MysqlxConnection.Capability.Builder>
            getCapabilitiesBuilderList() {
         return getCapabilitiesFieldBuilder().getBuilderList();
       }
       private com.google.protobuf.RepeatedFieldBuilder<
-          com.mysql.cj.x.protobuf.MysqlxConnection.Capability, com.mysql.cj.x.protobuf.MysqlxConnection.Capability.Builder, com.mysql.cj.x.protobuf.MysqlxConnection.CapabilityOrBuilder> 
+          com.mysql.cj.x.protobuf.MysqlxConnection.Capability, com.mysql.cj.x.protobuf.MysqlxConnection.Capability.Builder, com.mysql.cj.x.protobuf.MysqlxConnection.CapabilityOrBuilder>
           getCapabilitiesFieldBuilder() {
         if (capabilitiesBuilder_ == null) {
           capabilitiesBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
@@ -2505,7 +2505,7 @@ public final class MysqlxConnection {
        * <code>required .Mysqlx.Connection.Capabilities capabilities = 1;</code>
        */
       private com.google.protobuf.SingleFieldBuilder<
-          com.mysql.cj.x.protobuf.MysqlxConnection.Capabilities, com.mysql.cj.x.protobuf.MysqlxConnection.Capabilities.Builder, com.mysql.cj.x.protobuf.MysqlxConnection.CapabilitiesOrBuilder> 
+          com.mysql.cj.x.protobuf.MysqlxConnection.Capabilities, com.mysql.cj.x.protobuf.MysqlxConnection.Capabilities.Builder, com.mysql.cj.x.protobuf.MysqlxConnection.CapabilitiesOrBuilder>
           getCapabilitiesFieldBuilder() {
         if (capabilitiesBuilder_ == null) {
           capabilitiesBuilder_ = new com.google.protobuf.SingleFieldBuilder<
@@ -3730,32 +3730,32 @@ public final class MysqlxConnection {
 
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_Mysqlx_Connection_Capability_descriptor;
-  private static final 
+  private static final
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_Mysqlx_Connection_Capability_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_Mysqlx_Connection_Capabilities_descriptor;
-  private static final 
+  private static final
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_Mysqlx_Connection_Capabilities_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_Mysqlx_Connection_CapabilitiesGet_descriptor;
-  private static final 
+  private static final
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_Mysqlx_Connection_CapabilitiesGet_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_Mysqlx_Connection_CapabilitiesSet_descriptor;
-  private static final 
+  private static final
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_Mysqlx_Connection_CapabilitiesSet_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_Mysqlx_Connection_Close_descriptor;
-  private static final 
+  private static final
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_Mysqlx_Connection_Close_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_Mysqlx_Connection_Compression_descriptor;
-  private static final 
+  private static final
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_Mysqlx_Connection_Compression_fieldAccessorTable;
 

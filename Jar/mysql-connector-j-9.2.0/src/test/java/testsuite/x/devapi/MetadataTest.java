@@ -1193,7 +1193,7 @@ public class MetadataTest extends BaseTableTestCase {
             List<Column> metadata = rows.getColumns();
             assertEquals(16, metadata.size());
             Column myCol = null;
-            long[] fLen = { 32, 20, 10, 11, 22, 19, 10, 0, 4, 9, 20, 12, 0, 0, 22, 3 };
+            long[] fLen = {32, 20, 10, 11, 22, 19, 10, 0, 4, 9, 20, 12, 0, 0, 22, 3};
             for (int i = 0; i < 16; i++) {
                 myCol = metadata.get(i);
                 assertEquals(fLen[i], myCol.getLength());

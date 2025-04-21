@@ -48,11 +48,10 @@ import com.mysql.cj.x.protobuf.Mysqlx.ServerMessages;
  */
 public class SyncMessageReaderTest {
 
-    private SyncMessageReader reader;
-
     private static final byte[] okMsgPacket = serializeMessage(Ok.newBuilder().build(), ServerMessages.Type.OK_VALUE);
     private static final byte[] errMsgPacket = serializeMessage(
             Error.newBuilder().setMsg("oops").setCode(5432).setSqlState("12S34").setSeverity(Error.Severity.FATAL).build(), ServerMessages.Type.ERROR_VALUE);
+    private SyncMessageReader reader;
 
     /**
      * Serialize a message for testing.
@@ -164,17 +163,17 @@ public class SyncMessageReaderTest {
      * Verification test to help prevent bugs in the typecode/class/parser mapping tables. We check that all classes that are mapped have a parser.
      *
      * @throws InvalidProtocolBufferException
-     *
      * @todo Test in the other direction also
      */
     @Test
     public void testMappingTables() throws InvalidProtocolBufferException {
         for (Map.Entry<Class<? extends Message>, Integer> entry : MessageConstants.MESSAGE_CLASS_TO_TYPE.entrySet()) {
-            /* int type = */entry.getValue();
+            /* int type = */
+            entry.getValue();
             Class<? extends Message> messageClass = entry.getKey();
             Parser<? extends Message> parser = MessageConstants.MESSAGE_CLASS_TO_PARSER.get(messageClass);
             assertNotNull(parser);
-            Message partiallyParsed = parser.parsePartialFrom(new byte[] {});
+            Message partiallyParsed = parser.parsePartialFrom(new byte[]{});
             assertEquals(messageClass, partiallyParsed.getClass(), "Parsed class should equal the class that mapped to it via type tag");
         }
     }

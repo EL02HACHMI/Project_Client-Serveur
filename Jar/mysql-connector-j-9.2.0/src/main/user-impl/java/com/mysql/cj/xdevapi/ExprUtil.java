@@ -61,8 +61,7 @@ public class ExprUtil {
     /**
      * Protocol buffers helper to build a LITERAL Expr with a Scalar DOUBLE type.
      *
-     * @param d
-     *            value
+     * @param d value
      * @return {@link Expr}
      */
     public static Expr buildLiteralScalar(double d) {
@@ -72,8 +71,7 @@ public class ExprUtil {
     /**
      * Protocol buffers helper to build a LITERAL Expr with a Scalar SINT (signed int) type.
      *
-     * @param l
-     *            value
+     * @param l value
      * @return {@link Expr}
      */
     public static Expr buildLiteralScalar(long l) {
@@ -83,8 +81,7 @@ public class ExprUtil {
     /**
      * Protocol buffers helper to build a LITERAL Expr with a Scalar STRING type.
      *
-     * @param str
-     *            value
+     * @param str value
      * @return {@link Expr}
      */
     public static Expr buildLiteralScalar(String str) {
@@ -94,8 +91,7 @@ public class ExprUtil {
     /**
      * Protocol buffers helper to build a LITERAL Expr with a Scalar OCTETS type.
      *
-     * @param bytes
-     *            value
+     * @param bytes value
      * @return {@link Expr}
      */
     public static Expr buildLiteralScalar(byte[] bytes) {
@@ -105,8 +101,7 @@ public class ExprUtil {
     /**
      * Protocol buffers helper to build a LITERAL Expr with a Scalar BOOL type.
      *
-     * @param b
-     *            value
+     * @param b value
      * @return {@link Expr}
      */
     public static Expr buildLiteralScalar(boolean b) {
@@ -116,8 +111,7 @@ public class ExprUtil {
     /**
      * Wrap an Any value in a LITERAL expression.
      *
-     * @param scalar
-     *            {@link Scalar}
+     * @param scalar {@link Scalar}
      * @return {@link Expr}
      */
     public static Expr buildLiteralExpr(Scalar scalar) {
@@ -127,8 +121,7 @@ public class ExprUtil {
     /**
      * Creates a placeholder expression for the given position in the <code>args</code> array
      *
-     * @param pos
-     *            the position of the placeholder in the <code>args</code> array
+     * @param pos the position of the placeholder in the <code>args</code> array
      * @return {@link Expr}
      */
     public static Expr buildPlaceholderExpr(int pos) {
@@ -147,8 +140,7 @@ public class ExprUtil {
     /**
      * Protocol buffers helper to build a Scalar DOUBLE type.
      *
-     * @param d
-     *            value
+     * @param d value
      * @return {@link Scalar}
      */
     public static Scalar scalarOf(double d) {
@@ -158,8 +150,7 @@ public class ExprUtil {
     /**
      * Protocol buffers helper to build a Scalar SINT (signed int) type.
      *
-     * @param l
-     *            value
+     * @param l value
      * @return {@link Scalar}
      */
     public static Scalar scalarOf(long l) {
@@ -169,8 +160,7 @@ public class ExprUtil {
     /**
      * Protocol buffers helper to build a Scalar STRING type.
      *
-     * @param str
-     *            value
+     * @param str value
      * @return {@link Scalar}
      */
     public static Scalar scalarOf(String str) {
@@ -181,8 +171,7 @@ public class ExprUtil {
     /**
      * Protocol buffers helper to build a Scalar OCTETS type.
      *
-     * @param bytes
-     *            value
+     * @param bytes value
      * @return {@link Scalar}
      */
     public static Scalar scalarOf(byte[] bytes) {
@@ -193,8 +182,7 @@ public class ExprUtil {
     /**
      * Protocol buffers helper to build a Scalar BOOL type.
      *
-     * @param b
-     *            value
+     * @param b value
      * @return {@link Scalar}
      */
     public static Scalar scalarOf(boolean b) {
@@ -204,8 +192,7 @@ public class ExprUtil {
     /**
      * Protocol buffers helper to build an Any Scalar type.
      *
-     * @param s
-     *            value
+     * @param s value
      * @return {@link Any}
      */
     public static Any anyOf(Scalar s) {
@@ -215,8 +202,7 @@ public class ExprUtil {
     /**
      * Build a Protocol buffers Any with a string value.
      *
-     * @param str
-     *            value
+     * @param str value
      * @return {@link Any}
      */
     public static Any buildAny(String str) {
@@ -229,8 +215,7 @@ public class ExprUtil {
     /**
      * Build a Protocol buffers Any with a boolean value.
      *
-     * @param b
-     *            value
+     * @param b value
      * @return {@link Any}
      */
     public static Any buildAny(boolean b) {
@@ -240,10 +225,8 @@ public class ExprUtil {
     /**
      * Build a Protocol buffers Collection.
      *
-     * @param schemaName
-     *            schema name
-     * @param collectionName
-     *            collection name
+     * @param schemaName     schema name
+     * @param collectionName collection name
      * @return {@link Collection}
      */
     public static Collection buildCollection(String schemaName, String collectionName) {
@@ -253,8 +236,7 @@ public class ExprUtil {
     /**
      * Protocol buffers helper to build a Scalar type with any object.
      *
-     * @param value
-     *            value
+     * @param value value
      * @return {@link Scalar}
      */
     public static Scalar argObjectToScalar(Object value) {
@@ -268,8 +250,7 @@ public class ExprUtil {
     /**
      * Protocol buffers helper to build an Any type with any object.
      *
-     * @param value
-     *            value
+     * @param value value
      * @return {@link Any}
      */
     public static Any argObjectToScalarAny(Object value) {
@@ -280,10 +261,8 @@ public class ExprUtil {
     /**
      * Protocol buffers helper to build Expr with any object.
      *
-     * @param value
-     *            value
-     * @param allowRelationalColumns
-     *            Are relational columns identifiers allowed?
+     * @param value                  value
+     * @param allowRelationalColumns Are relational columns identifiers allowed?
      * @return {@link Expr}
      */
     public static Expr argObjectToExpr(Object value, boolean allowRelationalColumns) {

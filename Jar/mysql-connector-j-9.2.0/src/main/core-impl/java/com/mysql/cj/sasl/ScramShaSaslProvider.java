@@ -38,6 +38,18 @@ public final class ScramShaSaslProvider extends Provider {
     private static final String INFO = "MySQL Connector/J SASL provider (implements client mechanisms for " + ScramSha1SaslClient.MECHANISM_NAME + " and "
             + ScramSha256SaslClient.MECHANISM_NAME + ")";
 
+    public ScramShaSaslProvider() {
+        super("MySQLScramShaSasl", 1.0, INFO);
+
+        AccessController.doPrivileged((PrivilegedAction<Void>) () -> {
+            putService(new ProviderService(ScramShaSaslProvider.this, "SaslClientFactory", ScramSha1SaslClient.MECHANISM_NAME,
+                    ScramShaSaslClientFactory.class.getName()));
+            putService(new ProviderService(ScramShaSaslProvider.this, "SaslClientFactory", ScramSha256SaslClient.MECHANISM_NAME,
+                    ScramShaSaslClientFactory.class.getName()));
+            return null;
+        });
+    }
+
     private static final class ProviderService extends Provider.Service {
 
         public ProviderService(Provider provider, String type, String algorithm, String className) {
@@ -60,18 +72,6 @@ public final class ScramShaSaslProvider extends Provider {
             throw new ProviderException("No implementation for " + algorithm + " " + type);
         }
 
-    }
-
-    public ScramShaSaslProvider() {
-        super("MySQLScramShaSasl", 1.0, INFO);
-
-        AccessController.doPrivileged((PrivilegedAction<Void>) () -> {
-            putService(new ProviderService(ScramShaSaslProvider.this, "SaslClientFactory", ScramSha1SaslClient.MECHANISM_NAME,
-                    ScramShaSaslClientFactory.class.getName()));
-            putService(new ProviderService(ScramShaSaslProvider.this, "SaslClientFactory", ScramSha256SaslClient.MECHANISM_NAME,
-                    ScramShaSaslClientFactory.class.getName()));
-            return null;
-        });
     }
 
 }

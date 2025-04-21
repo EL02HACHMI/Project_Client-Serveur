@@ -33,7 +33,9 @@ import com.mysql.cj.util.StringUtils;
  */
 public class TracingPacketReader implements MessageReader<NativePacketHeader, NativePacketPayload> {
 
-    /** Max number of bytes to dump when tracing the protocol */
+    /**
+     * Max number of bytes to dump when tracing the protocol
+     */
     private final static int MAX_PACKET_DUMP_LENGTH = 1024;
 
     private MessageReader<NativePacketHeader, NativePacketPayload> packetReader;

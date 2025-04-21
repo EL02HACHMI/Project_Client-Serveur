@@ -53,8 +53,7 @@ public class JsonString implements JsonValue {
     /**
      * Set JsonString value.
      *
-     * @param value
-     *            string value
+     * @param value string value
      * @return this JsonString
      */
     public JsonString setValue(String value) {

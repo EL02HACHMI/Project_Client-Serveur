@@ -33,13 +33,19 @@ public class ClientPreparedQuery extends AbstractQuery implements PreparedQuery 
 
     protected QueryBindings queryBindings = null;
 
-    /** The SQL that was passed in to 'prepare' */
+    /**
+     * The SQL that was passed in to 'prepare'
+     */
     protected String originalSql = null;
 
-    /** The number of parameters in this PreparedStatement */
+    /**
+     * The number of parameters in this PreparedStatement
+     */
     protected int parameterCount;
 
-    /** Command index of currently executing batch command. */
+    /**
+     * Command index of currently executing batch command.
+     */
     protected int batchCommandIndex = -1;
 
     protected RuntimeProperty<Boolean> autoClosePStmtStreams;
@@ -110,8 +116,7 @@ public class ClientPreparedQuery extends AbstractQuery implements PreparedQuery 
      * Computes the optimum number of batched parameter lists to send
      * without overflowing max_allowed_packet.
      *
-     * @param numBatchedArgs
-     *            original batch size
+     * @param numBatchedArgs original batch size
      * @return computed batch size
      */
     @Override
@@ -131,11 +136,8 @@ public class ClientPreparedQuery extends AbstractQuery implements PreparedQuery 
     /**
      * Method checkNullOrEmptyQuery.
      *
-     * @param sql
-     *            the SQL to check
-     *
-     * @throws WrongArgumentException
-     *             if query is null or empty.
+     * @param sql the SQL to check
+     * @throws WrongArgumentException if query is null or empty.
      */
     @Override
     public void checkNullOrEmptyQuery(String sql) {
@@ -177,8 +179,7 @@ public class ClientPreparedQuery extends AbstractQuery implements PreparedQuery 
      * Computes the maximum parameter set size, and entire batch size given
      * the number of arguments in the batch.
      *
-     * @param numBatchedArgs
-     *            number of batched arguments
+     * @param numBatchedArgs number of batched arguments
      * @return new long[] { maxSizeOfParameterSet, sizeOfEntireBatch }
      */
     protected long[] computeMaxParameterSetSizeAndBatchSize(int numBatchedArgs) {
@@ -215,7 +216,7 @@ public class ClientPreparedQuery extends AbstractQuery implements PreparedQuery 
             }
         }
 
-        return new long[] { maxSizeOfParameterSet, sizeOfEntireBatch };
+        return new long[]{maxSizeOfParameterSet, sizeOfEntireBatch};
     }
 
     @SuppressWarnings("unchecked")

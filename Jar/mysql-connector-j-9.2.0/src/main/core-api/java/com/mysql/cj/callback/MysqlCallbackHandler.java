@@ -22,7 +22,7 @@ package com.mysql.cj.callback;
 
 /**
  * A functional interface for implementing callback handlers.
- *
+ * <p>
  * The single method {@link MysqlCallbackHandler#handle(MysqlCallback)} is called by the classes where the callback handler is passed when they need to share
  * data with the caller. The kind of data to exchange depends on the implementations of {@link MysqlCallback} they choose to use.
  */
@@ -43,8 +43,7 @@ public interface MysqlCallbackHandler {
      * };
      * </pre>
      *
-     * @param cb
-     *            the {@link MysqlCallback} to process
+     * @param cb the {@link MysqlCallback} to process
      */
     void handle(MysqlCallback cb);
 

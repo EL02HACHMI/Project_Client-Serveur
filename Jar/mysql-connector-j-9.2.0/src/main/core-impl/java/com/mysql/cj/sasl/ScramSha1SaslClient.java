@@ -37,7 +37,7 @@ import com.mysql.cj.exceptions.ExceptionFactory;
 
 /**
  * A {@link SaslClient} implementation for SCRAM-SHA-1, as specified in <a href="https://tools.ietf.org/html/rfc5802">RFC 5802</a>.
- *
+ * <p>
  * The IANA-registered mechanism was renamed to "MYSQLCJ-SCRAM-SHA-1" in order to avoid future conflicts with an officially supported implementation.
  * When there is a Java-supported implementation for SCRAM-SHA-1, it will have to be thoroughly tested with Connector/J and if that works, this code can be
  * obsoleted.
@@ -70,10 +70,8 @@ public class ScramSha1SaslClient extends ScramShaSaslClient {
      * The "H(str)" cryptographic hash function as described in <a href="https://tools.ietf.org/html/rfc5802#section-2.2">RFC 5802, Section 2.2</a>. This
      * implementation corresponds to SHA-1.
      *
-     * @param str
-     *            the string to hash.
-     * @return
-     *         the hash value of the given string.
+     * @param str the string to hash.
+     * @return the hash value of the given string.
      */
     @Override
     byte[] h(byte[] str) {
@@ -89,12 +87,9 @@ public class ScramSha1SaslClient extends ScramShaSaslClient {
      * The "HMAC(key, str)" HMAC keyed hash algorithm as described in <a href="https://tools.ietf.org/html/rfc5802#section-2.2">RFC 5802, Section 2.2</a>.
      * This implementation corresponds to 'HmacSHA1'.
      *
-     * @param key
-     *            the hash key.
-     * @param str
-     *            the input string.
-     * @return
-     *         the hashed value of the given params.
+     * @param key the hash key.
+     * @param str the input string.
+     * @return the hashed value of the given params.
      */
     @Override
     byte[] hmac(byte[] key, byte[] str) {
@@ -113,15 +108,10 @@ public class ScramSha1SaslClient extends ScramShaSaslClient {
      * The "Hi(str, salt, i)" PBKDF2 function as described in <a href="https://tools.ietf.org/html/rfc5802#section-2.2">RFC 5802, Section 2.2</a>.
      * This implementation corresponds to 'PBKDF2WithHmacSHA1'.
      *
-     * @param str
-     *            the string value to use as the internal HMAC key.
-     * @param salt
-     *            the input string to hash in the initial iteration.
-     * @param iterations
-     *            the number of iterations to run the algorithm.
-     *
-     * @return
-     *         an hash value with an output length equal to the length of H(str).
+     * @param str        the string value to use as the internal HMAC key.
+     * @param salt       the input string to hash in the initial iteration.
+     * @param iterations the number of iterations to run the algorithm.
+     * @return an hash value with an output length equal to the length of H(str).
      */
     @Override
     byte[] hi(String str, byte[] salt, int iterations) {

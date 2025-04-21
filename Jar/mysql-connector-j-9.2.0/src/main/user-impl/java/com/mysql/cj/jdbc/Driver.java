@@ -51,8 +51,7 @@ public class Driver extends NonRegisteringDriver implements java.sql.Driver {
     /**
      * Construct a new driver and register it with DriverManager
      *
-     * @throws SQLException
-     *             if a database error occurs.
+     * @throws SQLException if a database error occurs.
      */
     public Driver() throws SQLException {
         // Required for Class.forName().newInstance().

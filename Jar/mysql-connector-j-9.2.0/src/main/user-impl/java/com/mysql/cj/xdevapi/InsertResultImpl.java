@@ -30,8 +30,7 @@ public class InsertResultImpl extends UpdateResult implements InsertResult {
     /**
      * Create a new result.
      *
-     * @param ok
-     *            the response from the server
+     * @param ok the response from the server
      */
     public InsertResultImpl(StatementExecuteOk ok) {
         super(ok);
