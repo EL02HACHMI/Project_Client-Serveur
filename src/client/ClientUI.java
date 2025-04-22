@@ -7,7 +7,6 @@ import models.Article;
 import models.Commande;
 import models.LigneCommande;
 import serveur.StockService;
-
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
@@ -33,9 +32,10 @@ public class ClientUI extends JFrame {
     private JTable panierTable;
     private ButtonGroup paymentGroup;
     private JRadioButton cbButton, especeButton;
+    private JLabel totalLabel;
 
     public ClientUI() {
-        setTitle("IDEL - Votre boutique de confiance");
+        setTitle("Heptathlon");
         setSize(1000, 700);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
@@ -53,17 +53,15 @@ public class ClientUI extends JFrame {
             System.exit(1);
         }
 
-        JPanel header = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        ImageIcon originalIcon = new ImageIcon("Assets/logo.png");
+        Image scaledImage = originalIcon.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
+        ImageIcon scaledIcon = new ImageIcon(scaledImage);
+        JLabel logoLabel = new JLabel(scaledIcon);
+        logoLabel.setHorizontalAlignment(SwingConstants.CENTER);
+
+        JPanel header = new JPanel(new BorderLayout());
         header.setBackground(Color.WHITE);
-        ImageIcon rawIcon = new ImageIcon("Assets/logo.png");
-        int originalWidth = rawIcon.getIconWidth();
-        int originalHeight = rawIcon.getIconHeight();
-        int targetWidth = 150;
-        int targetHeight = (originalHeight * targetWidth) / originalWidth;
-        Image scaledImage = rawIcon.getImage().getScaledInstance(targetWidth, targetHeight, Image.SCALE_SMOOTH);
-        ImageIcon logoIcon = new ImageIcon(scaledImage);
-        JLabel logoLabel = new JLabel(logoIcon);
-        header.add(logoLabel);
+        header.add(logoLabel, BorderLayout.CENTER);
         add(header, BorderLayout.NORTH);
 
         JPanel sidebar = new JPanel(new GridLayout(0, 1, 10, 10));
@@ -75,8 +73,15 @@ public class ClientUI extends JFrame {
         JButton btnAfficherTous = new JButton("📋 Afficher tous");
         JButton btnReset = new JButton("🔄 Réinitialiser");
         JButton btnAjouterStock = new JButton("➕ Ajouter Stock");
+        JButton btnModifierPrix = new JButton("💸 Modifier Prix");
+        btnModifierPrix.setBackground(Color.decode("#f5a623"));
+        btnModifierPrix.setForeground(Color.BLACK);
+        JButton btnSupprimerPanier = new JButton("❌ Supprimer du panier");
+        btnSupprimerPanier.setBackground(Color.decode("#f5a623"));
+        btnSupprimerPanier.setForeground(Color.BLACK);
+
         JButton btnChiffreAffaire = new JButton("💰 Chiffre d'affaires");
-        JButton[] buttons = {btnChiffreAffaire, btnRechercher, btnAfficherTous, btnReset, btnAjouterStock};
+        JButton[] buttons = {btnChiffreAffaire, btnRechercher, btnAfficherTous, btnReset, btnAjouterStock, btnModifierPrix, btnSupprimerPanier};
         for (JButton b : buttons) {
             b.setBackground(Color.decode("#f5a623"));
             b.setForeground(Color.BLACK);
@@ -89,6 +94,8 @@ public class ClientUI extends JFrame {
         sidebar.add(btnAfficherTous);
         sidebar.add(btnReset);
         sidebar.add(btnAjouterStock);
+        sidebar.add(btnModifierPrix);
+        sidebar.add(btnSupprimerPanier);
 
         comboFamilles = new JComboBox<>();
         mapFamilles = new HashMap<>();
@@ -126,6 +133,10 @@ public class ClientUI extends JFrame {
         JScrollPane panierScroll = new JScrollPane(panierTable);
         panierScroll.setPreferredSize(new Dimension(600, 120));
 
+        totalLabel = new JLabel("Total panier : 0 €");
+        totalLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        totalLabel.setForeground(Color.BLACK);
+
         cbButton = new JRadioButton("CB");
         especeButton = new JRadioButton("Espèce");
         paymentGroup = new ButtonGroup();
@@ -144,6 +155,8 @@ public class ClientUI extends JFrame {
         centre.add(Box.createVerticalStrut(10));
         centre.add(panierScroll);
         centre.add(Box.createVerticalStrut(10));
+        centre.add(totalLabel);
+        centre.add(Box.createVerticalStrut(10));
         centre.add(paiementPanel);
 
         add(centre, BorderLayout.CENTER);
@@ -153,7 +166,7 @@ public class ClientUI extends JFrame {
         resultatArea.setMargin(new Insets(10, 10, 10, 10));
         resultatArea.setEditable(false);
         JScrollPane scrollPane = new JScrollPane(resultatArea);
-        scrollPane.setBorder(BorderFactory.createTitledBorder("📜 Journal"));
+        scrollPane.setBorder(BorderFactory.createTitledBorder("📄 Journal"));
         add(scrollPane, BorderLayout.SOUTH);
 
         panier = new ArrayList<>();
@@ -163,6 +176,9 @@ public class ClientUI extends JFrame {
         btnValiderPanier.addActionListener(e -> validerPanier());
         btnRechercher.addActionListener(e -> rechercherParFamille(familleField.getText().trim()));
         btnAfficherTous.addActionListener(e -> chargerArticles());
+        btnModifierPrix.addActionListener(e -> modifierPrixArticle());
+        btnSupprimerPanier.addActionListener(e -> supprimerArticlePanier());
+
         btnReset.addActionListener(e -> {
             familleField.setText("");
             resultatArea.setText("");
@@ -183,6 +199,43 @@ public class ClientUI extends JFrame {
         setVisible(true);
     }
 
+    private void supprimerArticlePanier() {
+        int selectedRow = panierTable.getSelectedRow();
+        if (selectedRow != -1) {
+            String refToRemove = (String) panierModel.getValueAt(selectedRow, 0);
+            panier.removeIf(l -> l.getReference().equals(refToRemove));
+            panierModel.removeRow(selectedRow);
+            double totalPanier = 0;
+            for (int i = 0; i < panierModel.getRowCount(); i++) {
+                totalPanier += (double) panierModel.getValueAt(i, 4);
+            }
+            totalLabel.setText("Total panier : " + totalPanier + " €");
+            resultatArea.append("❌ Article supprimé du panier : " + refToRemove + "\n");
+        }
+    }
+
+
+    private void modifierPrixArticle() {
+        try {
+            String selection = (String) articleDropdown.getSelectedItem();
+            if (selection == null) return;
+
+            String reference = selection.split(" - ")[0];
+            String input = JOptionPane.showInputDialog(this, "Nouveau prix (€) :");
+            if (input == null || input.trim().isEmpty()) return;
+
+            double nouveauPrix = Double.parseDouble(input.trim());
+            boolean success = stockService.modifierPrixArticle(reference, nouveauPrix);
+
+            if (success) {
+                resultatArea.append("💰 Prix modifié pour " + reference + " -> " + nouveauPrix + " €\n");
+                chargerArticles();
+            } else {
+                resultatArea.append("❌ Échec de la modification du prix.\n");
+            }
+        } catch (Exception ignored) {}
+    }
+
     private void chargerFamilles() {
         try {
             Map<Integer, String> familles = stockService.getToutesLesFamilles();
@@ -201,9 +254,9 @@ public class ClientUI extends JFrame {
             articleDropdown.removeAllItems();
             List<Article> articles = stockService.getArticles();
             for (Article article : articles) {
-                articleDropdown.addItem(article.getReference() + " - " + article.getNomArticle() + " - " + article.getPrixUnitaire() + "€ - Stock: " + article.getStock());
+                articleDropdown.addItem(formatArticle(article));
             }
-            resultatArea.append("📦 Articles chargés avec succès.\n");
+            resultatArea.append("\uD83D\uDCE6 Articles chargés avec succès.\n");
         } catch (Exception ignored) {}
     }
 
@@ -219,6 +272,12 @@ public class ClientUI extends JFrame {
             double total = prix * quantite;
             panier.add(new LigneCommande(reference, quantite, prix));
             panierModel.addRow(new Object[]{reference, nom, quantite, prix, total});
+
+            double totalPanier = 0;
+            for (int i = 0; i < panierModel.getRowCount(); i++) {
+                totalPanier += (double) panierModel.getValueAt(i, 4);
+            }
+            totalLabel.setText("Total panier : " + totalPanier + " €");
         } catch (Exception ignored) {}
     }
 
@@ -242,6 +301,7 @@ public class ClientUI extends JFrame {
                 genererFacturePDF(commande, modePaiement, nomsArticles);
                 panier.clear();
                 panierModel.setRowCount(0);
+                totalLabel.setText("Total panier : 0 €");
                 chargerArticles();
             } else {
                 resultatArea.append("Échec de la commande (stock insuffisant ou erreur).\n");
@@ -269,7 +329,7 @@ public class ClientUI extends JFrame {
             if (articles.isEmpty()) {
                 resultatArea.append("❌ Aucun article trouvé pour la famille : " + familleAffichee + "\n");
             } else {
-                resultatArea.append("🔍 Articles de la famille \"" + familleAffichee + "\" trouvés (" + articles.size() + ")\n");
+                resultatArea.append("\uD83D\uDD0D Articles de la famille \"" + familleAffichee + "\" trouvés (" + articles.size() + ")\n");
             }
         } catch (Exception ignored) {}
     }
@@ -304,13 +364,12 @@ public class ClientUI extends JFrame {
             document.open();
 
             String logoPath = "Assets/logo.png";
-
             if (new File(logoPath).exists()) {
-                com.lowagie.text.Image logo = com.lowagie.text.Image.getInstance("Assets/logo.png");
-                logo.scaleToFit(100, 100);
+                com.lowagie.text.Image logo = com.lowagie.text.Image.getInstance(logoPath);
+                logo.setAlignment(com.lowagie.text.Image.ALIGN_CENTER);
                 document.add(logo);
-
             }
+
 
             com.lowagie.text.Font titleFont = new com.lowagie.text.Font(com.lowagie.text.Font.HELVETICA, 16, com.lowagie.text.Font.BOLD);
             com.lowagie.text.Font textFont = new com.lowagie.text.Font(com.lowagie.text.Font.HELVETICA, 12);
@@ -334,7 +393,7 @@ public class ClientUI extends JFrame {
             document.add(new Paragraph("TOTAL À PAYER : " + total + " €", titleFont));
             document.close();
 
-            resultatArea.append("🧾 Facture PDF générée : " + nomFichier + "\n");
+            resultatArea.append("\uD83D\uDCC4 Facture PDF générée : " + nomFichier + "\n");
         } catch (Exception e) {
             e.printStackTrace();
         }

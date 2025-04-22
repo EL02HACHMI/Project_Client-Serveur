@@ -19,5 +19,6 @@ public interface StockService extends Remote {
     List<Article> getArticlesByFamilleId(int idFamille) throws RemoteException;
     String getNomFamilleById(int idFamille) throws RemoteException;
     Map<Integer, String> getToutesLesFamilles() throws RemoteException;
+    boolean modifierPrixArticle(String reference, double nouveauPrix) throws RemoteException;
 
 }

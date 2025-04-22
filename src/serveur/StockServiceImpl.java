@@ -20,6 +20,20 @@ public class StockServiceImpl extends UnicastRemoteObject implements StockServic
     }
 
     @Override
+    public boolean modifierPrixArticle(String reference, double nouveauPrix) throws RemoteException {
+        try (PreparedStatement ps = conn.prepareStatement("UPDATE Article SET Prix_Unitaire = ? WHERE Reference = ?")) {
+            String sql = "UPDATE Article SET Prix_Unitaire = ? WHERE Reference = ?";
+            ps.setDouble(1, nouveauPrix);
+            ps.setString(2, reference);
+            return ps.executeUpdate() > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+
+    @Override
     public boolean enregistrerCommande(Commande commande) throws RemoteException {
         try {
             for (LigneCommande ligne : commande.getLignes()) {
