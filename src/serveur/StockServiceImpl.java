@@ -60,13 +60,13 @@ public class StockServiceImpl extends UnicastRemoteObject implements StockServic
                     update.setString(2, ligne.getReference());
                     update.executeUpdate();
                 } else {
-                    System.out.println("❌ Stock insuffisant ou article non trouvé : " + ligne.getReference());
+                    System.out.println(" Stock insuffisant ou article non trouvé : " + ligne.getReference());
                     return false;
                 }
             }
             return true;
         } catch (SQLException e) {
-            System.out.println("❌ Erreur SQL : " + e.getMessage());
+            System.out.println("Erreur SQL : " + e.getMessage());
             e.printStackTrace();
             return false;
         }
@@ -179,7 +179,7 @@ public class StockServiceImpl extends UnicastRemoteObject implements StockServic
         List<Article> articles = new ArrayList<>();
         try {
             Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT * FROM Article"); // pas de filtre ici
+            ResultSet rs = stmt.executeQuery("SELECT * FROM Article"); 
             while (rs.next()) {
                 articles.add(new Article(
                         rs.getString("reference"),
@@ -250,7 +250,6 @@ public class StockServiceImpl extends UnicastRemoteObject implements StockServic
                     stmt.setDouble(3, prixUnitaire * quantite); // Utilisation du prix de la base
                     int rowsInserted = stmt.executeUpdate();
 
-                    // Mettre à jour le stock
                     PreparedStatement updateStock = conn.prepareStatement(
                             "UPDATE Article SET stock = stock - ? WHERE reference = ?");
                     updateStock.setInt(1, quantite);
@@ -259,10 +258,10 @@ public class StockServiceImpl extends UnicastRemoteObject implements StockServic
 
                     return rowsInserted > 0 && rowsUpdated > 0;
                 } else {
-                    System.out.println("❌ Stock insuffisant !");
+                    System.out.println("Stock insuffisant !");
                 }
             } else {
-                System.out.println("❌ Article non trouvé !");
+                System.out.println("Article non trouvé !");
             }
         } catch (SQLException e) {
             e.printStackTrace();

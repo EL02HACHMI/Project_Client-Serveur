@@ -76,7 +76,7 @@ public class ClientUI extends JFrame {
         JButton btnModifierPrix = new JButton("💸 Modifier Prix");
         btnModifierPrix.setBackground(Color.decode("#f5a623"));
         btnModifierPrix.setForeground(Color.BLACK);
-        JButton btnSupprimerPanier = new JButton("❌ Supprimer du panier");
+        JButton btnSupprimerPanier = new JButton("Supprimer du panier");
         btnSupprimerPanier.setBackground(Color.decode("#f5a623"));
         btnSupprimerPanier.setForeground(Color.BLACK);
 
@@ -210,7 +210,7 @@ public class ClientUI extends JFrame {
                 totalPanier += (double) panierModel.getValueAt(i, 4);
             }
             totalLabel.setText("Total panier : " + totalPanier + " €");
-            resultatArea.append("❌ Article supprimé du panier : " + refToRemove + "\n");
+            resultatArea.append("Article supprimé du panier : " + refToRemove + "\n");
         }
     }
 
@@ -231,7 +231,7 @@ public class ClientUI extends JFrame {
                 resultatArea.append("💰 Prix modifié pour " + reference + " -> " + nouveauPrix + " €\n");
                 chargerArticles();
             } else {
-                resultatArea.append("❌ Échec de la modification du prix.\n");
+                resultatArea.append("Échec de la modification du prix.\n");
             }
         } catch (Exception ignored) {}
     }
@@ -327,7 +327,7 @@ public class ClientUI extends JFrame {
                 articleDropdown.addItem(formatArticle(article));
             }
             if (articles.isEmpty()) {
-                resultatArea.append("❌ Aucun article trouvé pour la famille : " + familleAffichee + "\n");
+                resultatArea.append("Aucun article trouvé pour la famille : " + familleAffichee + "\n");
             } else {
                 resultatArea.append("\uD83D\uDD0D Articles de la famille \"" + familleAffichee + "\" trouvés (" + articles.size() + ")\n");
             }
@@ -344,13 +344,13 @@ public class ClientUI extends JFrame {
             if (input == null || input.trim().isEmpty()) return;
 
             int quantite = Integer.parseInt(input.trim());
-            boolean success = stockService.ajouterStock(reference, quantite); // le serveur gère les valeurs négatives aussi
+            boolean success = stockService.ajouterStock(reference, quantite);
 
             if (success) {
                 resultatArea.append("✔ Stock modifié pour " + reference + " (Δ " + quantite + ")\n");
                 chargerArticles();
             } else {
-                resultatArea.append("❌ Échec de la modification du stock.\n");
+                resultatArea.append("Échec de la modification du stock.\n");
             }
         } catch (Exception ignored) {}
     }
