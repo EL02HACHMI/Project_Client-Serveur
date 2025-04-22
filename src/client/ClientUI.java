@@ -72,7 +72,7 @@ public class ClientUI extends JFrame {
         JButton btnRechercher = new JButton("🔍 Rechercher");
         JButton btnAfficherTous = new JButton("📋 Afficher tous");
         JButton btnReset = new JButton("🔄 Réinitialiser");
-        JButton btnAjouterStock = new JButton("➕ Ajouter Stock");
+        JButton btnModifierStock = new JButton("✏️ Modifier Stock");
         JButton btnModifierPrix = new JButton("💸 Modifier Prix");
         btnModifierPrix.setBackground(Color.decode("#f5a623"));
         btnModifierPrix.setForeground(Color.BLACK);
@@ -81,7 +81,7 @@ public class ClientUI extends JFrame {
         btnSupprimerPanier.setForeground(Color.BLACK);
 
         JButton btnChiffreAffaire = new JButton("💰 Chiffre d'affaires");
-        JButton[] buttons = {btnChiffreAffaire, btnRechercher, btnAfficherTous, btnReset, btnAjouterStock, btnModifierPrix, btnSupprimerPanier};
+        JButton[] buttons = {btnChiffreAffaire, btnRechercher, btnAfficherTous, btnReset, btnModifierStock, btnModifierPrix};
         for (JButton b : buttons) {
             b.setBackground(Color.decode("#f5a623"));
             b.setForeground(Color.BLACK);
@@ -93,7 +93,7 @@ public class ClientUI extends JFrame {
         sidebar.add(btnRechercher);
         sidebar.add(btnAfficherTous);
         sidebar.add(btnReset);
-        sidebar.add(btnAjouterStock);
+        sidebar.add(btnModifierStock);
         sidebar.add(btnModifierPrix);
         sidebar.add(btnSupprimerPanier);
 
@@ -185,7 +185,7 @@ public class ClientUI extends JFrame {
             chargerArticles();
             resultatArea.append("🔁 Réinitialisation terminée.\n");
         });
-        btnAjouterStock.addActionListener(e -> ajouterStock());
+        btnModifierStock.addActionListener(e -> modifierStock());
         btnChiffreAffaire.addActionListener(e -> {
             String date = JOptionPane.showInputDialog(this, "Entrez une date (YYYY-MM-DD) :");
             if (date != null && !date.trim().isEmpty()) {
@@ -334,23 +334,27 @@ public class ClientUI extends JFrame {
         } catch (Exception ignored) {}
     }
 
-    private void ajouterStock() {
+    private void modifierStock() {
         try {
             String selection = (String) articleDropdown.getSelectedItem();
             if (selection == null) return;
+
             String reference = selection.split(" - ")[0];
-            String input = JOptionPane.showInputDialog(this, "Quantité à ajouter :");
+            String input = JOptionPane.showInputDialog(this, "Quantité à ajouter (positive) ou retirer (négative) :");
             if (input == null || input.trim().isEmpty()) return;
-            int qte = Integer.parseInt(input.trim());
-            boolean success = stockService.ajouterStock(reference, qte);
+
+            int quantite = Integer.parseInt(input.trim());
+            boolean success = stockService.ajouterStock(reference, quantite); // le serveur gère les valeurs négatives aussi
+
             if (success) {
-                resultatArea.append("✅ Stock ajouté à " + reference + " (+ " + qte + ")\n");
+                resultatArea.append("✔ Stock modifié pour " + reference + " (Δ " + quantite + ")\n");
                 chargerArticles();
             } else {
-                resultatArea.append("❌ Échec de l'ajout de stock.\n");
+                resultatArea.append("❌ Échec de la modification du stock.\n");
             }
         } catch (Exception ignored) {}
     }
+
 
     private String formatArticle(Article a) {
         return a.getReference() + " - " + a.getNomArticle() + " - " + a.getPrixUnitaire() + "€ - Stock: " + a.getStock();
